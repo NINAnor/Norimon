@@ -2,7 +2,7 @@
 % Please edit documentation in R/obs_from_db.R
 \name{obs_from_db}
 \alias{obs_from_db}
-\title{-obs_from_db Get insect observation data from the database}
+\title{obs_from_db Get insect observation data from the database}
 \usage{
 obs_from_db(
   id_type = c("metabarcoding"),
@@ -25,8 +25,48 @@ obs_from_db(
 
 \item{subset_orders}{Optional subset of order}
 
-\item{as_tibble}{}
+\item{subset_families}{Optional subset of families}
+
+\item{subset_genus}{Optional subset of genus}
+
+\item{subset_species}{Optional subset of species}
+
+\item{subset_year}{Optional subset of year}
+
+\item{subset_region}{Optional subset of region}
+
+\item{trap_type}{Optional subset of trap type}
+
+\item{limit}{Optional limit the output to number of rows (for testing)}
+
+\item{dataset}{Choose the dataset to fetch data from. Default "NasIns" for national insect monitoring data}
+
+\item{agg_level}{Aggregation level of data. "year_locality", "region_habitat", "region_habitat_year", "total". Default to year_locality}
+
+\item{as_tibble}{Coerce output to class tibble}
 }
 \description{
--obs_from_db Get insect observation data from the database
+obs_from_db Get insect observation data from the database
+}
+\examples{
+
+dontrun{
+
+  source("~/.rpgpass")
+
+  connect_to_database(
+     username = username,
+     password = password
+  )
+
+  rm(list = c("username", "password"))
+
+
+  beetles_2022 <- obs_from_db(subset_orders = "Coleoptera",
+                              agg_level = "year_locality")
+
+}
+
+
+
 }

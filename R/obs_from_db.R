@@ -1,22 +1,40 @@
-#' -obs_from_db Get insect observation data from the database
+#' obs_from_db Get insect observation data from the database
 #'
 #' @param id_type Type of identification type. Defaults to metabarcoding data
 #' @param subset_orders Optional subset of order
-#' @param subset_families
-#' @param subset_genus
-#' @param subset_species
-#' @param subset_year
-#' @param subset_region
-#' @param trap_type
-#' @param limit
-#' @param dataset
-#' @param agg_level
-#' @param as_tibble
+#' @param subset_families Optional subset of families
+#' @param subset_genus Optional subset of genus
+#' @param subset_species Optional subset of species
+#' @param subset_year Optional subset of year
+#' @param subset_region Optional subset of region
+#' @param trap_type Optional subset of trap type
+#' @param limit Optional limit the output to number of rows (for testing)
+#' @param dataset Choose the dataset to fetch data from. Default "NasIns" for national insect monitoring data
+#' @param agg_level Aggregation level of data. "year_locality", "region_habitat", "region_habitat_year", "total". Default to year_locality
+#' @param as_tibble Coerce output to class tibble
 #'
 #' @return
 #' @export
 #'
 #' @examples
+#'
+#' dontrun{
+#'
+#'   source("~/.rpgpass")
+#'
+#'   connect_to_database(
+#'      username = username,
+#'      password = password
+#'   )
+#'
+#'   rm(list = c("username", "password"))
+#'
+#'
+#'   beetles_2022 <- obs_from_db(subset_orders = "Coleoptera",
+#'                               agg_level = "year_locality")
+#'
+#' }
+#'
 #'
 #'
 
