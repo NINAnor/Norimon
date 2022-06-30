@@ -9,6 +9,7 @@ community_matrix_from_db(
   id_type = c("metabarcoding"),
   trap_type = c("MF", "VF", "All", NULL),
   dataset = c("NasIns"),
+  subset_years = NULL,
   subset_orders = NULL,
   subset_families = NULL,
   subset_species = NULL,
@@ -20,8 +21,54 @@ community_matrix_from_db(
 )
 }
 \arguments{
-\item{as_tibble}{}
+\item{limit}{Optional row limit on output (for testing).}
+
+\item{id_type}{Type of identification data. Currently only default "metabarcoding" available.}
+
+\item{trap_type}{Optional subset of trap types. "MF" (default), "VF", "All".}
+
+\item{dataset}{Optional selection of dataset. Default to "NasIns" for national insect monitoring scheme.}
+
+\item{subset_years}{Optional subset of years. Numerical vector.}
+
+\item{subset_orders}{Optional subset of orders. Character vector.}
+
+\item{subset_families}{Optional subset of families Character vector.}
+
+\item{subset_species}{Optional subset of families. Character vector.}
+
+\item{subset_habitat}{Optional subset of habitat type. Character vector.}
+
+\item{subset_region}{Optional subset of region. Character vector.}
+
+\item{exclude_singletons}{Should we exclude singletons (species only found once). Boolean.}
+
+\item{transposed_matrix}{Transpose matrix? Boolean.}
+
+\item{as_tibble}{Output as tibble? Boolean.}
 }
 \description{
 community_matrix_from_db
+}
+\examples{
+
+dontrun{
+
+  source("~/.rpgpass")
+
+  connect_to_database(
+     username = username,
+     password = password
+  )
+
+  rm(list = c("username", "password"))
+
+
+  beetles_comm_2022 <- community_matrix_from_db(subset_orders = "Coleoptera",
+                                                subset_years = 2021)
+
+}
+
+
+
 }

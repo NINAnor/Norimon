@@ -1,26 +1,51 @@
 #' community_matrix_from_db
 #'
-#' @param limit
-#' @param id_type
-#' @param trap_type
-#' @param dataset
-#' @param subset_orders
-#' @param subset_families
-#' @param subset_species
-#' @param subset_habitat
-#' @param subset_region
-#' @param exclude_singletons
-#' @param transposed_matrix
-#' @param as_tibble
+#'
+#' @param limit Optional row limit on output (for testing).
+#' @param id_type Type of identification data. Currently only default "metabarcoding" available.
+#' @param trap_type Optional subset of trap types. "MF" (default), "VF", "All".
+#' @param dataset Optional selection of dataset. Default to "NasIns" for national insect monitoring scheme.
+#' @param subset_years Optional subset of years. Numerical vector.
+#' @param subset_orders Optional subset of orders. Character vector.
+#' @param subset_families Optional subset of families Character vector.
+#' @param subset_species Optional subset of families. Character vector.
+#' @param subset_habitat Optional subset of habitat type. Character vector.
+#' @param subset_region Optional subset of region. Character vector.
+#' @param exclude_singletons Should we exclude singletons (species only found once). Boolean.
+#' @param transposed_matrix Transpose matrix? Boolean.
+#' @param as_tibble Output as tibble? Boolean.
 #'
 #' @return
 #' @export
 #'
 #' @examples
+#'
+#' dontrun{
+#'
+#'   source("~/.rpgpass")
+#'
+#'   connect_to_database(
+#'      username = username,
+#'      password = password
+#'   )
+#'
+#'   rm(list = c("username", "password"))
+#'
+#'
+#'   beetles_comm_2022 <- community_matrix_from_db(subset_orders = "Coleoptera",
+#'                                                 subset_years = 2021)
+#'
+#' }
+#'
+#'
+#'
+
+
 community_matrix_from_db <- function(limit = NULL,
                                      id_type = c("metabarcoding"),
                                      trap_type = c("MF", "VF", "All", NULL),
                                      dataset = c("NasIns"),
+                                     subset_years = NULL,
                                      subset_orders = NULL,
                                      subset_families = NULL,
                                      subset_species = NULL,
@@ -41,6 +66,8 @@ community_matrix_from_db <- function(limit = NULL,
 
   trap_type <- match.arg(trap_type,
                          choices = c("MF", "VF", "All", NULL))
+
+  subset_years <- as.numeric(subset_years)
 
 
   ##Set up table sources
@@ -85,6 +112,13 @@ community_matrix_from_db <- function(limit = NULL,
   if(id_type == "metabarcoding"){
     joined <- joined %>%
       filter(identification_type == "metabarcoding")
+  }
+
+
+  if(!is.null(subset_years)){
+    subset_years <- c(NA, subset_years) #To allow one-length subsets
+    joined <- joined %>%
+      filter(year %IN% subset_years)
   }
 
   if(!is.null(subset_orders)){
