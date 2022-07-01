@@ -7,7 +7,7 @@
 #' @param upper_limit Upper limit to confidence intervals, e.g. 0.975 for upper 97.5%
 #' @param R Number of bootstrap samples
 #'
-#' @return
+#' @return Returns an object of class boot_stat.
 #' @export
 #'
 #' @examples
@@ -105,24 +105,43 @@ print.boot_stat <- function(x){
 }
 
 
-# bootstrap_value <- function(df,
-#                             value,
-#                             groups,
-#                             lower_limit = 0.025,
-#                             upper_limit = 0.975,
-#                             R = 999){
-#
-#   groupings <- groups
-#   value <- enquo(value)
-#
-#   out <- df %>%
-#     group_by_at(groupings) %>%
-#     summarise(boot_mean = boot_mean(!!value),
-#               boot_lower25 = boot_lower(!!value),
-#               boot_upper975 = boot_upper(!!value))
-#
-#     return(out)
-#
-#
-# }
+
+#' @export
+boot_contrast <- function(x, ...){
+  UseMethod("boot_contrast")
+}
+
+#' @export
+boot_contrast.boot_stat <- function(x,
+                               level = NULL){
+
+  level = enquo(level)
+
+  contrast_bootstrap_values <- x[[2]] %>%
+    as_tibble() %>%
+    filter(!!level)
+
+  bootstrap_values <- x[[2]]
+
+  bootstrap_values$boot_values <- bootstrap_values$boot_values - contrast_bootstrap_values$boot_values #implictly gets reused
+
+  bootstrap_summary <- bootstrap_values %>%
+    dplyr::group_by(across(!boot_values)) %>%
+    dplyr::summarise(boot_mean = mean(boot_values),
+                     boot_lower25 = dplyr::nth(boot_values, floor(length(boot_values) * 0.025), order_by = boot_values),
+                     boot_upper975 = dplyr::nth(boot_values, ceiling(length(boot_values) * 0.975), order_by = boot_values),
+                     .groups = "drop")
+
+
+  out <- list("bootstrap_summary" = bootstrap_summary,
+              "bootstrap_values" = bootstrap_values)
+
+
+  class(out) <- c("boot_stat", "list")
+  return(out)
+
+}
+
+
+
 

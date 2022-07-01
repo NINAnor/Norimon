@@ -26,6 +26,9 @@ bootstrap_value(
 
 \item{groupings}{Optional grouping variables as character vector.}
 }
+\value{
+Returns an object of class boot_stat.
+}
 \description{
 Bootstrap value
 }
