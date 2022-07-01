@@ -196,9 +196,12 @@ obs_from_db <- function(id_type = c("metabarcoding"),
 
     res <- res %>%
       collect() %>%
+      group_by(year_locality_id, locality_id, species_latin_fixed) %>%
+      summarise(no_asv_per_species = n_distinct(sequence_id)) %>%
       group_by(year_locality_id, locality_id) %>%
       summarise(no_species = n_distinct(species_latin_fixed),
-                shannon_div = calc_shannon(species_latin_fixed)) %>%
+                shannon_div = calc_shannon(species_latin_fixed),
+                mean_asv_per_species = mean(no_asv_per_species)) %>%
       left_join(localities,
                 by = c("locality_id" = "id"),
                 copy = T) %>%
@@ -214,7 +217,8 @@ obs_from_db <- function(id_type = c("metabarcoding"),
              habitat_type,
              region_name,
              no_species,
-             shannon_div) %>%
+             shannon_div,
+             mean_asv_per_species) %>%
       arrange(year,
               region_name,
               habitat_type,
@@ -227,10 +231,13 @@ obs_from_db <- function(id_type = c("metabarcoding"),
 
     res <- res %>%
       collect() %>%
+      group_by(start_date_obs, end_date_obs, sampling_name, year_locality_id, locality_id, species_latin_fixed) %>%
+      summarise(no_asv_per_species = n_distinct(sequence_id)) %>%
       group_by(sampling_name, year_locality_id, locality_id) %>%
       summarise(no_trap_days = mean(as.numeric(end_date_obs - start_date_obs)), ##to get the mean trap days from all traps within the sampling event (should be the same for all traps)
                 no_species = n_distinct(species_latin_fixed),
-                shannon_div = calc_shannon(species_latin_fixed)) %>%
+                shannon_div = calc_shannon(species_latin_fixed),
+                mean_asv_per_species = mean(no_asv_per_species)) %>%
       left_join(localities,
                 by = c("locality_id" = "id"),
                 copy = T) %>%
@@ -245,7 +252,8 @@ obs_from_db <- function(id_type = c("metabarcoding"),
              region_name,
              no_trap_days,
              no_species,
-             shannon_div) %>%
+             shannon_div,
+             mean_asv_per_species) %>%
       arrange(year,
               region_name,
               habitat_type,
@@ -259,14 +267,20 @@ obs_from_db <- function(id_type = c("metabarcoding"),
     res <- res %>%
       collect() %>%
       group_by(region_name,
+               habitat_type,
+               species_latin_fixed) %>%
+      summarise(no_asv_per_species = n_distinct(sequence_id)) %>%
+      group_by(region_name,
                habitat_type) %>%
       summarise(no_species = n_distinct(species_latin_fixed),
-                shannon_div = calc_shannon(species_latin_fixed)) %>%
+                shannon_div = calc_shannon(species_latin_fixed),
+                mean_asv_per_species = mean(no_asv_per_species)) %>%
       ungroup() %>%
       select(habitat_type,
              region_name,
              no_species,
-             shannon_div) %>%
+             shannon_div,
+             mean_asv_per_species) %>%
       arrange(habitat_type,
               region_name)
 
@@ -279,15 +293,22 @@ obs_from_db <- function(id_type = c("metabarcoding"),
       collect() %>%
       group_by(region_name,
                habitat_type,
+               year,
+               species_latin_fixed) %>%
+      summarise(no_asv_per_species = n_distinct(sequence_id)) %>%
+      group_by(region_name,
+               habitat_type,
                year) %>%
       summarise(no_species = n_distinct(species_latin_fixed),
-                shannon_div = calc_shannon(species_latin_fixed)) %>%
+                shannon_div = calc_shannon(species_latin_fixed),
+                mean_asv_per_species = mean(no_asv_per_species)) %>%
       ungroup() %>%
       select(year,
              habitat_type,
              region_name,
              no_species,
-             shannon_div) %>%
+             shannon_div,
+             mean_asv_per_species) %>%
       arrange(year,
               habitat_type,
               region_name
@@ -299,11 +320,15 @@ obs_from_db <- function(id_type = c("metabarcoding"),
 
     res <- res %>%
       collect() %>%
+      group_by(species_latin_fixed) %>%
+      summarise(no_asv_per_species = n_distinct(sequence_id)) %>%
       summarise(no_species = n_distinct(species_latin_fixed),
-                shannon_div = calc_shannon(species_latin_fixed)) %>%
+                shannon_div = calc_shannon(species_latin_fixed),
+                mean_asv_per_species = mean(no_asv_per_species)) %>%
       ungroup() %>%
       select(no_species,
-             shannon_div)
+             shannon_div,
+             mean_asv_per_species)
 
 
   }

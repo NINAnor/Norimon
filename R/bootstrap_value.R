@@ -30,8 +30,6 @@
 #'
 #'
 #'
-
-
 bootstrap_value <- function(df,
                             value,
                             groups,
@@ -42,14 +40,89 @@ bootstrap_value <- function(df,
   groupings <- groups
   value <- enquo(value)
 
-  out <- df %>%
+  bootstrap_values <- df %>%
     group_by_at(groupings) %>%
-    summarise(boot_mean = boot_mean(!!value),
-              boot_lower25 = boot_lower(!!value),
-              boot_upper975 = boot_upper(!!value))
+    summarise(boot_values = list(replicate(R,
+                                       mean(sample(!!value,
+                                                   size = length(!!value),
+                                                   replace = TRUE)
+                                       )
+    )),
+    .groups = "keep") %>%
+    unnest(cols = c(boot_values))
 
-    return(out)
+
+  bootstrap_summary <- bootstrap_values %>%
+    group_by_at(groupings) %>%
+      summarise(boot_mean = mean(boot_values),
+              boot_lower25 = nth(boot_values, floor(R * 0.025), order_by = boot_values),
+              boot_upper975 = nth(boot_values, ceiling(R * 0.975), order_by = boot_values),
+              .groups = "drop")
+
+
+  out <- list("bootstrap_summary" = bootstrap_summary,
+              "bootstrap_values" = bootstrap_values)
+
+
+  class(out) <- c("boot_stat", "list")
+
+
+  return(out)
 
 
 }
+
+#' @export
+print.boot_stat <- function(x){
+  print(x[[1]])
+}
+
+#' @noRd
+#' @export
+"-.boot_stat" <- function(x, ...){
+
+  bootstrap_values <- x[[2]]
+
+  bootstrap_values$boot_values <- bootstrap_values$boot_values - ...
+
+  bootstrap_summary <- bootstrap_values %>%
+    dplyr::group_by(across(!boot_values)) %>%
+    dplyr::summarise(boot_mean = mean(boot_values),
+              boot_lower25 = dplyr::nth(boot_values, floor(length(boot_values) * 0.025), order_by = boot_values),
+              boot_upper975 = dplyr::nth(boot_values, ceiling(length(boot_values) * 0.975), order_by = boot_values),
+              .groups = "drop")
+
+
+  out <- list("bootstrap_summary" = bootstrap_summary,
+              "bootstrap_values" = bootstrap_values)
+
+
+  class(out) <- c("boot_stat", "list")
+
+
+  return(out)
+
+}
+
+
+# bootstrap_value <- function(df,
+#                             value,
+#                             groups,
+#                             lower_limit = 0.025,
+#                             upper_limit = 0.975,
+#                             R = 999){
+#
+#   groupings <- groups
+#   value <- enquo(value)
+#
+#   out <- df %>%
+#     group_by_at(groupings) %>%
+#     summarise(boot_mean = boot_mean(!!value),
+#               boot_lower25 = boot_lower(!!value),
+#               boot_upper975 = boot_upper(!!value))
+#
+#     return(out)
+#
+#
+# }
 
