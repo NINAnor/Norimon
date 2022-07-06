@@ -7,15 +7,34 @@
 weights_from_db(
   limit = NULL,
   trap_type = c("ALL", "MF", "VF"),
-  subset_region = c(NULL, "Østlandet", "Trøndelag"),
+  subset_region = c(NULL, "Østlandet", "Trøndelag", "Sørlandet"),
   dataset = c("NasIns"),
   agg_level = c("year_locality", "locality_sampling", "total"),
   as_tibble = F
 )
 }
 \arguments{
-\item{as_tibble}{}
+\item{limit}{Optional row limit on output (for testing)}
+
+\item{trap_type}{Which trap types to fetch data for. "All" (defult), "MF", or "VF".}
+
+\item{subset_region}{Optional subset of region. Currently allowing "Østlandet", "Trøndelag", "Sørlandet"}
+
+\item{dataset}{Which dataset to fetch data for. Default "NasIns".}
+
+\item{agg_level}{Aggregate level of data. "year_locality" (default), "locality_sampling", "total".}
+
+\item{as_tibble}{Return as tibble? Boolean}
+}
+\value{
+A tibble of sample weights
 }
 \description{
 weights_from_db Get biomass data from the database
+}
+\examples{
+
+weights_from_db()
+
+
 }

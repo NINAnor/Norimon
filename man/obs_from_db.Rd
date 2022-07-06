@@ -45,6 +45,9 @@ obs_from_db(
 
 \item{as_tibble}{Coerce output to class tibble}
 }
+\value{
+A tibble of insect observations from the database
+}
 \description{
 obs_from_db Get insect observation data from the database
 }

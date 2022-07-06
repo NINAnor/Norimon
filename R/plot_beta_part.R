@@ -1,12 +1,31 @@
 #' plot_beta_part
 #'
-#' @param input
+#' @param input Tibble or dataframe of betapartition + locality distance from the combine_dist_to_comm_mat function
 #'
-#' @return
+#' @return Returns a plot of the beta diversity partition of the overall diversity
 #' @export
 #'
 #'
 #' @examples
+#'
+#'
+#' #' skog_ost_comm_mat <- community_matrix_from_db(trap_type = "MF",
+#' dataset = "NasIns",
+#' subset_habitat = "Forest",
+#' subset_region = "Østlandet",
+#' as_tibble = T,
+#' transposed_matrix = F
+#' ) %>%
+#'   select(-c(year, locality))
+#'
+#' skog_ost_dist_beta <- combine_dist_to_comm_mat(comm_mat = skog_ost_comm_mat,
+#' region_name = "('Østlandet')",
+#' habitat_type = "Forest")
+#'
+#' plot_beta_part(skog_ost_dist_beta)
+#'
+#'
+
 plot_beta_part <- function(input){
 
   ylims <- c(0, max(input$beta_sim)*1.1)

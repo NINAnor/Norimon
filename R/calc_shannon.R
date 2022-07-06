@@ -1,9 +1,26 @@
-#' Calculate Shannon index on a community
+#' Calculate Shannon index on a community.
 #'
 #' @param community Community.
 #' @return Shannon diversity.
 #' @examples
-#' @Imports dplyr
+#'
+#'
+#' \dontrun{
+#'    beetles_2021 <- obs_from_db(subset_orders = "Coleoptera",
+#'    subset_year = 2021,
+#'    agg_level = "none")
+#'
+#'
+#'   shannon_beetles_2021 <- beetles_2021 %>%
+#'   collect() %>%
+#'   group_by(locality) %>%
+#'   select(locality,
+#'         species_latin) %>%
+#'   summarise(shannon_div = calc_shannon(species_latin))
+#'
+#'
+#' }
+#' @import dplyr
 #'
 
 

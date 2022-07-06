@@ -12,8 +12,23 @@ skogtype_from_db(
 )
 }
 \arguments{
-\item{as_tibble}{}
+\item{limit}{Optional row limit of returned data (for testing )}
+
+\item{dataset}{Dataset to get data from. Defaults to "NasIns"}
+
+\item{stat_grouping}{Group data into either "treslag" or "bonitet"}
+
+\item{as_tibble}{Return as tibble? Boolean}
+}
+\value{
+Returns a tibble of forest data from the database.
 }
 \description{
 skogtype_from_db Get the forest types from a buffer around the sampling localities
+}
+\examples{
+
+skogtype_from_db()
+
+
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/locality_ar5_plot.R
 \name{locality_ar5_plot}
 \alias{locality_ar5_plot}
-\title{locality_ar5_plot}
+\title{locality_ar5_plot Plots a locality's AR5 map.}
 \usage{
 locality_ar5_plot(
   locality,
@@ -14,8 +14,26 @@ locality_ar5_plot(
 )
 }
 \arguments{
+\item{locality}{Name of locality}
+
+\item{ano_circles}{Include 250m^2 ANO circles in plot? Boolean.}
+
+\item{title}{Include title? Boolean.}
+
+\item{legend}{Include legend? Boolean.}
+
+\item{strip}{Strip plot of default ggplot theme?}
+
 \item{...}{}
 }
+\value{
+A plot of a the AR5 layer of a locality
+}
 \description{
-locality_ar5_plot
+locality_ar5_plot Plots a locality's AR5 map.
+}
+\examples{
+
+locality_ar5_plot(locality = "Semi-nat_01")
+
 }

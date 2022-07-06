@@ -1,23 +1,24 @@
 #' weights_from_db Get biomass data from the database
 #'
-#' @param limit
-#' @param trap_type
-#' @param subset_region
-#' @param dataset
-#' @param agg_level
-#' @param as_tibble
+#' @param limit Optional row limit on output (for testing)
+#' @param trap_type Which trap types to fetch data for. "All" (defult), "MF", or "VF".
+#' @param subset_region Optional subset of region. Currently allowing "Østlandet", "Trøndelag", "Sørlandet"
+#' @param dataset Which dataset to fetch data for. Default "NasIns".
+#' @param agg_level Aggregate level of data. "year_locality" (default), "locality_sampling", "total".
+#' @param as_tibble Return as tibble? Boolean
 #'
-#' @return
+#' @return A tibble of sample weights
 #' @export
 #'
 #' @examples
 #'
+#' weights_from_db()
 #'
 #'
 
 weights_from_db <- function(limit = NULL,
                             trap_type = c("ALL", "MF", "VF"),
-                            subset_region = c(NULL, "Østlandet", "Trøndelag"),
+                            subset_region = c(NULL, "Østlandet", "Trøndelag", "Sørlandet"),
                             dataset = c("NasIns"),
                             agg_level = c("year_locality",
                                           "locality_sampling",

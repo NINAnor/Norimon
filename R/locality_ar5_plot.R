@@ -1,16 +1,18 @@
-#' locality_ar5_plot
+#' locality_ar5_plot Plots a locality's AR5 map.
 #'
-#' @param locality
-#' @param ano_circles
-#' @param title
-#' @param legend
-#' @param strip
+#' @param locality Name of locality
+#' @param ano_circles Include 250m^2 ANO circles in plot? Boolean.
+#' @param title Include title? Boolean.
+#' @param legend Include legend? Boolean.
+#' @param strip Strip plot of default ggplot theme?
 #' @param ...
 #'
-#' @return
+#' @return A plot of a the AR5 layer of a locality
 #' @export
 #'
 #' @examples
+#'
+#' locality_ar5_plot(locality = "Semi-nat_01")
 #'
 locality_ar5_plot <- function(locality,
                               ano_circles = T,
@@ -34,18 +36,18 @@ locality_ar5_plot <- function(locality,
                                     "';")
 
 
-  lok_1000m_agg <- read_sf(con,
+  lok_1000m_agg <- sf::read_sf(con,
                            query = nas_ins_lok_1000m_agg_q)
 
 
-  lok <- st_read(con,
+  lok <- sf::st_read(con,
                  layer = Id(schema = "locations",
                             table = "localities"),
                  geometry_column = "geom") %>%
     filter(locality == !!loc_filter)
 
 
-  traps <- st_read(con,
+  traps <- sf::st_read(con,
                    layer = Id(schema = "locations",
                               table = "traps"),
                    geometry_column = "geom") %>%

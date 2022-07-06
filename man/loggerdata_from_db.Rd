@@ -12,8 +12,26 @@ loggerdata_from_db(
 )
 }
 \arguments{
-\item{as_tibble}{}
+\item{limit}{Optional row number limit (for testing)}
+
+\item{dataset}{Which dataset to retreive data from? Default to "NasIns".,}
+
+\item{agg_level}{Aggregation level of data. Character, either "year_locality" (default) or "locality_sampling"}
+
+\item{as_tibble}{Return results as tibble? Boolean.}
+}
+\value{
+Tibble or dataframe of logger data.
 }
 \description{
 logger_data_from_db Get temperature and light logger data from the database
+}
+\examples{
+
+
+locality_sampling_loggerdata <- loggerdata_from_db(dataset = "NasIns",
+                                                  agg_level = "locality_sampling")
+
+
+
 }

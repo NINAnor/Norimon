@@ -1,14 +1,18 @@
 #' skogtype_from_db Get the forest types from a buffer around the sampling localities
 #'
-#' @param limit
-#' @param dataset
-#' @param stat_grouping
-#' @param as_tibble
+#' @param limit Optional row limit of returned data (for testing )
+#' @param dataset Dataset to get data from. Defaults to "NasIns"
+#' @param stat_grouping Group data into either "treslag" or "bonitet"
+#' @param as_tibble Return as tibble? Boolean
 #'
-#' @return
+#' @return Returns a tibble of forest data from the database.
 #' @export
 #'
 #' @examples
+#'
+#' skogtype_from_db()
+#'
+#'
 skogtype_from_db <- function(limit = NULL,
                              dataset = c("NasIns"),
                              stat_grouping = c("treslag", "bonitet"),
