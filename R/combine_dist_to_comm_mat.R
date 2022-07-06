@@ -1,13 +1,32 @@
-#' combine_dist_to_comm_mat
+#' combine_dist_to_comm_mat Partitions diversity components and merges it with distance matrix of localities. This is not pretty, but does the job for a report analysis
 #'
-#' @param comm_mat
-#' @param region_name
-#' @param habitat_type
+#' @param comm_mat Community matrix
+#' @param region_name Region name to subset localities from
+#' @param habitat_type Habitat type to subset localities from
 #'
-#' @return
+#' @return A tibble of beta diversities and distances between localities
 #' @export
 #'
 #' @examples
+#'
+#' \dontrun{
+#'
+#' skog_ost_comm_mat <- community_matrix_from_db(trap_type = "MF",
+#' dataset = "NasIns",
+#' subset_habitat = "Forest",
+#' subset_region = "Østlandet",
+#' as_tibble = T,
+#' transposed_matrix = F
+#' ) %>%
+#'   select(-c(year, locality))
+#'
+#' skog_ost_dist_beta <- combine_dist_to_comm_mat(comm_mat = skog_ost_comm_mat,
+#' region_name = "('Østlandet')",
+#' habitat_type = "Forest")
+#'
+#' plot_beta_part(skog_ost_dist_beta)
+#'
+#' }
 #'
 
 
@@ -47,7 +66,7 @@ combine_dist_to_comm_mat <- function(comm_mat,
   ##Now arrange these together and plot
   #something like this?
 
-  beta_pair <- beta.pair(betapart.core(comm_mat))
+  beta_pair <- beta.pair(betapart::betapart.core(comm_mat))
 
   beta_sim <- as.matrix(beta_pair$beta.sim) %>%
     matrix(.,

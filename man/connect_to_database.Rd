@@ -5,15 +5,26 @@
 \title{connect_to_database}
 \usage{
 connect_to_database(
-  username,
-  password,
+  myusername = username,
+  mypassword = password,
   host = "ninradardata01.nina.no",
   dbname = "insect_monitoring",
   ...
 )
 }
 \arguments{
+\item{myusername}{Username as character. Will look for a variable called username as default.}
+
+\item{mypassword}{Password as character. Will look for a variable called password as default.}
+
+\item{host}{Hostname of database}
+
+\item{dbname}{Database name}
+
 \item{...}{}
+}
+\value{
+A PostgreS connection to a database called "con"
 }
 \description{
 Best practice is to not store your username and password in any scripts. See example for a way to script retrieval of credentials

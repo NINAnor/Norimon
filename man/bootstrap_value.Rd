@@ -6,7 +6,7 @@
 \usage{
 bootstrap_value(
   df,
-  value,
+  value = c(no_species, shannon_div, mean_asv_per_species),
   groups,
   lower_limit = 0.025,
   upper_limit = 0.975,
@@ -16,7 +16,7 @@ bootstrap_value(
 \arguments{
 \item{df}{dataframe (or tibble)}
 
-\item{value}{Column to bootstrap}
+\item{value}{Column to bootstrap, "no_species" (default), "shannon_div", "mean_asv_per_species"}
 
 \item{lower_limit}{Lower limit to confidence intervals, e.g. 0.025 for lower 2.5\%}
 

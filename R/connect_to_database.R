@@ -2,13 +2,13 @@
 #'
 #' Best practice is to not store your username and password in any scripts. See example for a way to script retrieval of credentials
 #'
-#' @param username
-#' @param password
-#' @param host
-#' @param dbname
+#' @param myusername Username as character. Will look for a variable called username as default.
+#' @param mypassword Password as character. Will look for a variable called password as default.
+#' @param host Hostname of database
+#' @param dbname Database name
 #' @param ...
 #'
-#' @return
+#' @return A PostgreS connection to a database called "con"
 #' @export
 #'
 #' @examples
@@ -41,8 +41,8 @@
 #'
 
 
-connect_to_database <- function(username,
-                                password,
+connect_to_database <- function(myusername = username,
+                                mypassword = password,
                                 host = "ninradardata01.nina.no",
                                 dbname = "insect_monitoring",
                                 ...){
@@ -50,8 +50,8 @@ connect_to_database <- function(username,
   tmp <- DBI::dbConnect(RPostgres::Postgres(),
                         host = host,
                         dbname = dbname,
-                        user = username,
-                        password = password,
+                        user = myusername,
+                        password = mypassword,
                         ...)
   assign("con", tmp, .GlobalEnv)
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/chart_correlation.R
 \name{chart_correlation}
 \alias{chart_correlation}
-\title{chart.Correlation2}
+\title{chart_correlation Modified from PerformanceAnalytics::chart.Correlation}
 \usage{
 chart_correlation(
   R,
@@ -13,8 +13,41 @@ chart_correlation(
 )
 }
 \arguments{
-\item{...}{}
+\item{R}{Tibble (or data frame) with values for correlation plot}
+
+\item{histogram}{Plot histogram? Defaults to TRUE}
+
+\item{method}{Correlation method. c("pearson", "kendall", "spearman")}
+
+\item{color}{Color of stars and lines}
+
+\item{...}{additional parameters passed to panel.cor}
+}
+\value{
+A correlation plot.
 }
 \description{
-chart.Correlation2
+chart_correlation Modified from PerformanceAnalytics::chart.Correlation
+}
+\examples{
+
+\dontrun{
+
+locality_sampling_loggerdata <- loggerdata_from_db(dataset = "NasIns",
+agg_level = "locality_sampling")
+
+locality_sampling_loggerdata \%>\%
+select(Temp_MX2301A = avg_values_MX2301A_temperature,
+       Temp_MX2202 = avg_values_MX2202_temperature,
+       RL = avg_values_MX2301A_rh,
+       Lys = avg_values_MX2202_light
+ ) \%>\%
+ filter(Lys >= 100) \%>\%
+   chart_correlation(.,
+ histogram = TRUE,
+ method = "pearson",
+ color = ninaColors()[1])
+
+}
+
 }

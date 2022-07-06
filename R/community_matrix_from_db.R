@@ -15,7 +15,7 @@
 #' @param transposed_matrix Transpose matrix? Boolean.
 #' @param as_tibble Output as tibble? Boolean.
 #'
-#' @return
+#' @return A tibble or dataframe of a community matrix
 #' @export
 #'
 #' @examples

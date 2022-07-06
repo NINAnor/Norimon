@@ -7,9 +7,30 @@ checkCon <- function() {if(!exists("con")){ stop("No connection!")} else{
 }
 
 
+#' Get fylke names for the regions
+#' @noRd
+region_fylke <- function() {
+
+  tibble(region_name = c(rep("Østlandet", 4),
+                                       rep("Sørlandet", 2),
+                                       "Trøndelag",
+                                       rep("Nord-Norge", 2)),
+                       fylke = c("Innlandet",
+                                 "Oslo",
+                                 "Viken",
+                                 "Vestfold og Telemark",
+                                 "Rogaland",
+                                 "Agder",
+                                 "Trøndelag",
+                                 "Nordland",
+                                 "Troms og Finnmark"))
+}
+
+
+
 
 #' Reformat hobo data from the 2301A logger types
-#' @NoRd
+#' @noRd
 longerHobo2301 <- function(inputFile,
                            guess_max = 10000,
                            ...){
@@ -98,7 +119,7 @@ longerHobo2301 <- function(inputFile,
 
 
 #' Reformat hobo data from the 2202 logger types
-#' @NoRd
+#' @noRd
 longerHobo2202 <- function(inputFile,
                            guess_max = 10000){
   rawDat <- read_csv(inputFile,
@@ -160,7 +181,7 @@ longerHobo2202 <- function(inputFile,
 
 
 #' Function to make list of rasters out of many localities. To be used with fasterize
-#' @NoRd
+#' @noRd
 rast_list <- function(input){
 
   landscapes <- input %>%
@@ -198,7 +219,7 @@ rast_list <- function(input){
 
 #' AR5 colors
 #' @import dplyr
-#' @NoRd
+#' @noRd
 ar5_colors <- tibble(arealtype = c("Fulldyrka jord",
                                    "Overflatedyrka jord",
                                    "Innmarksbeite",
@@ -264,7 +285,7 @@ ar5_colors <- tibble(arealtype = c("Fulldyrka jord",
 
 
 #' Treslag scale
-#' @NoRd
+#' @noRd
 treslag_colors <- tibble(treslag = c("Barskog",
                                      "Lauvskog",
                                      "Blandingsskog",
@@ -306,7 +327,7 @@ scale_fill_treslag <- function(...) {
 
 
 #' Bonitet scale
-#' @NoRd
+#' @noRd
 bonitet_colors <- tibble(bonitet = c("Særs høg",
                                      "Høg",
                                      "Middels",

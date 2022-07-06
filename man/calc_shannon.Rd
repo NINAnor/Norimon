@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_shannon.R
 \name{calc_shannon}
 \alias{calc_shannon}
-\title{Calculate Shannon index on a community}
+\title{Calculate Shannon index on a community.}
 \usage{
 calc_shannon(community)
 }
@@ -13,5 +13,24 @@ calc_shannon(community)
 Shannon diversity.
 }
 \description{
-Calculate Shannon index on a community
+Calculate Shannon index on a community.
+}
+\examples{
+
+
+\dontrun{
+   beetles_2021 <- obs_from_db(subset_orders = "Coleoptera",
+   subset_year = 2021,
+   agg_level = "none")
+
+
+  shannon_beetles_2021 <- beetles_2021 \%>\%
+  collect() \%>\%
+  group_by(locality) \%>\%
+  select(locality,
+        species_latin) \%>\%
+  summarise(shannon_div = calc_shannon(species_latin))
+
+
+}
 }

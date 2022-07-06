@@ -2,8 +2,10 @@
 #'
 #' @param region_subset Optional character vector of regions to subset.
 #'
-#' @return
+#' @return An sf-object of the terrestrial landmass of Norway, contingent on region subset.
 #' @export
+#'
+#'
 #'
 #' @examples
 #'
@@ -34,7 +36,7 @@
 get_map <- function(region_subset = NULL){
 
   norway_terr <- sf::read_sf(con,
-                             layer = Id(schema = "backgrounds", table = "norway_terrestrial")) %>%
+                             layer = DBI::Id(schema = "backgrounds", table = "norway_terrestrial")) %>%
     select(fylke = navn)
 
 
@@ -68,7 +70,7 @@ get_map <- function(region_subset = NULL){
     if(!is.null(region_subset)){
 
       norway_terr <- norway_terr %>%
-      filter(region %IN% region_subset)
+      filter(region %in% region_subset)
 
   }
 

@@ -1,13 +1,25 @@
-#' Bootstrap functions for calculating mean and lower and upper bounds
+#' Bootstrap functions for calculating mean and lower and upper bounds. Not usually used.
 #'
 #' @param x Input vector of values to bootstrap
 #' @param limit Confidence limit. e.g. 0.025 for lower 2.5%, and 0.975 for upper 97.5%
 #' @param R Number of bootstrap samples. Default = 999
 #'
-#' @return
+#' @return Returns a vector of bootstrapped values
 #' @export
 #'
 #' @examples
+#'
+#' \dontrun{
+#'
+#' shannon_beetles %>%
+#' group_by(year) %>%
+#'   summarise(boot_mean = boot_mean(shannon_div),
+#'             boot_lower25 = boot_lower(shannon_div),
+#'            boot_upper975 = boot_upper(shannon_div))
+#'
+#' }
+#'
+#'
 
 
 

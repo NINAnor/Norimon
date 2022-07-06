@@ -9,6 +9,9 @@ get_map(region_subset = NULL)
 \arguments{
 \item{region_subset}{Optional character vector of regions to subset.}
 }
+\value{
+An sf-object of the terrestrial landmass of Norway, contingent on region subset.
+}
 \description{
 Get map of terrestrial norway
 }

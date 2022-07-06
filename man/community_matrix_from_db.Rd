@@ -47,6 +47,9 @@ community_matrix_from_db(
 
 \item{as_tibble}{Output as tibble? Boolean.}
 }
+\value{
+A tibble or dataframe of a community matrix
+}
 \description{
 community_matrix_from_db
 }

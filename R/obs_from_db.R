@@ -13,7 +13,7 @@
 #' @param agg_level Aggregation level of data. "year_locality", "region_habitat", "region_habitat_year", "total". Default to year_locality
 #' @param as_tibble Coerce output to class tibble
 #'
-#' @return
+#' @return A tibble of insect observations from the database
 #' @export
 #'
 #' @examples

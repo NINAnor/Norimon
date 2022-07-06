@@ -4,7 +4,7 @@
 \alias{boot_mean}
 \alias{boot_lower}
 \alias{boot_upper}
-\title{Bootstrap functions for calculating mean and lower and upper bounds}
+\title{Bootstrap functions for calculating mean and lower and upper bounds. Not usually used.}
 \usage{
 boot_mean(x, R = 999)
 
@@ -19,6 +19,23 @@ boot_upper(x, limit = 0.975, R = 999)
 
 \item{limit}{Confidence limit. e.g. 0.025 for lower 2.5\%, and 0.975 for upper 97.5\%}
 }
+\value{
+Returns a vector of bootstrapped values
+}
 \description{
-Bootstrap functions for calculating mean and lower and upper bounds
+Bootstrap functions for calculating mean and lower and upper bounds. Not usually used.
+}
+\examples{
+
+\dontrun{
+
+shannon_beetles \%>\%
+group_by(year) \%>\%
+  summarise(boot_mean = boot_mean(shannon_div),
+            boot_lower25 = boot_lower(shannon_div),
+           boot_upper975 = boot_upper(shannon_div))
+
+}
+
+
 }

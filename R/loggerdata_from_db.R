@@ -1,14 +1,18 @@
 #' logger_data_from_db Get temperature and light logger data from the database
 #'
-#' @param limit
-#' @param dataset
-#' @param agg_level
-#' @param as_tibble
+#' @param limit Optional row number limit (for testing)
+#' @param dataset Which dataset to retreive data from? Default to "NasIns".,
+#' @param agg_level Aggregation level of data. Character, either "year_locality" (default) or "locality_sampling"
+#' @param as_tibble Return results as tibble? Boolean.
 #'
-#' @return
+#' @return Tibble or dataframe of logger data.
 #' @export
 #'
 #' @examples
+#'
+#'
+#' locality_sampling_loggerdata <- loggerdata_from_db(dataset = "NasIns",
+#'                                                   agg_level = "locality_sampling")
 #'
 #'
 #'
@@ -75,7 +79,7 @@ loggerdata_from_db <- function(limit = NULL,
     GROUP BY yl.id, l.id, ld.logger_type, ld.data_type
      ")
 
-    yl_data_raw <- dbGetQuery(con,
+    yl_data_raw <- DBI::dbGetQuery(con,
                               yl_query)
 
     yl_data <- yl_data_raw %>%
@@ -134,7 +138,7 @@ loggerdata_from_db <- function(limit = NULL,
 	ORDER BY sampling_name
     ")
 
-    ls_data_raw <- dbGetQuery(con,
+    ls_data_raw <- DBI::dbGetQuery(con,
                               ls_query) %>%
       as_tibble()
 

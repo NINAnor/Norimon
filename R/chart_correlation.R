@@ -1,15 +1,37 @@
-#' chart.Correlation2
+#' chart_correlation Modified from PerformanceAnalytics::chart.Correlation
 #'
-#' @param R
-#' @param histogram
-#' @param method
-#' @param color
-#' @param ...
+#' @param R Tibble (or data frame) with values for correlation plot
+#' @param histogram Plot histogram? Defaults to TRUE
+#' @param method Correlation method. c("pearson", "kendall", "spearman")
+#' @param color Color of stars and lines
+#' @param ... additional parameters passed to panel.cor
 #'
-#' @return
+#' @return A correlation plot.
 #' @export
 #'
 #' @examples
+#'
+#' \dontrun{
+#'
+#' locality_sampling_loggerdata <- loggerdata_from_db(dataset = "NasIns",
+#' agg_level = "locality_sampling")
+#'
+#' locality_sampling_loggerdata %>%
+#' select(Temp_MX2301A = avg_values_MX2301A_temperature,
+#'        Temp_MX2202 = avg_values_MX2202_temperature,
+#'        RL = avg_values_MX2301A_rh,
+#'        Lys = avg_values_MX2202_light
+#'  ) %>%
+#'  filter(Lys >= 100) %>%
+#'    chart_correlation(.,
+#'  histogram = TRUE,
+#'  method = "pearson",
+#'  color = ninaColors()[1])
+#'
+#' }
+#'
+
+
 chart_correlation <- function (R,
                                 histogram = TRUE,
                                 method = c("pearson",
@@ -18,7 +40,7 @@ chart_correlation <- function (R,
                                 color = "red",
                                 ...)
 {
-  x = checkData(R, method = "matrix")
+  x = PerformanceAnalytics::checkData(R, method = "matrix")
   if (missing(method))
     method = method[1]
   cormeth <- method
