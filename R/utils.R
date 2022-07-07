@@ -14,7 +14,8 @@ region_fylke <- function() {
   tibble(region_name = c(rep("Østlandet", 4),
                                        rep("Sørlandet", 2),
                                        "Trøndelag",
-                                       rep("Nord-Norge", 2)),
+                                       rep("Nord-Norge", 2),
+                         rep("Vestlandet", 2)),
                        fylke = c("Innlandet",
                                  "Oslo",
                                  "Viken",
@@ -23,7 +24,9 @@ region_fylke <- function() {
                                  "Agder",
                                  "Trøndelag",
                                  "Nordland",
-                                 "Troms og Finnmark"))
+                                 "Troms og Finnmark",
+                                 "Vestland",
+                                 "Møre og Romsdal"))
 }
 
 

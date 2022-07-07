@@ -51,12 +51,14 @@ map_plot.boot_stat <- function(x,
 
   value_name <- stringr::str_to_sentence(attr(x, "value_name"))
 
-  values_fylke <- df %>%
-    left_join(region_fylke(),
-               by = c("region_name" = "region_name"))
+
 
 
   if(!whole_country){
+
+    values_fylke <- df %>%
+      left_join(region_fylke(),
+                by = c("region_name" = "region_name"))
 
     map_to_get <- df %>%
       select(region_name) %>%
@@ -69,6 +71,23 @@ map_plot.boot_stat <- function(x,
       left_join(values_fylke,
                 by = c("fylke" = "fylke"))
   } else {
+
+    possible_years <- df %>%
+      select(-c(region_name, boot_value, boot_lower25, boot_upper975))
+
+    all_fylkes <- region_fylke() %>%
+      select(region_name)
+
+    all_fylke_years <- crossing(possible_years, all_fylkes)
+
+    suppressMessages({
+
+      values_fylke <- df %>%
+      right_join(all_fylke_years) %>%
+      left_join(region_fylke(),
+                by = c("region_name" = "region_name"))
+    })
+
     map <- get_map()
 
     map <- map %>%
@@ -84,6 +103,11 @@ map_plot.boot_stat <- function(x,
     NinaR::scale_fill_nina(name = value_name,
                            discrete = FALSE,
                            ...)
+
+  if("year" %in% colnames(map)){
+    p <- p +
+      facet_wrap("year")
+    }
 
 
   p
