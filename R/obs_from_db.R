@@ -46,19 +46,18 @@ obs_from_db <- function(id_type = c("metabarcoding"),
                         subset_genus = NULL,
                         subset_species = NULL,
                         subset_year = NULL,
-                        subset_region = c(NULL, "Østlandet", "Trøndelag"),
-                        trap_type = c("All", "MF", "VF"),
+                        subset_region = NULL,
+                        trap_type = "All",
                         limit = NULL,
-                        dataset = c("NasIns"),
-                        agg_level = c("year_locality",
-                                      "locality_sampling",
-                                      "region_habitat",
-                                      "region_habitat_year",
-                                      "total"),
+                        dataset = "NasIns",
+                        agg_level = "year_locality",
                         as_tibble = F){
 
   checkCon()
 
+  if(!is.null(subset_region)){
+  subset_region <- match.arg(subset_region, choices = c("Østlandet", "Trøndelag"))
+  }
 
   id_type <- match.arg(id_type, choices = c("metabarcoding"))
   dataset <- match.arg(dataset, choices = c("NasIns",
