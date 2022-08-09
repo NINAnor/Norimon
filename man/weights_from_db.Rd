@@ -6,7 +6,7 @@
 \usage{
 weights_from_db(
   limit = NULL,
-  trap_type = c("ALL", "MF", "VF"),
+  trap_type = c("MF", "VF", "ALL"),
   subset_region = c(NULL, "Østlandet", "Trøndelag", "Sørlandet"),
   dataset = c("NasIns"),
   agg_level = c("year_locality", "locality_sampling", "total"),

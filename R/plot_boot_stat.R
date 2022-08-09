@@ -1,7 +1,7 @@
 #' Plot a boot_stat object
 #'
 #' @param x boot_stat_object
-#' @param ... additional parameters passed to geom_density_ridges_gradient and scale_fill_nina, e.g. bandwidth and palette
+#' @param ... additional parameters passed to geom_density_ridges_gradient, e.g. bandwidth
 #'
 #' @return A ggridges plot of the bootrapped values in a boot_stat object.
 #' @export
@@ -19,7 +19,9 @@
 #' plot(beetle_shannon_boot)
 #'
 
-plot.boot_stat <- function(x, ...){
+plot.boot_stat <- function(x,
+                           palette = c("blue-orange"),
+                           ...){
 
     if(!any(class(x) == "boot_stat")) stop("Input must be of class 'boot_stat'")
 
@@ -37,8 +39,9 @@ plot.boot_stat <- function(x, ...){
     p <- ggplot(df,
                 aes(x = boot_values, y = year, fill = stat(x))) +
       ggridges::geom_density_ridges_gradient() +
-      scale_fill_nina(name = x_axis_name,
+      NinaR::scale_fill_nina(name = x_axis_name,
                       discrete = F,
+                      palette = palette,
                       ...)  +
       xlab(x_axis_name) +
       ylab(y_axis_name) +
@@ -49,8 +52,9 @@ plot.boot_stat <- function(x, ...){
       p <- ggplot(df,
                   aes(x = boot_values, y = year, fill = stat(x))) +
         ggridges::geom_density_ridges_gradient() +
-        scale_fill_nina(name = x_axis_name,
+        NinaR::scale_fill_nina(name = x_axis_name,
                         discrete = F,
+                        palette = palette,
                         ...) +
         xlab(x_axis_name) +
         ylab(y_axis_name) +

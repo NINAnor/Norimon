@@ -1,6 +1,11 @@
 #' @export
 print.boot_stat <- function(x){
-  print(x[[1]])
+
+  var_name <- sym(attr(x, "value_name"))
+  out <- x[[1]] %>%
+    rename(!!var_name := boot_value)
+
+  print(out)
 }
 
 #' @noRd
@@ -46,6 +51,8 @@ print.boot_stat <- function(x){
   out <- list("bootstrap_summary" = bootstrap_summary,
               "bootstrap_values" = bootstrap_values)
 
+
+  attr(out, "value_name") <- attr(x, "value_name")
 
   class(out) <- c("boot_stat", "list")
 
@@ -101,6 +108,8 @@ print.boot_stat <- function(x){
               "bootstrap_values" = bootstrap_values)
 
 
+  attr(out, "value_name") <- attr(x, "value_name")
+
   class(out) <- c("boot_stat", "list")
 
 
@@ -131,7 +140,7 @@ boot_contrast.boot_stat <- function(x,
 
   bootstrap_summary <- bootstrap_values %>%
     dplyr::group_by(across(!boot_values)) %>%
-    dplyr::summarise(boot_mean = mean(boot_values),
+    dplyr::summarise(boot_value = mean(boot_values),
                      boot_lower25 = dplyr::nth(boot_values, floor(length(boot_values) * 0.025), order_by = boot_values),
                      boot_upper975 = dplyr::nth(boot_values, ceiling(length(boot_values) * 0.975), order_by = boot_values),
                      .groups = "drop")
@@ -140,6 +149,8 @@ boot_contrast.boot_stat <- function(x,
   out <- list("bootstrap_summary" = bootstrap_summary,
               "bootstrap_values" = bootstrap_values)
 
+
+  attr(out, "value_name") <- attr(x, "value_name")
 
   class(out) <- c("boot_stat", "list")
   return(out)

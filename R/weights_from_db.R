@@ -17,7 +17,7 @@
 #'
 
 weights_from_db <- function(limit = NULL,
-                            trap_type = c("ALL", "MF", "VF"),
+                            trap_type = c("MF", "VF", "ALL"),
                             subset_region = c(NULL, "Østlandet", "Trøndelag", "Sørlandet"),
                             dataset = c("NasIns"),
                             agg_level = c("year_locality",
@@ -25,7 +25,7 @@ weights_from_db <- function(limit = NULL,
                                           "total"),
                             as_tibble = F){
 
-  checkCon()
+  Norimon:::checkCon()
 
 
 
@@ -190,6 +190,11 @@ weights_from_db <- function(limit = NULL,
     res <- joined %>%
       head(limit)
   }
+
+
+  res <- res %>%
+    mutate(sum_wet_weight = round(sum_wet_weight, 2),
+           avg_wet_weight = round(avg_wet_weight, 2))
 
   if(as_tibble){
     res <- res %>%

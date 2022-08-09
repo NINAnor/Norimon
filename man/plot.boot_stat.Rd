@@ -4,12 +4,12 @@
 \alias{plot.boot_stat}
 \title{Plot a boot_stat object}
 \usage{
-\method{plot}{boot_stat}(x, ...)
+\method{plot}{boot_stat}(x, palette = c("blue-orange"), ...)
 }
 \arguments{
 \item{x}{boot_stat_object}
 
-\item{...}{additional parameters passed to geom_density_ridges_gradient and scale_fill_nina, e.g. bandwidth and palette}
+\item{...}{additional parameters passed to geom_density_ridges_gradient, e.g. bandwidth}
 }
 \value{
 A ggridges plot of the bootrapped values in a boot_stat object.
