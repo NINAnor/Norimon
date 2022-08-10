@@ -55,10 +55,11 @@ bootstrap_value <- function(df,
 
   bootstrap_summary <- bootstrap_values %>%
     group_by_at(groupings) %>%
-      summarise(boot_value= mean(boot_values),
-              boot_lower25 = nth(boot_values, floor(R * 0.025), order_by = boot_values),
-              boot_upper975 = nth(boot_values, ceiling(R * 0.975), order_by = boot_values),
-              .groups = "drop")
+      summarise(boot_value = mean(boot_values),
+                boot_sd = sd(boot_values),
+                boot_lower25 = nth(boot_values, floor(R * 0.025), order_by = boot_values),
+                boot_upper975 = nth(boot_values, ceiling(R * 0.975), order_by = boot_values),
+                .groups = "drop")
 
 
 

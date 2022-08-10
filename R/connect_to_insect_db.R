@@ -1,4 +1,4 @@
-#' connect_to_database
+#' connect_to_insect_db
 #'
 #' Best practice is to not store your username and password in any scripts. See example for a way to script retrieval of credentials
 #'
@@ -20,7 +20,7 @@
 #'
 #'   source("~/.rpgpass")
 #'
-#'   connect_to_database(
+#'   connect_to_insect_db(
 #'      username = username,
 #'      password = password
 #'   )
@@ -31,7 +31,7 @@
 #'
 #' Connect to another database
 #'
-#' connect_to_database(
+#' connect_to_insect_db(
 #'   username = "postgjest",
 #'   password = "gjestpost",,
 #'   host = "gisdata-db.nina.no",
@@ -41,7 +41,7 @@
 #'
 
 
-connect_to_database <- function(myusername = username,
+connect_to_insect_db <- function(myusername = username,
                                 mypassword = password,
                                 host = "ninradardata01.nina.no",
                                 dbname = "insect_monitoring",

@@ -7,10 +7,12 @@
 #' @param subset_species Optional subset of species
 #' @param subset_year Optional subset of year
 #' @param subset_region Optional subset of region
+#' @param subset_habitat Optional subset of habitat type ("Forest" or "Semi-nat")
 #' @param trap_type Optional subset of trap type
 #' @param limit Optional limit the output to number of rows (for testing)
 #' @param dataset Choose the dataset to fetch data from. Default "NasIns" for national insect monitoring data
 #' @param agg_level Aggregation level of data. "year_locality", "region_habitat", "region_habitat_year", "total". Default to year_locality
+#' @param digits Number of digits to round shannon diversity and mean ASV counts to. (defaults to 2)
 #' @param as_tibble Coerce output to class tibble
 #'
 #' @return A tibble of insect observations from the database
@@ -47,16 +49,22 @@ obs_from_db <- function(id_type = c("metabarcoding"),
                         subset_species = NULL,
                         subset_year = NULL,
                         subset_region = NULL,
+                        subset_habitat = NULL,
                         trap_type = "All",
                         limit = NULL,
                         dataset = "NasIns",
                         agg_level = "year_locality",
+                        digits = 2,
                         as_tibble = F){
 
   checkCon()
 
   if(!is.null(subset_region)){
   subset_region <- match.arg(subset_region, choices = c("Østlandet", "Trøndelag"))
+  }
+
+  if(!is.null(subset_habitat)){
+    subset_habitat <- match.arg(subset_habitat, choices = c("Forest", "Semi-nat"))
   }
 
   id_type <- match.arg(id_type, choices = c("metabarcoding"))
@@ -139,6 +147,13 @@ obs_from_db <- function(id_type = c("metabarcoding"),
       filter(region_name %IN% subset_region)
   }
 
+  #Filter on region name
+  if(!is.null(subset_habitat)){
+    subset_habitat <- c("", subset_habitat)
+    joined <- joined %>%
+      filter(habitat_type %IN% subset_habitat)
+  }
+
   if(!is.null(subset_orders)){
     subset_orders <- c("", subset_orders) #To allow one-length subsets
     joined <- joined %>%
@@ -199,8 +214,8 @@ obs_from_db <- function(id_type = c("metabarcoding"),
       summarise(no_asv_per_species = n_distinct(sequence_id)) %>%
       group_by(year_locality_id, locality_id) %>%
       summarise(no_species = n_distinct(species_latin_fixed),
-                shannon_div = calc_shannon(species_latin_fixed),
-                mean_asv_per_species = mean(no_asv_per_species)) %>%
+                shannon_div = round(calc_shannon(species_latin_fixed), digits),
+                mean_asv_per_species = round(mean(no_asv_per_species), digits)) %>%
       left_join(localities,
                 by = c("locality_id" = "id"),
                 copy = T) %>%
@@ -235,8 +250,8 @@ obs_from_db <- function(id_type = c("metabarcoding"),
       group_by(sampling_name, year_locality_id, locality_id) %>%
       summarise(no_trap_days = mean(as.numeric(end_date_obs - start_date_obs)), ##to get the mean trap days from all traps within the sampling event (should be the same for all traps)
                 no_species = n_distinct(species_latin_fixed),
-                shannon_div = calc_shannon(species_latin_fixed),
-                mean_asv_per_species = mean(no_asv_per_species)) %>%
+                shannon_div = round(calc_shannon(species_latin_fixed), digits),
+                mean_asv_per_species = round(mean(no_asv_per_species), digits)) %>%
       left_join(localities,
                 by = c("locality_id" = "id"),
                 copy = T) %>%
@@ -272,8 +287,8 @@ obs_from_db <- function(id_type = c("metabarcoding"),
       group_by(region_name,
                habitat_type) %>%
       summarise(no_species = n_distinct(species_latin_fixed),
-                shannon_div = calc_shannon(species_latin_fixed),
-                mean_asv_per_species = mean(no_asv_per_species)) %>%
+                shannon_div = round(calc_shannon(species_latin_fixed), digits),
+                mean_asv_per_species = round(mean(no_asv_per_species), digits)) %>%
       ungroup() %>%
       select(habitat_type,
              region_name,
@@ -299,8 +314,8 @@ obs_from_db <- function(id_type = c("metabarcoding"),
                habitat_type,
                year) %>%
       summarise(no_species = n_distinct(species_latin_fixed),
-                shannon_div = calc_shannon(species_latin_fixed),
-                mean_asv_per_species = mean(no_asv_per_species)) %>%
+                shannon_div = round(calc_shannon(species_latin_fixed), digits),
+                mean_asv_per_species = round(mean(no_asv_per_species), digits)) %>%
       ungroup() %>%
       select(year,
              habitat_type,
@@ -322,8 +337,8 @@ obs_from_db <- function(id_type = c("metabarcoding"),
       group_by(species_latin_fixed) %>%
       summarise(no_asv_per_species = n_distinct(sequence_id)) %>%
       summarise(no_species = n_distinct(species_latin_fixed),
-                shannon_div = calc_shannon(species_latin_fixed),
-                mean_asv_per_species = mean(no_asv_per_species)) %>%
+                shannon_div = round(calc_shannon(species_latin_fixed), digits),
+                mean_asv_per_species = round(mean(no_asv_per_species), digits)) %>%
       ungroup() %>%
       select(no_species,
              shannon_div,

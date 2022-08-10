@@ -12,10 +12,12 @@ obs_from_db(
   subset_species = NULL,
   subset_year = NULL,
   subset_region = NULL,
+  subset_habitat = NULL,
   trap_type = "All",
   limit = NULL,
   dataset = "NasIns",
   agg_level = "year_locality",
+  digits = 2,
   as_tibble = F
 )
 }
@@ -34,6 +36,8 @@ obs_from_db(
 
 \item{subset_region}{Optional subset of region}
 
+\item{subset_habitat}{Optional subset of habitat type ("Forest" or "Semi-nat")}
+
 \item{trap_type}{Optional subset of trap type}
 
 \item{limit}{Optional limit the output to number of rows (for testing)}
@@ -41,6 +45,8 @@ obs_from_db(
 \item{dataset}{Choose the dataset to fetch data from. Default "NasIns" for national insect monitoring data}
 
 \item{agg_level}{Aggregation level of data. "year_locality", "region_habitat", "region_habitat_year", "total". Default to year_locality}
+
+\item{digits}{Number of digits to round shannon diversity and mean ASV counts to. (defaults to 2)}
 
 \item{as_tibble}{Coerce output to class tibble}
 }

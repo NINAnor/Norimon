@@ -42,9 +42,11 @@ map_plot <- function(x, ...){
 #' @export
 map_plot.boot_stat <- function(x,
                                whole_country = FALSE,
+                               alpha_from_sd = FALSE,
+                               alpha_range = c(0.3, 0.9),
                                ...){
 
-
+  checkCon()
 
   df <- x[[1]] %>%
     as_tibble()
@@ -97,12 +99,26 @@ map_plot.boot_stat <- function(x,
   }
 
 
+  if(alpha_from_sd){
+    p <- map %>%
+      ggplot(.) +
+      geom_sf(aes(fill = boot_value,
+                  alpha = 1/boot_sd)) +
+      NinaR::scale_fill_nina(name = value_name,
+                             discrete = FALSE,
+                             ...) +
+      scale_alpha(range = alpha_range,
+                  guide = "none")
+
+  } else {
+
   p <- map %>%
     ggplot(.) +
     geom_sf(aes(fill = boot_value)) +
     NinaR::scale_fill_nina(name = value_name,
                            discrete = FALSE,
                            ...)
+  }
 
   if("year" %in% colnames(map)){
     p <- p +
