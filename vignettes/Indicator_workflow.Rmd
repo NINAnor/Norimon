@@ -1,5 +1,5 @@
 ---
-title: "Indicator_workflow"
+title: "Indicator workflow of data from the national insect monitoring program"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Indicator_workflow}
@@ -27,7 +27,7 @@ suppressPackageStartupMessages(library(kableExtra))
 
 
 # Introduction
-I will here introduce some functions that can be used to produce insect indicators from the Norimon package. Their use isn't limited to indicators, essentially they are meant to be of general use, to fetch and plot quantities from the insect monitoring program. 
+The Norimon package is a collection of analysis functions for working with the data from the national insect monitoring program in Norway. I will here introduce some functions that can be used to produce insect indicators from this package. Their use isn't limited to indicators, essentially they are meant to be of general use, for fetching and plotting quantities from the insect monitoring program. 
 
 Note that this functionality is still under development. More functions will be added, and there is need for some bugfixes and changes.
 
@@ -36,14 +36,20 @@ These functions are built upon a general idea of how to produce indicators. Alth
 
 **Main steps of workflow:**
 
-1. Fetch observations of specific species or higher taxa from a centralized database (or GBIF)
+1. Fetch observations of biomass or specific species or higher taxa from a centralized database (or GBIF)
 2. Bootstrap observations and calculate mean and uncertainty of point estimate
 3. Compare observations to a reference point
 4. Display and plot the results
 
-Most of the ecology comes into step 1, in choosing what data to use to describe a quality. This can be a custom selection of species, or a set of higher taxa. The goal is to choose a set of taxa that represent specific qualities of the community. These qualities will indicate the ecological quality of the ecosystem. We can also decide on the level of aggregation, e.g. if we should aggregate the data on the region scale, locality scale, or even the individual sample occation scale. Ecology also comes into step 3, comparing the values to a reference state. Here we have several options. We could for example use a single defined value as the reference state. But we can also use a point in time as a reference point (e.g. the start of a time series).
+Most of the ecology comes into step 1, in choosing what data to use to describe a quality. This can be a custom selection of species, or a set of higher taxa such as specific genuses, families or an order. The goal is to choose a set of taxa that represent specific qualities of the community that can indicate the ecological status of the ecosystem. In addition to the selection of taxa, we have to decide on the level of aggregation, e.g. if we should aggregate the data on the region scale, locality scale, or even the individual sample occasion scale. 
 
-[Insert conceptual image?]
+The second step is used to get an estimate of the uncertainty of the data. This routine is in principle flexible, as we could bootstrap the samples on different sampling levels (samples within localities, regions within country). Typically, we will work on the year locality scale, meaning that we fetch summary data on the observations from a location throughout a whole season. These data will typically be bootstrapped and summarized to regional values, for example expressing the mean values with uncertainty insect biomass in Trøndelag in 2021.
+
+Ecological knowledge also comes into step 3, comparing the values to a reference state. Here we have several options. We could for example use a single defined value as the reference state. But we can also use a point in time as a reference point (e.g. the start of a time series).
+
+Put together, this framework is meant to facilitate the calculation of a broad set of insect indicators, based on the combination of choices in data to fetch, aggregation level, and reference comparison. 
+
+[Insert conceptual image of workflow]
 
 
 # Showcase of functionality
@@ -260,7 +266,7 @@ map_plot(palette = "orange-green",
 We can produce a potentially large set of indicators using this generalized workflow, depending on what taxa, habitat type, measurement, and refererence point we choose. These choices must be chosen carefully and evaluated. For now, we show a lists some potential indicators and the required commands to produce them.
 
 
-```{r}
+```{r, echo = F}
 ind_tab <- tibble("Indicator" = c("Total biomass",
                                   "Total species richness",
                                   "Number of saproxylic beetles in forest sites",
@@ -287,18 +293,22 @@ ind_tab <- tibble("Indicator" = c("Total biomass",
                                                "bootstap_value(shannon_div)"),
                   "Referencing" = c("boot_contrast()",
                                     "boot_contrast()",
-                                    "- expert opinion reference point",
-                                    "- expert opinion reference point"))
+                                    "subtract expert opinion reference point",
+                                    "subtract expert opinion reference point"))
 
 ```
 
-```{r}
+```{r, echo = F}
 ind_tab %>% 
   kbl() %>% 
   kable_styling()
 ```
 
 ## Shannon diversity of pollinators as an example
+As an example, we can work through the calculation of a hypothetical indicator of the shannon diversity of insect pollinators on the regional level. 
+
+### Data fetching
+We begin with fetching the observational data.
 
 ```{r}
 pollinators_fam <- get_pollinators() %>% 
@@ -319,6 +329,7 @@ poll_year_locality %>%
   kable_styling()
 ```
 
+## Bootstrapping
 
 ```{r}
 poll_shannon_boot <- bootstrap_value(poll_year_locality,
@@ -330,16 +341,36 @@ poll_shannon_boot <- bootstrap_value(poll_year_locality,
 
 ```
 
-Let's say that we have an expert opinion based reference value of the Shannon diversity of pollinators of 4. We can then subtract this value to get the difference, and thus the relative value.
+```{r, results = "hide"}
+poll_shannon_boot %>%
+  print() %>% 
+  kbl() %>% 
+  kable_styling()
+```
+
+
+
+### Comparing to a reference state
+For simplicity, let's say that we have an expert opinion based reference value of the Shannon diversity, and that has the value of 4. We can then simply subtract this value to get the difference, and thus the relative value.
 
 ```{r}
 poll_shannon_boot_diff <- poll_shannon_boot - 4
+```
+
+## Displaying and plotting the indicator values
+
+```{r, results = "hide"}
+poll_shannon_boot_diff %>% 
+  print() %>% 
+  kbl() %>% 
+  kable_styling()
 ```
 
 ```{r}
 plot(poll_shannon_boot_diff)
 ```
 
+In the map plot, we can show the uncertainty in the estimate as level of transparancy, (in development).
 
 ```{r}
 poll_shannon_boot_diff %>% 
@@ -354,6 +385,7 @@ This is still early work, although the basic framework is in place.
 For example, we should also implement this:
 
 * What to do with scaling?
+* Fix number of digits in print function of boot_stat objects
 * Subsetting functions for map plots (show e.g. only a selected year)
 * Plotting uncertainty on maps (perhaps simply allowing to choose a lower or upper bound?)
 * Ability to subtract list of reference states. Joining on all levels except year and subtracting?
