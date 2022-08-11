@@ -390,6 +390,7 @@ For example, we should also implement this:
 * Plotting uncertainty on maps (perhaps simply allowing to choose a lower or upper bound?)
 * Ability to subtract list of reference states. Joining on all levels except year and subtracting?
 * Add vertical line at 0 option for plot.boot_stat function (for visualizing difference from 0)
+* Add simpler time-series plotting function.
 
 
 
