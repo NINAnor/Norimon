@@ -24,8 +24,8 @@ print.boot_stat <- function(x){
     dplyr::group_by(across(!boot_values)) %>%
     dplyr::summarise(boot_value = mean(boot_values),
                      boot_sd = sd(boot_values),
-                     boot_lower25 = dplyr::nth(boot_values, floor(length(boot_values) * 0.025), order_by = boot_values),
-                     boot_upper975 = dplyr::nth(boot_values, ceiling(length(boot_values) * 0.975), order_by = boot_values),
+                     boot_lower2.5 = dplyr::nth(boot_values, floor(length(boot_values) * 0.025), order_by = boot_values),
+                     boot_upper97.5 = dplyr::nth(boot_values, ceiling(length(boot_values) * 0.975), order_by = boot_values),
                      .groups = "drop")
 
   } else
@@ -41,8 +41,8 @@ print.boot_stat <- function(x){
       dplyr::group_by(across(!boot_values)) %>%
       dplyr::summarise(boot_value = mean(boot_values),
                        boot_sd = sd(boot_values),
-                       boot_lower25 = dplyr::nth(boot_values, floor(length(boot_values) * 0.025), order_by = boot_values),
-                       boot_upper975 = dplyr::nth(boot_values, ceiling(length(boot_values) * 0.975), order_by = boot_values),
+                       boot_lower2.5 = dplyr::nth(boot_values, floor(length(boot_values) * 0.025), order_by = boot_values),
+                       boot_upper97.5 = dplyr::nth(boot_values, ceiling(length(boot_values) * 0.975), order_by = boot_values),
                        .groups = "drop")
 
 
@@ -82,8 +82,8 @@ print.boot_stat <- function(x){
       dplyr::group_by(across(!boot_values)) %>%
       dplyr::summarise(boot_value = mean(boot_values),
                        boot_sd = sd(boot_values),
-                       boot_lower25 = dplyr::nth(boot_values, floor(length(boot_values) * 0.025), order_by = boot_values),
-                       boot_upper975 = dplyr::nth(boot_values, ceiling(length(boot_values) * 0.975), order_by = boot_values),
+                       boot_lower2.5 = dplyr::nth(boot_values, floor(length(boot_values) * 0.025), order_by = boot_values),
+                       boot_upper97.5 = dplyr::nth(boot_values, ceiling(length(boot_values) * 0.975), order_by = boot_values),
                        .groups = "drop")
 
   } else
@@ -99,8 +99,8 @@ print.boot_stat <- function(x){
         dplyr::group_by(across(!boot_values)) %>%
         dplyr::summarise(boot_value = mean(boot_values),
                          boot_sd = sd(boot_values),
-                         boot_lower25 = dplyr::nth(boot_values, floor(length(boot_values) * 0.025), order_by = boot_values),
-                         boot_upper975 = dplyr::nth(boot_values, ceiling(length(boot_values) * 0.975), order_by = boot_values),
+                         boot_lower2.5 = dplyr::nth(boot_values, floor(length(boot_values) * 0.025), order_by = boot_values),
+                         boot_upper97.5 = dplyr::nth(boot_values, ceiling(length(boot_values) * 0.975), order_by = boot_values),
                          .groups = "drop")
 
 
@@ -146,8 +146,8 @@ boot_contrast.boot_stat <- function(x,
     dplyr::group_by(across(!boot_values)) %>%
     dplyr::summarise(boot_value = mean(boot_values),
                      boot_sd = sd(boot_values),
-                     boot_lower25 = dplyr::nth(boot_values, floor(length(boot_values) * 0.025), order_by = boot_values),
-                     boot_upper975 = dplyr::nth(boot_values, ceiling(length(boot_values) * 0.975), order_by = boot_values),
+                     boot_lower2.5 = dplyr::nth(boot_values, floor(length(boot_values) * 0.025), order_by = boot_values),
+                     boot_upper97.5 = dplyr::nth(boot_values, ceiling(length(boot_values) * 0.975), order_by = boot_values),
                      .groups = "drop")
 
 

@@ -23,6 +23,9 @@ library(Norimon)
 suppressPackageStartupMessages(library(tidyverse))
 library(ggplot2)
 suppressPackageStartupMessages(library(kableExtra))
+library(tmap)
+library(sf)
+library(DBI)
 ```
 
 
@@ -49,7 +52,10 @@ Ecological knowledge also comes into step 3, comparing the values to a reference
 
 Put together, this framework is meant to facilitate the calculation of a broad set of insect indicators, based on the combination of choices in data to fetch, aggregation level, and reference comparison. 
 
-[Insert conceptual image of workflow]
+```{r,  out.width = '80pt', dev='png', echo=F}
+knitr::include_graphics("images/flow_chart.png")
+
+```
 
 
 # Showcase of functionality
@@ -142,6 +148,34 @@ year_locality_weights %>%
 Typically, we will have our observations aggregated to the year_locality-scale, i.e. we sum all the catches for a single locality in a year. These localities are (hopefully) random samples of a larger population. They represent for example a habitat type in a region a particular year. To get the sampling uncertainty for this representation, we can bootstrap the values by this prosess: we choose a random set of localities within a year and region (with replacement) and calculate the average values. Repeat this process a large number of times, and you have a bootstrap sample of values that can be used to express the uncertainty in the dataset.
 
 This is implemented in the function `bootstrap_value()`. This function takes an observational or weight dataset as its first input. It also needs to know what value in that dataset to bootstrap, and what if any grouping structure to aggregate the results on. For example, bootstrapping the number of beetle species, and aggregating the results on the year and regional scale.
+
+
+
+```{r, echo = F}
+lok_2020 <- read_sf(con,
+                            query = 
+                               "SELECT *
+                               FROM locations.localities l,
+                               events.year_locality yl
+                               WHERE yl.locality_id = l.id
+                               AND yl.year = 2020
+                               AND l.region_name = 'Østlandet'"
+                               
+                               )
+      
+    ost_reg <- get_map(region_subset = "Østlandet")
+```
+
+
+```{r, echo = F}
+tm_shape(ost_reg) +
+  tm_polygons("fylke") +
+  tm_shape(lok_2020) +
+  tm_symbols(col = "red",
+             shape = 22)
+
+```
+
 
 ```{r}
 
@@ -384,13 +418,15 @@ This is still early work, although the basic framework is in place.
 
 For example, we should also implement this:
 
-* What to do with scaling?
+* What to do with scaling? (see Anders K's examples)
 * Fix number of digits in print function of boot_stat objects
 * Subsetting functions for map plots (show e.g. only a selected year)
 * Plotting uncertainty on maps (perhaps simply allowing to choose a lower or upper bound?)
 * Ability to subtract list of reference states. Joining on all levels except year and subtracting?
 * Add vertical line at 0 option for plot.boot_stat function (for visualizing difference from 0)
 * Add simpler time-series plotting function.
+* Add filter functions to boot_stat objects (for easier plotting of specific strata)
+* Add time filter on obs_from_db, to get comparable time windows (but for phenology variation)
 
 
 

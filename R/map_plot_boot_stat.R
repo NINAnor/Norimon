@@ -49,7 +49,7 @@ map_plot.boot_stat <- function(x,
   checkCon()
 
   df <- x[[1]] %>%
-    as_tibble()
+    tidyr::as_tibble()
 
   value_name <- stringr::str_to_sentence(attr(x, "value_name"))
 
@@ -59,7 +59,7 @@ map_plot.boot_stat <- function(x,
   if(!whole_country){
 
     values_fylke <- df %>%
-      left_join(region_fylke(),
+      left_join(Norimon:::region_fylke(),
                 by = c("region_name" = "region_name"))
 
     map_to_get <- df %>%
@@ -75,9 +75,9 @@ map_plot.boot_stat <- function(x,
   } else {
 
     possible_years <- df %>%
-      select(-c(region_name, boot_value, boot_lower25, boot_upper975))
+      select(-c(region_name, boot_value, boot_sd, boot_lower2.5, boot_upper97.5))
 
-    all_fylkes <- region_fylke() %>%
+    all_fylkes <- Norimon:::region_fylke() %>%
       select(region_name)
 
     all_fylke_years <- crossing(possible_years, all_fylkes)
@@ -86,7 +86,7 @@ map_plot.boot_stat <- function(x,
 
       values_fylke <- df %>%
       right_join(all_fylke_years) %>%
-      left_join(region_fylke(),
+      left_join(Norimon:::region_fylke(),
                 by = c("region_name" = "region_name"))
     })
 
