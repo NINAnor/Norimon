@@ -6,7 +6,7 @@
 #' @param mypassword Password as character. Will look for a variable called password as default.
 #' @param host Hostname of database
 #' @param dbname Database name
-#' @param ...
+#' @param ... additional parameter to DBI:dbConnect, such as username and password, if not provided in ~/.pgpass
 #'
 #' @return A PostgreS connection to a database called "con"
 #' @export
@@ -41,18 +41,15 @@
 #'
 
 
-connect_to_insect_db <- function(myusername = username,
-                                mypassword = password,
-                                host = "ninradardata01.nina.no",
-                                dbname = "insect_monitoring",
+connect_to_insect_db <- function(host = "ninradardata01.nina.no",
+                                 dbname = "insect_monitoring",
                                 ...){
 
   tmp <- DBI::dbConnect(RPostgres::Postgres(),
                         host = host,
                         dbname = dbname,
-                        user = myusername,
-                        password = mypassword,
                         ...)
+
   assign("con", tmp, .GlobalEnv)
 
 }

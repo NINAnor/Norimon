@@ -5,23 +5,21 @@
 \title{connect_to_insect_db}
 \usage{
 connect_to_insect_db(
-  myusername = username,
-  mypassword = password,
   host = "ninradardata01.nina.no",
   dbname = "insect_monitoring",
   ...
 )
 }
 \arguments{
-\item{myusername}{Username as character. Will look for a variable called username as default.}
-
-\item{mypassword}{Password as character. Will look for a variable called password as default.}
-
 \item{host}{Hostname of database}
 
 \item{dbname}{Database name}
 
-\item{...}{}
+\item{...}{additional parameter to DBI:dbConnect, such as username and password, if not provided in ~/.pgpass}
+
+\item{myusername}{Username as character. Will look for a variable called username as default.}
+
+\item{mypassword}{Password as character. Will look for a variable called password as default.}
 }
 \value{
 A PostgreS connection to a database called "con"
