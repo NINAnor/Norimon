@@ -46,41 +46,75 @@ plot_climate_comparison <- function(climate_data = NULL,
   #Preliminaries
   ##define some functions to avoid no non-missing errors
 
+  if(focus_year <= 1990 & clip_to_1990){ stop("Can't clip to 1990 if focus_year < 1990")}
+
+
   my_min <- function(x, ...) {if (length(x)>0) min(x, ...) else Inf}
   my_max <- function(x, ...) {if (length(x)>0) max(x, ...) else Inf}
   my_mean <- function(x, ...) {if (length(x)>0) mean(x, ...) else Inf}
 
-  variable <- match.arg(variable, c("temperature",
-                                    "precipitation",
-                                    "snow_depth")
-                        )
-
-  legend_variable <- switch(variable,
-                            temperature = "temperatur",
-                            precipitation = "nedbør",
-                            snow_depth = "snødybde"
-  )
 
   language <- match.arg(language,
                         c("Norwegian",
                           "English")
   )
 
+
+  text_table <- list("Norwegian" = c("s vær i ",
+                                     "Data representer gjennomsnittlig ",
+                                     ".\nReferansedata strekker seg fra ",
+                                     " dager med høyere",
+                                     "verdier enn referansedata",
+                                     " dager med lavere",
+                                     "verdier enn referansedata",
+                                     "Historisk maksimum",
+                                     "Historisk minimum",
+                                     "95% konfidanse"),
+                     "English" = c("'s weather in ",
+                                   "Data represents average ",
+                                   ".\nReference data beginning from ",
+                                   " days with higher",
+                                   "values than reference data",
+                                   " days with lower",
+                                   "values han reference data",
+                                   "Historical max",
+                                   "Historical low",
+                                   "95% confidence"))
+
+  variable <- match.arg(variable, c("temperature",
+                                    "precipitation",
+                                    "snow_depth")
+                        )
+  legend_variable <- variable
+
+  legend_table <- list("Norwegian" = list(temperature = "temperatur",
+                                           precipitation = "nedbør",
+                                           snow_depth = "snødybde"),
+                          "English" = list(temperature = "temperature",
+                                           precipitation = "precipitation",
+                                           snow_depth = "snow depth")
+
+  )
+
+
+  old_LC_TIME <- Sys.getlocale(category = "LC_TIME")
+  if(language == "Norwegian") Sys.setlocale("LC_TIME", "nb_NO.UTF-8")
+
   if(language == "Norwegian"){
-    month_lab <- c("januari",
-               "februar",
-               "mars",
-               "april",
+    month_lab <- c("jan.",
+               "febr.",
+               "mar.",
+               "apr.",
                "mai",
-               "juni",
-               "juli",
-               "august",
-               "september",
-               "oktober",
-               "november",
-               "desember"
+               "jun.",
+               "jul.",
+               "aug.",
+               "sept.",
+               "okt.",
+               "nov.",
+               "des."
     )
-  } else {month_lab <- month.name}
+  } else {month_lab <- month.abb}
 
   variable <- switch(variable,
          temperature = sym("daily_mean_temp"),
@@ -122,8 +156,8 @@ plot_climate_comparison <- function(climate_data = NULL,
            lower = min(!!variable, na.rm = TRUE), # identify min value for each day
            avg = mean(!!variable, na.rm = TRUE),  # calculate mean value for each day
            se = sd(!!variable, na.rm = TRUE)/sqrt(length(!!variable))) %>%  # calculate standard error of mean
-    mutate(avg_upper = avg+(2.101*se),  # calculate 95% CI for mean
-           avg_lower = avg-(2.101*se)) %>%  # calculate 95% CI for mean
+    mutate(avg_upper = avg + (qt(1-.05/2, nrow(.)) * se),  # calculate 95% CI for mean (get the appropriate t-value for the number of observations)
+           avg_lower = avg - (qt(1-.05/2, nrow(.)) * se)) %>%  # calculate 95% CI for mean
     ungroup()
 
   first_date <- past %>%
@@ -141,7 +175,8 @@ plot_climate_comparison <- function(climate_data = NULL,
   present_lows <- present %>%
     left_join(past_lows,
               by = c("new_day" = "new_day")) %>%
-    filter(!!variable < past_low)
+    filter(!!variable < past_low) %>%
+    arrange(date)
 
   past_highs <- past %>%
     group_by(new_day) %>%
@@ -154,11 +189,11 @@ plot_climate_comparison <- function(climate_data = NULL,
 
 
 
-# dgr_fmt <- function(x, ...) {
-#   parse(text = paste(x, "*degree", sep = ""))
-# }
-#
-# a <- dgr_fmt(seq(-30, y_high_limit, by = 10))
+dgr_fmt <- function(x, ...) {
+  parse(text = paste(x, "*degree", sep = ""))
+}
+
+a <- dgr_fmt(seq(-30, y_high_limit, by = 10))
 
 
 #Build the plot, add daily min and max
@@ -251,19 +286,20 @@ p <- p +
   annotate("segment", x = high_annot_coord[[1]], xend = high_annot_coord[[1]] + 10,
            y = high_annot_coord[[2]], yend = high_annot_coord[[2]] + 5, colour = "firebrick3") +
   annotate("text", x = high_annot_coord[[1]] + 12, y = high_annot_coord[[2]] + 4 ,
-           label = paste0("Det var ", no_high_days, " dager med høyere"), size = 3,
+           label = paste0(no_high_days, text_table[[language]][4]), size = 3,
            colour = "firebrick3",
            hjust = 0,
            vjust = 0) +
   annotate("text", x = high_annot_coord[[1]] + 12, y = high_annot_coord[[2]] + 2,
-           label = "verdier en tidligere år", size = 3, colour = "firebrick3",
+           label = text_table[[language]][5], size = 3, colour = "firebrick3",
            hjust = 0,
            vjust = 0)
 
 
 
 low_annot_coord <- present_lows %>%
-  filter(!!variable == suppressWarnings(min(!!variable, na.rm = TRUE))) %>%
+  #filter(!!variable == suppressWarnings(min(!!variable, na.rm = TRUE))) %>%
+  slice(1) %>%
   select(new_day,
          !!variable) %>%
   as.vector()
@@ -274,23 +310,23 @@ p <- p +
   annotate("segment", x = low_annot_coord[[1]], xend = low_annot_coord[[1]] + 10,
            y = low_annot_coord[[2]], yend = low_annot_coord[[2]] - 5, colour = "blue3") +
   annotate("text", x = low_annot_coord[[1]] + 12, y = low_annot_coord[[2]] - 4 ,
-           label = paste0("Det var ", no_low_days, " dager med lavere"), size = 3,
+           label = paste0(no_low_days, text_table[[language]][6]), size = 3,
            colour = "blue3",
            hjust = 0,
            vjust = 0) +
   annotate("text", x = low_annot_coord[[1]] + 12, y = low_annot_coord[[2]] - 6,
-           label = "verdier en tidligere år", size = 3, colour = "blue3",
+           label = text_table[[language]][7], size = 3, colour = "blue3",
            hjust = 0,
            vjust = 0)
 
 
 p <- p +
-  ggtitle(paste(placename, "s vær i ", focus_year, sep = "")) +
+  ggtitle(paste(placename, text_table[[language]][1], focus_year, sep = "")) +
   theme(plot.title=element_text(face = "bold", hjust = .012, vjust = .8, colour = "#3C3C3C", size = 20)) +
   annotate("text",
            x = 14,
            y = y_high_limit - 5,
-           label = stringr::str_to_sentence(legend_variable),
+           label = stringr::str_to_sentence(legend_table[[language]][[legend_variable]]),
            size = 4,
            fontface = "bold",
            hjust = 0)
@@ -300,8 +336,8 @@ p <- p +
   annotate("text",
            x = 14,
            y = y_high_limit - 15,
-           label = paste0("Data representer gjennomsnittlig ", legend_variable,
-                          ".\nData strekker seg fra ",
+           label = paste0(text_table[[language]][2], legend_table[[language]][[legend_variable]],
+                          text_table[[language]][3],
                           first_date, "."),
            size = 3,
            colour="gray30",
@@ -312,20 +348,83 @@ p <- p +
 
 
 #Annotate max and 95% intervals
+legend_pos <- tibble(x = 300, y = y_high_limit - 30)
 
-#legend_data <- data.frame(x = seq(175, 182), y = rnorm(8, 15, 2))
-# p <- p +
-#   annotate("segment", x = 181, xend = 181, y = 5, yend = 25, colour = "wheat2", size=3) +
-#   annotate("segment", x = 181, xend = 181, y = 12, yend = 18, colour = "wheat4", size=3) +
-#   geom_line(data=legend_data, aes(x=x,y=y)) +
-#   annotate("segment", x = 183, xend = 185, y = 17.7, yend = 17.7, colour = "wheat4", size=.5) +
-#   annotate("segment", x = 183, xend = 185, y = 12.2, yend = 12.2, colour = "wheat4", size=.5) +
-#   annotate("segment", x = 185, xend = 185, y = 12.2, yend = 17.7, colour = "wheat4", size=.5) +
-#   annotate("text", x = 200, y = 14.75, label = "NORMAL RANGE", size=2, colour="gray30") +
-#   annotate("text", x = 155, y = 14.75, label = "2016 TEMPERATURE", size=2, colour="gray30") +
-#   annotate("text", x = 193, y = 25, label = "RECORD HIGH", size=2, colour="gray30") +
-#   annotate("text", x = 193, y = 5, label = "RECORD LOW", size=2, colour="gray30")
+legend_data <- data.frame(x = seq(legend_pos$x - 6, legend_pos$x + 1), y = rnorm(8, legend_pos$y + 10, 2))
+
+p <- p +
+  annotate("segment",
+           x = legend_pos$x,
+           xend = legend_pos$x,
+           y = legend_pos$y,
+           yend = legend_pos$y +
+             20,
+           colour = "wheat2",
+           size = 3) +
+  annotate("segment",
+           x = legend_pos$x,
+           xend = legend_pos$x,
+           y = legend_pos$y + 7,
+           yend = legend_pos$y + 13,
+           colour = "wheat4",
+           size = 3) +
+  geom_line(data = legend_data, aes(x = x, y = y)) +
+  annotate("segment",
+           x = legend_pos$x + 2,
+           xend = legend_pos$x + 4,
+           y = legend_pos$y + 12.3,
+           yend = legend_pos$y + 12.3,
+           colour = "wheat4",
+           size = .5) +
+  annotate("segment",
+           x = legend_pos$x + 2,
+           xend = legend_pos$x + 4,
+           y = legend_pos$y + 7.7,
+           yend = legend_pos$y + 7.7,
+           colour = "wheat4",
+           size = .5) +
+  annotate("segment",
+           x = legend_pos$x + 4,
+           xend = legend_pos$x + 4,
+           y = legend_pos$y + 7.7,
+           yend = legend_pos$y + 12.3,
+           colour = "wheat4",
+           size = .5) +
+  annotate("text",
+           x = legend_pos$x + 7,
+           y = legend_pos$y + 9.75,
+           label = text_table[[language]][10],
+           size = 2,
+           colour = "gray30",
+           hjust = 0,
+           vjust = 0) +
+  annotate("text",
+           x = legend_pos$x - 10,
+           y = legend_pos$y + 9.75,
+           label = paste0(focus_year, stringr::str_to_sentence(legend_table[[language]][[legend_variable]])),
+           size = 2,
+           colour = "gray30",
+           hjust = 1,
+           vjust = 0) +
+  annotate("text",
+           x = legend_pos$x + 7,
+           y = legend_pos$y + 19,
+           label = text_table[[language]][8],
+           size = 2,
+           colour = "gray30",
+           hjust = 0,
+           vjust = 0) +
+  annotate("text",
+           x = legend_pos$x + 7,
+           y = legend_pos$y,
+           label = text_table[[language]][9],
+           size = 2,
+           colour = "gray30",
+           hjust = 0,
+           vjust = 0)
 
 suppressWarnings(print(p))
+
+invisible(Sys.setlocale(category = "LC_TIME", old_LC_TIME))
 
 }
