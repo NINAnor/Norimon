@@ -1,4 +1,4 @@
-#' logger_data_from_db Get temperature and light logger data from the database
+#' get_logger_data Get temperature and light logger data from the database
 #'
 #' @param limit Optional row number limit (for testing)
 #' @param dataset Which dataset to retreive data from? Default to "NasIns".,
@@ -11,7 +11,7 @@
 #' @examples
 #'
 #'
-#' locality_sampling_loggerdata <- loggerdata_from_db(dataset = "NasIns",
+#' locality_sampling_loggerdata <- get_logger_data(dataset = "NasIns",
 #'                                                   agg_level = "locality_sampling")
 #'
 #'
@@ -21,7 +21,7 @@
 ##Note that this splits up the temperature data from the different logger types (since they are not placed similarly in the field)
 
 
-loggerdata_from_db <- function(limit = NULL,
+get_logger_data <- function(limit = NULL,
                                dataset = c("NasIns"),
                                agg_level = c("year_locality",
                                              "locality_sampling"),

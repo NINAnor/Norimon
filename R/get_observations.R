@@ -1,4 +1,4 @@
-#' obs_from_db Get insect observation data from the database
+#' get_observations Get insect observation data from the database
 #'
 #' @param id_type Type of identification type. Defaults to metabarcoding data
 #' @param subset_orders Optional subset of order
@@ -32,7 +32,7 @@
 #'   rm(list = c("username", "password"))
 #'
 #'
-#'   beetles_2022 <- obs_from_db(subset_orders = "Coleoptera",
+#'   beetles_2022 <- get_observations(subset_orders = "Coleoptera",
 #'                               agg_level = "year_locality")
 #'
 #' }
@@ -42,7 +42,7 @@
 
 
 
-obs_from_db <- function(id_type = c("metabarcoding"),
+get_observations <- function(id_type = c("metabarcoding"),
                         subset_orders = NULL,
                         subset_families = NULL,
                         subset_genus = NULL,

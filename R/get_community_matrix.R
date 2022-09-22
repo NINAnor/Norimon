@@ -1,4 +1,4 @@
-#' community_matrix_from_db
+#' get_community_matrix
 #'
 #'
 #' @param limit Optional row limit on output (for testing).
@@ -32,7 +32,7 @@
 #'   rm(list = c("username", "password"))
 #'
 #'
-#'   beetles_comm_2022 <- community_matrix_from_db(subset_orders = "Coleoptera",
+#'   beetles_comm_2022 <- get_community_matrix(subset_orders = "Coleoptera",
 #'                                                 subset_years = 2021)
 #'
 #' }
@@ -41,7 +41,7 @@
 #'
 
 
-community_matrix_from_db <- function(limit = NULL,
+get_community_matrix <- function(limit = NULL,
                                      id_type = c("metabarcoding"),
                                      trap_type = c("MF", "VF", "All", NULL),
                                      dataset = c("NasIns"),

@@ -1,4 +1,4 @@
-#' skogtype_from_db Get the forest types from a buffer around the sampling localities
+#' get_forest_type Get the forest types from a buffer around the sampling localities
 #'
 #' @param limit Optional row limit of returned data (for testing )
 #' @param dataset Dataset to get data from. Defaults to "NasIns"
@@ -10,10 +10,11 @@
 #'
 #' @examples
 #'
-#' skogtype_from_db()
+#' get_forest_type()
 #'
 #'
-skogtype_from_db <- function(limit = NULL,
+
+get_forest_type <- function(limit = NULL,
                              dataset = c("NasIns"),
                              stat_grouping = c("treslag", "bonitet"),
                              as_tibble = F) {
@@ -28,11 +29,11 @@ skogtype_from_db <- function(limit = NULL,
 
 
   yl <- dplyr::tbl(con,
-                   Id(schema = "events",
+                   DBI::Id(schema = "events",
                       table = "year_locality")
   )
   l <- dplyr::tbl(con,
-                  Id(schema = "locations",
+                  DBI::Id(schema = "locations",
                      table = "localities")
   )
 
@@ -45,10 +46,10 @@ skogtype_from_db <- function(limit = NULL,
 
 
   skog <- read_sf(con,
-                  Id(schema = "backgrounds",
+                  DBI::Id(schema = "backgrounds",
                      table = "locality_1000m_buffer_skogtype_agg")
   ) %>%
-    st_drop_geometry() %>%
+    sf::st_drop_geometry() %>%
     filter(locality %in% year_locality)
 
 

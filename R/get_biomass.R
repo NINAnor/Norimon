@@ -1,4 +1,4 @@
-#' weights_from_db Get biomass data from the database
+#' get_biomass Get biomass data from the database
 #'
 #' @param limit Optional row limit on output (for testing)
 #' @param trap_type Which trap types to fetch data for. "All" (defult), "MF", or "VF".
@@ -12,11 +12,11 @@
 #'
 #' @examples
 #'
-#' weights_from_db()
+#' get_biomass()
 #'
 #'
 
-weights_from_db <- function(limit = NULL,
+get_biomass <- function(limit = NULL,
                             trap_type = c("MF", "VF", "ALL"),
                             subset_region = c(NULL, "Østlandet", "Trøndelag", "Sørlandet"),
                             dataset = c("NasIns"),
