@@ -16,7 +16,7 @@
 get_pollinators <- function(){
 
   out <- dplyr::tibble(family_norwegian = c("Gravebier",
-                                            "Langtunbebier",
+                                            "Langtungbebier",
                                             "Korttungebier",
                                             "Markbier",
                                             "Buksamlerbier",
