@@ -10,7 +10,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' connect_to_db()
+#' connect_to_insect_db()
 #' loc <- get_localities()
 #' ggplot(loc) +
 #' geom_sf(aes(fill = habitat_type))

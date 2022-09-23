@@ -15,6 +15,8 @@ Get list of pollinator families (e.g. for fetching with obs_from_db)
 \examples{
 
 \dontrun{
+
+connect_to_insect_db()
 pollinators <- get_pollinators()
 
 }

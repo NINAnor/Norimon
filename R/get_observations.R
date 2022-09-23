@@ -11,7 +11,7 @@
 #' @param trap_type Optional subset of trap type
 #' @param limit Optional limit the output to number of rows (for testing)
 #' @param dataset Choose the dataset to fetch data from. Default "NasIns" for national insect monitoring data
-#' @param agg_level Aggregation level of data. "year_locality", "region_habitat", "region_habitat_year", "total". Default to year_locality
+#' @param agg_level Aggregation level of data. "year_locality", "region_habitat", "region_habitat_year", "locality_sampling", "total". Default to year_locality
 #' @param digits Number of digits to round shannon diversity and mean ASV counts to. (defaults to 2)
 #' @param as_tibble Coerce output to class tibble
 #'
@@ -22,17 +22,12 @@
 #'
 #' dontrun{
 #'
-#'   source("~/.rpgpass")
+
 #'
-#'   connect_to_database(
-#'      username = username,
-#'      password = password
-#'   )
-#'
-#'   rm(list = c("username", "password"))
+#'   connect_to_insect_db()
 #'
 #'
-#'   beetles_2022 <- get_observations(subset_orders = "Coleoptera",
+#'   beetles <- get_observations(subset_orders = "Coleoptera",
 #'                               agg_level = "year_locality")
 #'
 #' }

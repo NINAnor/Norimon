@@ -8,9 +8,10 @@
 #' @return Returns a tibble of forest data from the database.
 #' @export
 #'
-#' @examples
 #'
-#' get_forest_type()
+#' @examples
+#' connect_to_insect_db()
+#' forest_data <- get_forest_type()
 #'
 #'
 
@@ -42,15 +43,16 @@ get_forest_type <- function(limit = NULL,
               by = c("id" = "locality_id")) %>%
     filter(project_short_name == !!proj_filter) %>%
     select(locality) %>%
-    pull()
+    dplyr::pull()
 
 
-  skog <- read_sf(con,
+  skog <- tbl(con,
                   DBI::Id(schema = "backgrounds",
                      table = "locality_1000m_buffer_skogtype_agg")
   ) %>%
-    sf::st_drop_geometry() %>%
-    filter(locality %in% year_locality)
+    select(-geom) %>%
+    filter(locality %in% year_locality) %>%
+    dplyr::collect()
 
 
   group_enq <- dplyr::enquo(stat_grouping)
@@ -58,7 +60,7 @@ get_forest_type <- function(limit = NULL,
   if(length(stat_grouping) == 1){
     skog <- skog %>%
       group_by(across(all_of(c("locality", stat_grouping)))) %>%
-      summarise(area = sum(area))
+      summarise(area = sum(area, na.rm = TRUE))
   }
 
 

@@ -11,13 +11,10 @@
 #'
 #' \dontrun{
 #'
-#'         source("~/.rpgpass")
 #'
-#' connect_to_database()
+#' connect_to_insect_db()
 #'
-#' rm(list = c("username", "password"))
-#'
-#' beetles <- obs_from_db(subset_orders = "Coleoptera",
+#' beetles <- get_observations(subset_orders = "Coleoptera",
 #'                       agg_level = "year_locality")
 #'
 #'

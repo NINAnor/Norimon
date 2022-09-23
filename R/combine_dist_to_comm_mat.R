@@ -11,18 +11,19 @@
 #'
 #' \dontrun{
 #'
-#' skog_ost_comm_mat <- community_matrix_from_db(trap_type = "MF",
-#' dataset = "NasIns",
-#' subset_habitat = "Forest",
-#' subset_region = "Østlandet",
-#' as_tibble = T,
-#' transposed_matrix = F
-#' ) %>%
-#'   select(-c(year, locality))
+#' connect_to_insect_db()
+#'
+#' skog_ost_comm_mat <- get_community_matrix(trap_type = "MF",
+#'                                           dataset = "NasIns",
+#'                                           subset_habitat = "Forest",
+#'                                           subset_region = "Østlandet",
+#'                                           as_tibble = T,
+#'                                           transposed_matrix = F
+#' )
 #'
 #' skog_ost_dist_beta <- combine_dist_to_comm_mat(comm_mat = skog_ost_comm_mat,
-#' region_name = "('Østlandet')",
-#' habitat_type = "Forest")
+#'                                                region_name = "('Østlandet')",
+#'                                                habitat_type = "Forest")
 #'
 #' plot_beta_part(skog_ost_dist_beta)
 #'
@@ -34,7 +35,15 @@ combine_dist_to_comm_mat <- function(comm_mat,
                                      region_name,
                                      habitat_type){
 
+
+  comm_mat_to_prosess <- comm_mat %>%
+    select(-c(year, locality))
+
   #It ain't pretty but it saves some code in the document
+  loc_in_comm_mat <- comm_mat %>%
+    select(locality) %>%
+    pull()
+
 
   dist_q <- paste0("
   SELECT a.locality as loc_a, b.locality loc_b,
@@ -46,7 +55,7 @@ combine_dist_to_comm_mat <- function(comm_mat,
   WHERE yl.locality_id = l.id\
   AND region_name IN ", region_name,"
   AND habitat_type = '", habitat_type, "'
-  --AND yl.year = 2020
+  AND locality IN (", paste0("'", paste(loc_in_comm_mat, collapse="', '"), "'"), ")
   AND yl.project_short_name = 'NasIns') a
   CROSS JOIN (SELECT l.*
   FROM locations.localities l,
@@ -54,19 +63,18 @@ combine_dist_to_comm_mat <- function(comm_mat,
   WHERE yl.locality_id = l.id
   AND region_name IN ", region_name,"
   AND habitat_type = '", habitat_type, "'
-
+  AND locality IN (", paste0("'", paste(loc_in_comm_mat, collapse="', '"), "'"), ")
   AND yl.project_short_name = 'NasIns') as b
   ORDER BY loc_a, loc_b
   ")
 
-  dist <- dbGetQuery(con,
+  dist <- DBI::dbGetQuery(con,
                      dist_q)
-
 
   ##Now arrange these together and plot
   #something like this?
 
-  beta_pair <- beta.pair(betapart::betapart.core(comm_mat))
+  beta_pair <- betapart::beta.pair(betapart::betapart.core(comm_mat_to_prosess))
 
   beta_sim <- as.matrix(beta_pair$beta.sim) %>%
     matrix(.,

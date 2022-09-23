@@ -6,6 +6,8 @@
 #' @examples
 #'
 #' \dontrun{
+#'
+#' connect_to_insect_db()
 #' pollinators <- get_pollinators()
 #'
 #' }

@@ -6,23 +6,27 @@
 #' @export
 #'
 #'
+#'
+#'
 #' @examples
 #'
 #'
-#' #' skog_ost_comm_mat <- community_matrix_from_db(trap_type = "MF",
-#' dataset = "NasIns",
-#' subset_habitat = "Forest",
-#' subset_region = "Østlandet",
-#' as_tibble = T,
-#' transposed_matrix = F
-#' ) %>%
-#'   select(-c(year, locality))
+#' connect_to_insect_db()
 #'
-#' skog_ost_dist_beta <- combine_dist_to_comm_mat(comm_mat = skog_ost_comm_mat,
-#' region_name = "('Østlandet')",
-#' habitat_type = "Forest")
+#' seminat_trond_comm_mat <- get_community_matrix(trap_type = "MF",
+#'                                           dataset = "NasIns",
+#'                                           subset_habitat = "Semi-nat",
+#'                                           subset_region = "Trøndelag",
+#'                                           as_tibble = T,
+#'                                           transposed_matrix = F
+#' )
 #'
-#' plot_beta_part(skog_ost_dist_beta)
+#' seminat_trond_dist_beta <- combine_dist_to_comm_mat(comm_mat = seminat_trond_comm_mat,
+#'                                                region_name = "('Trøndelag')",
+#'                                                habitat_type = "Semi-nat")
+#'
+#' plot_beta_part(seminat_trond_dist_beta)
+#'
 #'
 #'
 
@@ -36,9 +40,9 @@ plot_beta_part <- function(input){
     geom_smooth(aes(x = distance,
                     y = beta_sor),
                 method = "lm",
-                color = ninaPalette()[2]) +
+                color = NinaR::ninaPalette()[2]) +
     ylim(ylims) +
-    ylab(unname(TeX("Total forskjell $\\beta_{sor}$"))) +
+    ylab(unname(latex2exp::TeX("Total forskjell $\\beta_{sor}$"))) +
     xlab("Avstand mellom lokaliteter (km)")
 
 
@@ -49,9 +53,9 @@ plot_beta_part <- function(input){
     geom_smooth(aes(x = distance,
                     y = beta_sim),
                 method = "lm",
-                color = ninaPalette()[2]) +
+                color = NinaR::ninaPalette()[2]) +
     ylim(ylims) +
-    ylab(unname(TeX("Turnover $\\beta_{sim}$"))) +
+    ylab(unname(latex2exp::TeX("Turnover $\\beta_{sim}$"))) +
     xlab("Avstand mellom lokaliteter (km)")
 
   p_nes <- ggplot(input) +
@@ -60,12 +64,12 @@ plot_beta_part <- function(input){
     geom_smooth(aes(x = distance,
                     y = beta_sne),
                 method = "lm",
-                color = ninaPalette()[2]) +
+                color = NinaR::ninaPalette()[2]) +
     ylim(ylims) +
-    ylab(unname(TeX("Nestedness $\\beta_{nes}$"))) +
+    ylab(unname(latex2exp::TeX("Nestedness $\\beta_{nes}$"))) +
     xlab("Avstand mellom lokaliteter (km)")
 
-  marrangeGrob(list(p_sor,
+  gridExtra::marrangeGrob(list(p_sor,
                     p_sim,
                     p_nes
   ),

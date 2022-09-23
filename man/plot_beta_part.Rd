@@ -18,20 +18,22 @@ plot_beta_part
 \examples{
 
 
-#' skog_ost_comm_mat <- community_matrix_from_db(trap_type = "MF",
-dataset = "NasIns",
-subset_habitat = "Forest",
-subset_region = "Østlandet",
-as_tibble = T,
-transposed_matrix = F
-) \%>\%
-  select(-c(year, locality))
+connect_to_insect_db()
 
-skog_ost_dist_beta <- combine_dist_to_comm_mat(comm_mat = skog_ost_comm_mat,
-region_name = "('Østlandet')",
-habitat_type = "Forest")
+seminat_trond_comm_mat <- get_community_matrix(trap_type = "MF",
+                                          dataset = "NasIns",
+                                          subset_habitat = "Semi-nat",
+                                          subset_region = "Trøndelag",
+                                          as_tibble = T,
+                                          transposed_matrix = F
+)
 
-plot_beta_part(skog_ost_dist_beta)
+seminat_trond_dist_beta <- combine_dist_to_comm_mat(comm_mat = seminat_trond_comm_mat,
+                                               region_name = "('Trøndelag')",
+                                               habitat_type = "Semi-nat")
+
+plot_beta_part(seminat_trond_dist_beta)
+
 
 
 }

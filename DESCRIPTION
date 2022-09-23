@@ -1,6 +1,6 @@
 Package: Norimon
 Title: Utility Functions for the National Insect Monitoring in Norway
-Version: 0.0.0.9005
+Version: 0.0.0.9006
 Authors@R: 
     person("Jens", "Åström", , "jens.astrom@nina.no", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-6114-0440"))
@@ -19,8 +19,10 @@ Config/testthat/edition: 3
     ggridges
     DBI,
     ggplot2
+    latex2exp
 Imports:
     dplyr,
     magrittr,
-    tidyr
+    tidyr,
+    sf
 VignetteBuilder: knitr

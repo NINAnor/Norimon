@@ -6,10 +6,10 @@
 \usage{
 get_biomass(
   limit = NULL,
-  trap_type = c("MF", "VF", "ALL"),
+  trap_type = "MF",
   subset_region = c(NULL, "Østlandet", "Trøndelag", "Sørlandet"),
-  dataset = c("NasIns"),
-  agg_level = c("year_locality", "locality_sampling", "total"),
+  dataset = "NasIns",
+  agg_level = "year_locality",
   as_tibble = F
 )
 }
@@ -34,7 +34,12 @@ get_biomass Get biomass data from the database
 }
 \examples{
 
-get_biomass()
+\dontrun{
 
+connect_to_insect_db()
+biomass <- get_biomass(agg_level = "year_locality",
+trap_type = "MF")
+
+}
 
 }

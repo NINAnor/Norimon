@@ -7,8 +7,8 @@
 get_community_matrix(
   limit = NULL,
   id_type = c("metabarcoding"),
-  trap_type = c("MF", "VF", "All", NULL),
-  dataset = c("NasIns"),
+  trap_type = "MF",
+  dataset = "NasIns",
   subset_years = NULL,
   subset_orders = NULL,
   subset_families = NULL,
@@ -57,15 +57,7 @@ get_community_matrix
 
 dontrun{
 
-  source("~/.rpgpass")
-
-  connect_to_database(
-     username = username,
-     password = password
-  )
-
-  rm(list = c("username", "password"))
-
+  connect_to_insect_db()
 
   beetles_comm_2022 <- get_community_matrix(subset_orders = "Coleoptera",
                                                 subset_years = 2021)

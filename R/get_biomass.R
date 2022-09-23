@@ -8,21 +8,25 @@
 #' @param as_tibble Return as tibble? Boolean
 #'
 #' @return A tibble of sample weights
-#' @export
 #'
 #' @examples
 #'
-#' get_biomass()
+#' \dontrun{
 #'
+#' connect_to_insect_db()
+#' biomass <- get_biomass(agg_level = "year_locality",
+#' trap_type = "MF")
+#'
+#' }
+#'
+#' @export
 #'
 
 get_biomass <- function(limit = NULL,
-                            trap_type = c("MF", "VF", "ALL"),
+                            trap_type = "MF",
                             subset_region = c(NULL, "Østlandet", "Trøndelag", "Sørlandet"),
-                            dataset = c("NasIns"),
-                            agg_level = c("year_locality",
-                                          "locality_sampling",
-                                          "total"),
+                            dataset = "NasIns",
+                            agg_level = "year_locality",
                             as_tibble = F){
 
   Norimon:::checkCon()

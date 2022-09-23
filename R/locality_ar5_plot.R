@@ -12,8 +12,11 @@
 #'
 #' @examples
 #'
+#'
 #' locality_ar5_plot(locality = "Semi-nat_01")
 #'
+#'
+
 locality_ar5_plot <- function(locality,
                               ano_circles = T,
                               title = T,
@@ -84,7 +87,7 @@ locality_ar5_plot <- function(locality,
   AND yl.locality_id = l.id
   "
 
-    ano_geoms <- read_sf(con,
+    ano_geoms <- sf::read_sf(con,
                          query = ano_geoms_q) %>%
       filter(locality == !!loc_filter)
 

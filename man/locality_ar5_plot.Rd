@@ -34,6 +34,8 @@ locality_ar5_plot Plots a locality's AR5 map.
 }
 \examples{
 
+
 locality_ar5_plot(locality = "Semi-nat_01")
+
 
 }

@@ -11,6 +11,12 @@
 #' @examples
 #'
 #'
+#'
+#'  beetles <- get_observations(subset_orders = "Coleoptera",
+#'                       agg_level = "year_locality")
+#'
+#'
+#'
 #' beetle_shannon_boot <- bootstrap_value(beetles,
 #'                                        value = shannon_div,
 #'                                        groups = c("year",

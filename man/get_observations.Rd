@@ -44,7 +44,7 @@ get_observations(
 
 \item{dataset}{Choose the dataset to fetch data from. Default "NasIns" for national insect monitoring data}
 
-\item{agg_level}{Aggregation level of data. "year_locality", "region_habitat", "region_habitat_year", "total". Default to year_locality}
+\item{agg_level}{Aggregation level of data. "year_locality", "region_habitat", "region_habitat_year", "locality_sampling", "total". Default to year_locality}
 
 \item{digits}{Number of digits to round shannon diversity and mean ASV counts to. (defaults to 2)}
 
@@ -60,17 +60,11 @@ get_observations Get insect observation data from the database
 
 dontrun{
 
-  source("~/.rpgpass")
 
-  connect_to_database(
-     username = username,
-     password = password
-  )
-
-  rm(list = c("username", "password"))
+  connect_to_insect_db()
 
 
-  beetles_2022 <- get_observations(subset_orders = "Coleoptera",
+  beetles <- get_observations(subset_orders = "Coleoptera",
                               agg_level = "year_locality")
 
 }

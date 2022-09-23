@@ -6,7 +6,7 @@
 #'
 #'
 #' \dontrun{
-#'    beetles_2021 <- obs_from_db(subset_orders = "Coleoptera",
+#'    beetles_2021 <- get_observations(subset_orders = "Coleoptera",
 #'    subset_year = 2021,
 #'    agg_level = "none")
 #'
@@ -21,6 +21,8 @@
 #'
 #' }
 #' @import dplyr
+#'
+#' @export
 #'
 
 

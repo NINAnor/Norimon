@@ -15,6 +15,8 @@
 #' @examples
 #'
 #' \dontrun{
+#'
+#' connect_to_insect_db()
 #' get_climate_data("Semi-nat_01") %>%
 #' plot_climate_comparison()
 #'

@@ -35,6 +35,8 @@ Plot the normal climate range and a chosen year as a comparison. Code adapted fr
 \examples{
 
 \dontrun{
+
+connect_to_insect_db()
 get_climate_data("Semi-nat_01") \%>\%
 plot_climate_comparison()
 

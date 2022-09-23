@@ -38,7 +38,7 @@ Bootstrap value
 \dontrun{
 
 
-beetles <- obs_from_db(subset_order = "Coleoptera",
+beetles <- get_observations(subset_order = "Coleoptera",
                       agg_level = "year_locality")
 
 
