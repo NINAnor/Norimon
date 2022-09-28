@@ -25,6 +25,7 @@ library(badger)
 `r badge_travis("NINAnor/Norimon")` 
 `r badge_code_size("NINAnor/Norimon")`
 
+[![R-CMD-check](https://github.com/NINAnor/Norimon/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/NINAnor/Norimon/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 Code for the Norwegian Insect Monitoring program, by the Norwegian Institute for Nature Research

@@ -12,6 +12,7 @@ status](https://github.com/NINAnor/Norimon/workflows/R-CMD-check/badge.svg)](htt
 [![](https://travis-ci.org/NINAnor/Norimon.svg?branch=main)](https://travis-ci.org/NINAnor/Norimon)
 [![](https://img.shields.io/github/languages/code-size/NINAnor/Norimon.svg)](https://github.com/NINAnor/Norimon)
 
+[![R-CMD-check](https://github.com/NINAnor/Norimon/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/NINAnor/Norimon/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 Code for the Norwegian Insect Monitoring program, by the Norwegian
