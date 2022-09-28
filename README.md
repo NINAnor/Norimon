@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Norimon <img src="https://github.com/NINAnor/Norimon/inst/figure/sticker.png" align="right" width="160px"/>
+# Norimon <img src="https://github.com/NINAnor/Norimon/inst/figures/sticker.png" align="right" width="160px"/>
 
 <!-- badges: start -->
 
