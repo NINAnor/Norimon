@@ -30,19 +30,13 @@ Best practice is to not store your username and password in any scripts. See exa
 \examples{
 
 
-Connect to insect monitoring database while storing your credentials in a password file
+#Connect to insect monitoring database while storing your credentials in a password file (~/.pgpass)
 
-dontrun{
+\dontrun{
 
-  source("~/.rpgpass")
 
-  connect_to_insect_db(
-     username = username,
-     password = password
-  )
+  connect_to_insect_db()
 
-  rm(list = c("username", "password"))
-}
 
 
 Connect to another database
@@ -53,6 +47,8 @@ connect_to_insect_db(
   host = "gisdata-db.nina.no",
   dbname = "gisdata"
 )
+
+}
 
 
 }

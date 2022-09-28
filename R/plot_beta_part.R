@@ -10,7 +10,7 @@
 #'
 #' @examples
 #'
-#'
+#' \dontrun{
 #' connect_to_insect_db()
 #'
 #' seminat_trond_comm_mat <- get_community_matrix(trap_type = "MF",
@@ -27,7 +27,7 @@
 #'
 #' plot_beta_part(seminat_trond_dist_beta)
 #'
-#'
+#' }
 #'
 
 plot_beta_part <- function(input){

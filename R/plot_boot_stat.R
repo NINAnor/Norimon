@@ -10,6 +10,7 @@
 #'
 #' @examples
 #'
+#'\dontrun{
 #'
 #'
 #'  beetles <- get_observations(subset_orders = "Coleoptera",
@@ -23,6 +24,7 @@
 #'                                                   "region_name"))
 #'
 #' plot(beetle_shannon_boot)
+#' }
 #'
 
 plot.boot_stat <- function(x,

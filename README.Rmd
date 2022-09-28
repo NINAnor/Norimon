@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Norimon
+# Norimon <img src="https://github.com/NINAnor/Norimon/inst/figure/sticker.png" align="right" width="160px"/>
 
 <!-- badges: start -->
 ```{r, echo = F}
@@ -22,7 +22,6 @@ library(badger)
 `r badge_lifecycle("experimental")` 
 `r badge_devel("NINAnor/Norimon", "blue")` 
 `r badge_github_actions("NINAnor/Norimon")` 
-`r badge_travis("NINAnor/Norimon")` 
 `r badge_code_size("NINAnor/Norimon")`
 
 [![R-CMD-check](https://github.com/NINAnor/Norimon/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/NINAnor/Norimon/actions/workflows/R-CMD-check.yaml)

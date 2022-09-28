@@ -3,14 +3,13 @@
 #'
 #' @param inputFile export file of raw logger data from HoboLink.com
 #' @param guess_max optional number of rows to guess the data format from. May have to increase a lot
-#' @param ...
-#'
+#' @param ... additional parameters passed to read_csv
 #' @return A tibble of well formatted logger data from the MX2301A type logger
 #' @export
 #'
 #' @examples
 #'
-#' dontrun{
+#' \dontrun{
 #'
 #' mx2202_data <- longerHobo2202(inputFile = "../rawData/temp_logger/NasIns_2021_all_MX2202_2021_11_15_10_58_26_CET/NasIns_2021_all_MX2202_2021_11_15_10_58_26_CET_1.csv"
 #'
@@ -20,10 +19,13 @@
 
 
 longerHobo2202 <- function(inputFile,
-                           guess_max = 10000){
+                           guess_max = 10000,
+                           ...){
+
   rawDat <- read_csv(inputFile,
                      guess_max = guess_max,
-                     col_types = cols())
+                     col_types = cols(),
+                     ...)
 
   dat <- rawDat %>%
     select(-"Line#") %>%

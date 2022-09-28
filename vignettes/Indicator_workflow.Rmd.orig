@@ -1,0 +1,430 @@
+---
+title: "Indicator workflow of data from the national insect monitoring program"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Indicator_workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5,
+  fig.path = "images/"
+)
+
+options(width = 80)
+```
+
+```{r setup}
+library(Norimon)
+suppressPackageStartupMessages(library(tidyverse))
+library(ggplot2)
+suppressPackageStartupMessages(library(kableExtra))
+library(tmap)
+library(sf)
+library(DBI)
+```
+
+
+# Introduction
+The Norimon package is a collection of analysis functions for working with the data from the national insect monitoring program in Norway. I will here introduce some functions that can be used to produce insect indicators from this package. Their use isn't limited to indicators, essentially they are meant to be of general use, for fetching and plotting quantities from the insect monitoring program.
+
+Note that this functionality is still under development. More functions will be added, and there is need for some bugfixes and changes.
+
+# Workflow for indicators
+These functions are built upon a general idea of how to produce indicators. Although there might be a need for other types of indicators that require a completely different toolchain, this method is meant to capture a broad variety of insect indicators.
+
+**Main steps of workflow:**
+
+1. Fetch observations of biomass or specific species or higher taxa from a centralized database (or GBIF)
+2. Bootstrap observations and calculate mean and uncertainty of point estimate
+3. Compare observations to a reference point
+4. Display and plot the results
+
+Most of the ecology comes into step 1, in choosing what data to use to describe a quality. This can be a custom selection of species, or a set of higher taxa such as specific genuses, families or an order. The goal is to choose a set of taxa that represent specific qualities of the community that can indicate the ecological status of the ecosystem. In addition to the selection of taxa, we have to decide on the level of aggregation, e.g. if we should aggregate the data on the region scale, locality scale, or even the individual sample occasion scale.
+
+The second step is used to get an estimate of the uncertainty of the data. This routine is in principle flexible, as we could bootstrap the samples on different sampling levels (samples within localities, regions within country). Typically, we will work on the year locality scale, meaning that we fetch summary data on the observations from a location throughout a whole season. These data will typically be bootstrapped and summarized to regional values, for example expressing the mean values with uncertainty insect biomass in Trøndelag in 2021.
+
+Ecological knowledge also comes into step 3, comparing the values to a reference state. Here we have several options. We could for example use a single defined value as the reference state. But we can also use a point in time as a reference point (e.g. the start of a time series).
+
+Put together, this framework is meant to facilitate the calculation of a broad set of insect indicators, based on the combination of choices in data to fetch, aggregation level, and reference comparison.
+
+```{r flow_chart, out.width = '400pt', dev='png', echo=F}
+knitr::include_graphics("images/flow_chart.png")
+
+```
+
+
+# Showcase of functionality
+
+## Fetching observations
+The most convenient method is to fetch the data directly from the main database that hold all data from the national insect monitoring program. This is located in-house at NINA, and while this might change in the future, it cannot at the moment be reached from the outside. For those who this option isn't available, we will build additional functions that first downloads the public GBIF records of the data, so that we can work with a local copy. At the moment, only the in-house database methods is implemented.
+
+### Accessing the database
+The database is a standard PostgreSQL/PostGIS database which can be accessed through standard R tools, e.f. with the `DBI` and `RPostgres` packages. However, it is convenient to use the custom function `connect_to_insect_db()`. This function will create a connection called 'con', that later functions will use to fetch the data.
+
+```{r, eval = FALSE}
+connect_to_insect_db()
+```
+
+You should never store your passwords in a script file! This makes working with database connections in documentation a little bit tricky. What I tend to do is to store my username and password in a text file in my home folder that only my user can read, and fetch this password temporarily in scripts. The connect function uses the variable names 'username' and 'passwords' in the global environment if they exist. In this case, I have the username and password stored in the file .rpgpass in my home folder. Therefore, I can connect like this.
+
+
+```{r}
+connect_to_insect_db()
+```
+
+To set this up for yourself, store your username and passwords in a file and adjust the permissions so that only you can read it. On linux, put it in a hidden file (with a leading dot, such as .rpgpass) in your home folder, and set the permissions to read only for the owner (e.g. chmod 600 ~/.rpgpass). After that, you can simply use the above connection method securely.
+
+### Fetch observation data
+We have two main types of insect data in the database, insect observations and insect weights. These data can be fetched by the functions `get_observations` and `get_biomass`, respectively.
+
+The observations can be subsetted on taxonomy, at different taxonomic levels. You can also aggregate the data on various observational levels. The default aggregation level is 'year_locality' which gives you all records for each locality, summarized over the whole year. For example, to get all beetle records aggregated at the 'year_locality'-level, you do:
+
+```{r}
+beetles <- get_observations(subset_orders = "Coleoptera")
+```
+This function provides both the number of species, the shannon diversity, and the mean intraspecific variation per species (the mean number of unique ASV's per species). Note that currently, we don't have ASV-data for the 2020 dataset, i.e. we get a mean_asv_per_species of 1 for all these records. Here only the first 5 rows are shown.
+
+```{r, echo = FALSE}
+beetles %>%
+  slice(1:5) %>%
+kbl()
+```
+
+The `get_observations` function have several methods for subsetting the data, see the help file for details. As a second example, we take pollinators, defined as a set of families, fetch their observations, and aggregate them to the region_habitat_year level.
+
+For convenience, the pollinator families can be retreived by the `get_pollinators()` function.
+
+```{r}
+pollinators <- get_pollinators()
+```
+
+
+```{r, echo = FALSE}
+kbl(pollinators)
+```
+
+```{r}
+pollinators_fam <- pollinators %>%
+  select(family_latin) %>%
+  pull()
+
+pollinators_fam
+
+poll_region_habitat_year <- get_observations(subset_families = pollinators_fam,
+                                      agg_level = "region_habitat_year"
+                                      )
+
+```
+```{r, echo = FALSE}
+kbl(poll_region_habitat_year)
+```
+
+
+### Weight data
+Fetching weight data works similarly to observation data, without the possibility of subsetting on taxonomy, since we only weigh the total catch. Typically, it's best to only use the weights from the malaisetraps, which is the default, but you can use all or only the window traps as well. The catches in the window traps are so small, that they probably are unreliable. Here we show the first 5 rows of the results.
+
+```{r}
+year_locality_weights <- get_biomass(trap_type = "MF",
+                                         agg_level = "year_locality")
+```
+
+```{r, echo = F}
+year_locality_weights %>%
+  slice(1:5) %>%
+  kbl() %>%
+  kable_styling()
+```
+
+
+## Bootstrap observations
+Typically, we will have our observations aggregated to the year_locality-scale, i.e. we sum all the catches for a single locality in a year. These localities are (hopefully) random samples of a larger population. They represent for example a habitat type in a region a particular year. To get the sampling uncertainty for this representation, we can bootstrap the values by this prosess: we choose a random set of localities within a year and region (with replacement) and calculate the average values. Repeat this process a large number of times, and you have a bootstrap sample of values that can be used to express the uncertainty in the dataset.
+
+This is implemented in the function `bootstrap_value()`. This function takes an observational or weight dataset as its first input. It also needs to know what value in that dataset to bootstrap, and what if any grouping structure to aggregate the results on. For example, bootstrapping the number of beetle species, and aggregating the results on the year and regional scale.
+
+
+
+```{r, echo = F}
+lok_2020 <- read_sf(con,
+                            query =
+                               "SELECT *
+                               FROM locations.localities l,
+                               events.year_locality yl
+                               WHERE yl.locality_id = l.id
+                               AND yl.year = 2020
+                               AND l.region_name = 'Østlandet'"
+
+                               )
+
+    ost_reg <- get_map(region_subset = "Østlandet")
+```
+
+
+```{r location_map, echo = F}
+tm_shape(ost_reg) +
+  tm_polygons("fylke") +
+  tm_shape(lok_2020) +
+  tm_symbols(col = "red",
+             shape = 22)
+
+```
+
+
+```{r}
+
+beetle_richness_boot <- bootstrap_value(beetles,
+                                        value = no_species,
+                                        groups = c("year",
+                                                   "region_name")
+                                        )
+
+```
+
+This creates an object of type `boot_stat`. Calling it prints a simple summary of the bootstrap values.
+```{r}
+beetle_richness_boot
+```
+
+But the output is actually a list, that also stores the individual bootstrap values for later computation.
+
+```{r}
+beetle_richness_boot[2]
+```
+
+
+## Compare bootstrap values to a reference point
+In practice, the hardest thing for making indicators will be coming up with good reference points for the measured variables. Putting these difficulties aside for a moment, the next step is to compare the observed values (with bootstrapped uncertainty) to the chosen reference value. This could potentially be made in several ways. Most simply, if we have a single numeric value as a reference point, we can simply subtract that from the observed values. For example, if we observe 13 species of beetles in 2022 at a location, and the reference point is 10, the 2022 has increased by 13 - 10 = 3 species. Such subtractions chould be made on the set of bootstrapped values, before new summary statistics is calculated. The `boot_stat` has its own subtraction method do to just that.
+
+```{r}
+beetle_richness_boot
+
+```
+
+```{r}
+diff_beetle_richness_boot <- beetle_richness_boot - 30
+```
+
+```{r}
+diff_beetle_richness_boot
+```
+
+We could also use a reference point in the time series itself. Say for example that we want to use the values for forest i Østlandet 2020 as a reference point. We can then calculate the difference (the contrast) between this level and all the other levels. We do this by the function `boot_contrast()`
+
+NB! This functionality is in development. It currently works for single rows as reference points, but needs updating to allow for referencing several values, e.g using the start values for all regions and habitat types as their own reference points.
+
+
+```{r}
+
+diff_beetle_richness_boot2 <- beetle_richness_boot %>%
+  boot_contrast(year == 2020 & region_name == 'Østlandet')
+```
+```{r}
+diff_beetle_richness_boot2
+```
+
+
+## Display and plot bootstrap values
+The boot_stat class also has its own plot function. It tries to plot a comparison of the bootstrap distributions over years, for each group. For example, if we plot the object `beetle_richness_boot`, we can look at the yearly differences in beetles species richness in the two geographic regions: (Note that we have only 1 year of data from Trøndelag so far)
+
+```{r beetle_richness_boot}
+plot(beetle_richness_boot)
+```
+
+In the cases where we have used a single row as a reference point, this shows up as a sharp spike at 0.
+
+```{r diff_beetle_richness_boot2}
+plot(diff_beetle_richness_boot2)
+```
+
+For the beetle richness object, we have the data aggregated into two levels, year and region_name. The above plot then uses the year as the main factor, and the other (region_name) as the facet, as seen in the above figures. This automatic faceting works less well when we have more groupings. We can then specify the faceting manually. Here, an example with pollinators aggregated to year, habitat_type, and region_name:
+
+
+```{r}
+poll_region_habitat_year_boot <- bootstrap_value(poll_region_habitat_year,
+                                               value = no_species,
+                                               groups = c("year",
+                                                          "habitat_type",
+                                                          "region_name"))
+
+```
+
+The default plot then uses the first grouping after year as the facet:
+```{r poll_region_habitat_year_boot}
+plot(poll_region_habitat_year_boot)
+```
+We can override this by manually specifying the facets, for example using the region name:
+
+```{r poll_region_habitat_year_boot_facet}
+plot(poll_region_habitat_year_boot) +
+  facet_wrap("region_name")
+```
+We can further split up the data, by specifying all groupings we wish to use:
+
+```{r poll_region_habitat_year_boot_split}
+plot(poll_region_habitat_year_boot) +
+  facet_wrap(c("habitat_type", "region_name"))
+```
+
+
+## Map plots
+In addition to the density plots above, we can also display the values geographically, in a map. The `map_plot()` function takes a `boot_stat` object and plots the values according to its region names.
+
+```{r map_plot_cutout}
+map_plot(poll_region_habitat_year_boot)
+```
+
+By default, it only shows the regions with data, but this can be overridden manually:
+```{r map_plot_whole}
+map_plot(diff_beetle_richness_boot,
+         whole_country = TRUE)
+```
+
+We can also choose a different palette from the NinaR package, and visualize the uncertainty by setting the transparency of the colors from the bootstrap standard deviations. By the way, most of these functions can be piped as well:
+
+```{r diff_beetle_richness_boot_map}
+diff_beetle_richness_boot %>%
+map_plot(palette = "orange-green",
+         whole_country = FALSE,
+         alpha_from_sd = TRUE)
+```
+
+# Worked examples
+
+We can produce a potentially large set of indicators using this generalized workflow, depending on what taxa, habitat type, measurement, and refererence point we choose. These choices must be chosen carefully and evaluated. For now, we show a lists some potential indicators and the required commands to produce them.
+
+
+```{r, echo = F}
+ind_tab <- tibble("Indicator" = c("Total biomass",
+                                  "Total species richness",
+                                  "Number of saproxylic beetles in forest sites",
+                                  "Shannon diversity of pollinators in semi-natural sites"),
+                  "Data fetching" = c("get_biomass()",
+                                      "get_observations()",
+                                      "get_observations()",
+                                      "get_observations()"),
+                  "Taxonomic subsetting" = c("None",
+                                             "None",
+                                             "Curated list of saproxylic species",
+                                             "List of pollinator families"),
+                  "Other subsetting" = c("None",
+                                         "None",
+                                         "habitat_type == Forest",
+                                         "habitat_type == Semi-nat"),
+                  "Aggregation" = c("year, habitat_type, region",
+                                    "year, habitat_type, region",
+                                    "year, region",
+                                    "year, region"),
+                  "Uncertainty estimation" = c("boostrap_value(weight)",
+                                               "bootstrap_value(no_species)",
+                                               "bootstrap_value(no_species)",
+                                               "bootstap_value(shannon_div)"),
+                  "Referencing" = c("boot_contrast()",
+                                    "boot_contrast()",
+                                    "subtract expert opinion reference point",
+                                    "subtract expert opinion reference point"))
+
+```
+
+```{r, echo = F}
+ind_tab %>%
+  kbl() %>%
+  kable_styling()
+```
+
+## Shannon diversity of pollinators as an example
+As an example, we can work through the calculation of a hypothetical indicator of the shannon diversity of insect pollinators on the regional level.
+
+### Data fetching
+We begin with fetching the observational data.
+
+```{r}
+pollinators_fam <- get_pollinators() %>%
+  select(family_latin) %>%
+  pull()
+
+poll_year_locality <- get_observations(subset_families = pollinators_fam,
+                                  agg_level = "year_locality",
+                                  subset_habitat = "Semi-nat"
+
+                                      )
+```
+
+```{r}
+poll_year_locality %>%
+  slice(1:5) %>%
+  kbl() %>%
+  kable_styling()
+```
+
+## Bootstrapping
+
+```{r}
+poll_shannon_boot <- bootstrap_value(poll_year_locality,
+                                     value = shannon_div,
+                                     groups = c("year",
+                                                "region_name")
+)
+
+
+```
+
+```{r, results = "hide"}
+poll_shannon_boot %>%
+  print() %>%
+  kbl() %>%
+  kable_styling()
+```
+
+
+
+### Comparing to a reference state
+For simplicity, let's say that we have an expert opinion based reference value of the Shannon diversity, and that has the value of 4. We can then simply subtract this value to get the difference, and thus the relative value.
+
+```{r}
+poll_shannon_boot_diff <- poll_shannon_boot - 4
+```
+
+## Displaying and plotting the indicator values
+
+```{r, results = "hide"}
+poll_shannon_boot_diff %>%
+  print() %>%
+  kbl() %>%
+  kable_styling()
+```
+
+```{r poll_shannon_boot_diff_example}
+plot(poll_shannon_boot_diff)
+```
+
+In the map plot, we can show the uncertainty in the estimate as level of transparancy, (in development).
+
+```{r poll_shannon_boot_diff_alpha}
+poll_shannon_boot_diff %>%
+  map_plot(alpha_from_sd = T)
+```
+
+
+
+## To-do list
+This is still early work, although the basic framework is in place.
+
+For example, we should also implement this:
+
+* What to do with scaling? (see Anders K's examples)
+* Fix number of digits in print function of boot_stat objects
+* Subsetting functions for map plots (show e.g. only a selected year)
+* Plotting uncertainty on maps (perhaps simply allowing to choose a lower or upper bound?)
+* Ability to subtract list of reference states. Joining on all levels except year and subtracting?
+* Add vertical line at 0 option for plot.boot_stat function (for visualizing difference from 0)
+* Add simpler time-series plotting function.
+* Add filter functions to boot_stat objects (for easier plotting of specific strata)
+* Add time filter on get_observations, to get comparable time windows (but for phenology variation)
+
+
+

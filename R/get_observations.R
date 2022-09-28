@@ -20,7 +20,7 @@
 #'
 #' @examples
 #'
-#' dontrun{
+#' \dontrun{
 #'
 
 #'

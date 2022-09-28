@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Norimon
+# Norimon <img src="https://github.com/NINAnor/Norimon/inst/figure/sticker.png" align="right" width="160px"/>
 
 <!-- badges: start -->
 
@@ -9,7 +9,6 @@
 [![](https://img.shields.io/badge/devel%20version-0.0.0.9006-blue.svg)](https://github.com/NINAnor/Norimon)
 [![R build
 status](https://github.com/NINAnor/Norimon/workflows/R-CMD-check/badge.svg)](https://github.com/NINAnor/Norimon/actions)
-[![](https://travis-ci.org/NINAnor/Norimon.svg?branch=main)](https://travis-ci.org/NINAnor/Norimon)
 [![](https://img.shields.io/github/languages/code-size/NINAnor/Norimon.svg)](https://github.com/NINAnor/Norimon)
 
 [![R-CMD-check](https://github.com/NINAnor/Norimon/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/NINAnor/Norimon/actions/workflows/R-CMD-check.yaml)

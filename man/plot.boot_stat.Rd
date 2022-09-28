@@ -19,6 +19,7 @@ Plot a boot_stat object
 }
 \examples{
 
+\dontrun{
 
 
  beetles <- get_observations(subset_orders = "Coleoptera",
@@ -32,5 +33,6 @@ beetle_shannon_boot <- bootstrap_value(beetles,
                                                   "region_name"))
 
 plot(beetle_shannon_boot)
+}
 
 }
