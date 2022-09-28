@@ -6,8 +6,8 @@
 <!-- badges: start -->
 
 [![](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![](https://img.shields.io/badge/devel%20version-0.0.0.9006-blue.svg)](https://github.com/NINAnor/Norimon)[![R
-build
+[![](https://img.shields.io/badge/devel%20version-0.0.0.9006-blue.svg)](https://github.com/NINAnor/Norimon)
+[![R build
 status](https://github.com/NINAnor/Norimon/workflows/R-CMD-check/badge.svg)](https://github.com/NINAnor/Norimon/actions)
 [![](https://travis-ci.org/NINAnor/Norimon.svg?branch=main)](https://travis-ci.org/NINAnor/Norimon)
 [![](https://img.shields.io/github/languages/code-size/NINAnor/Norimon.svg)](https://github.com/NINAnor/Norimon)
