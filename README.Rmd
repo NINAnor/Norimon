@@ -13,21 +13,20 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Norimon <img src="https://github.com/NINAnor/Norimon/inst/figures/sticker.png" align="right" width="160px"/>
+# Norimon <img src="https://github.com/NINAnor/Norimon/inst/figures/Norimon.png" align="right" width="160px"/>
 
 <!-- badges: start -->
 ```{r, echo = F}
 library(badger)
 ```
 `r badge_lifecycle("experimental")` 
-`r badge_devel("NINAnor/Norimon", "blue")` 
+`r badge_github_version("NINAnor/Norimon", "blue")`
+`r badge_cran_release("Norimon")`
 `r badge_github_actions("NINAnor/Norimon")` 
 `r badge_code_size("NINAnor/Norimon")`
-
-[![R-CMD-check](https://github.com/NINAnor/Norimon/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/NINAnor/Norimon/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-Code for the Norwegian Insect Monitoring program, by the Norwegian Institute for Nature Research
+Code for working with data from the Norwegian Insect Monitoring program. This is experimental and currently only for internal use. By Jens Åström, the Norwegian Institute for Nature Research.
 
 ## Installation
 

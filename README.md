@@ -1,21 +1,21 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Norimon <img src="https://github.com/NINAnor/Norimon/inst/figures/sticker.png" align="right" width="160px"/>
+# Norimon <img src="https://github.com/NINAnor/Norimon/inst/figures/Norimon.png" align="right" width="160px"/>
 
 <!-- badges: start -->
 
 [![](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![](https://img.shields.io/badge/devel%20version-0.0.0.9006-blue.svg)](https://github.com/NINAnor/Norimon)
+[![](https://img.shields.io/badge/devel%20version-0.0.0.9007-blue.svg)](https://github.com/NINAnor/Norimon)
+[![](https://www.r-pkg.org/badges/version/Norimon)](https://cran.r-project.org/package=Norimon)
 [![R build
 status](https://github.com/NINAnor/Norimon/workflows/R-CMD-check/badge.svg)](https://github.com/NINAnor/Norimon/actions)
 [![](https://img.shields.io/github/languages/code-size/NINAnor/Norimon.svg)](https://github.com/NINAnor/Norimon)
-
-[![R-CMD-check](https://github.com/NINAnor/Norimon/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/NINAnor/Norimon/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-Code for the Norwegian Insect Monitoring program, by the Norwegian
-Institute for Nature Research
+Code for working with data from the Norwegian Insect Monitoring program.
+This is experimental and currently only for internal use. By Jens
+Åström, the Norwegian Institute for Nature Research.
 
 ## Installation
 
@@ -33,6 +33,9 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(Norimon)
+#> Loading required package: NinaR
+#> Loading required package: rmarkdown
+#> Loading required package: ggplot2
 connect_to_insect_db()
 ```
 
