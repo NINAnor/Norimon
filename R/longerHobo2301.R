@@ -9,6 +9,8 @@
 #' @return A tibble of well formatted logger data from the MX2301A type logger
 #' @export
 #'
+#' @importFrom rlang .data is_character
+#'
 #' @examples
 #'
 #' \dontrun{
@@ -21,62 +23,62 @@ longerHobo2301 <- function(inputFile,
                            guess_max = 10000,
                            ...){
 
-  rawDat <- read_csv(inputFile,
-                     col_types = cols(.default = "c"),
+  rawDat <- readr::read_csv(inputFile,
+                     col_types = readr::cols(.default = "c"),
                      guess_max = guess_max,
                      ...)
 
   dat <- rawDat %>%
     select(-"Line#") %>%
-    mutate(date = as.POSIXct(Date, format = "%m/%d/%y %H:%M:%S")) %>%
+    mutate(date = as.POSIXct(.data$Date, format = "%m/%d/%y %H:%M:%S")) %>%
     mutate_if(is_character, as.double) %>%
     select(-Date)
 
 
   temp <- dat %>%
-    pivot_longer(cols = starts_with("Temperature"),
+    pivot_longer(cols = tidyr::starts_with("Temperature"),
                  names_to = "logger_id",
                  values_to = "temperature") %>%
     select(date,
            logger_id,
            temperature) %>%
-    filter(!is.na(temperature))
+    filter(!is.na(.data$temperature))
 
   rh <- dat %>%
-    pivot_longer(cols = starts_with("RH"),
+    pivot_longer(cols = tidyr::starts_with("RH"),
                  names_to = "logger_id",
                  values_to = "rh") %>%
     select(date,
            logger_id,
            rh)%>%
-    filter(!is.na(rh))
+    filter(!is.na(.data$rh))
 
   dew_point  <- dat %>%
-    pivot_longer(cols = starts_with("Dew"),
+    pivot_longer(cols = tidyr::starts_with("Dew"),
                  names_to = "logger_id",
                  values_to = "dew_point") %>%
     select(date,
            logger_id,
            dew_point) %>%
-    filter(!is.na(dew_point))
+    filter(!is.na(.data$dew_point))
 
 
   #Fix to allow for two deployments of same logger. gets duplicate column names from hobo-export
   temp <- temp %>%
-    mutate(logger_id = str_extract(logger_id,
+    mutate(logger_id = stringr::str_extract(.data$logger_id,
                                    "[^, ]+$")) %>%
-    mutate(logger_id = str_extract(logger_id,
+    mutate(logger_id = stringr::str_extract(.data$logger_id,
                                    "(^[0-9]*)"))
 
   rh <- rh %>%
-    mutate(logger_id = str_extract(logger_id,
+    mutate(logger_id = stringr::str_extract(.data$logger_id,
                                    "[^, ]+$")) %>%
-    mutate(logger_id = str_extract(logger_id,
+    mutate(logger_id = stringr::str_extract(.data$logger_id,
                                    "(^[0-9]*)"))
   dew_point <- dew_point %>%
-    mutate(logger_id = str_extract(logger_id,
+    mutate(logger_id = stringr::str_extract(.data$logger_id,
                                    "[^, ]+$")) %>%
-    mutate(logger_id = str_extract(logger_id,
+    mutate(logger_id = stringr::str_extract(.data$logger_id,
                                    "(^[0-9]*)"))
 
   if(!all(all(temp$date == rh$date),

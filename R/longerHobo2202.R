@@ -7,6 +7,7 @@
 #' @return A tibble of well formatted logger data from the MX2301A type logger
 #' @export
 #'
+#' @importFrom rlang .data is_character
 #' @examples
 #'
 #' \dontrun{
@@ -22,21 +23,21 @@ longerHobo2202 <- function(inputFile,
                            guess_max = 10000,
                            ...){
 
-  rawDat <- read_csv(inputFile,
+  rawDat <- readr::read_csv(inputFile,
                      guess_max = guess_max,
-                     col_types = cols(),
+                     col_types = readr::cols(),
                      ...)
 
   dat <- rawDat %>%
     select(-"Line#") %>%
-    mutate(date = as.POSIXct(Date, format = "%m/%d/%y %H:%M:%S")) %>%
+    mutate(date = as.POSIXct(.data$Date, format = "%m/%d/%y %H:%M:%S")) %>%
     mutate_if(is_character, as.double) %>%
     select(-Date)
 
 
 
   temp <- dat %>%
-    pivot_longer(cols = starts_with("Temperature"),
+    tidyr::pivot_longer(cols = tidyr::starts_with("Temperature"),
                  names_to = "logger_id",
                  values_to = "temperature") %>%
     select(date,
@@ -45,21 +46,21 @@ longerHobo2202 <- function(inputFile,
     filter(!is.na(temperature))
 
   light <- dat %>%
-    pivot_longer(cols = starts_with("Light"),
+    pivot_longer(cols = tidyr::starts_with("Light"),
                  names_to = "logger_id",
                  values_to = "light") %>%
     select(date,
            logger_id,
            light)%>%
-    filter(!is.na(light))
+    filter(!is.na(.data$light))
 
 
 
   temp <- temp %>%
-    mutate(logger_id = str_extract(logger_id,
+    mutate(logger_id = stringr::str_extract(.data$logger_id,
                                    "[^, ]+$"))
   light <- light %>%
-    mutate(logger_id = str_extract(logger_id,
+    mutate(logger_id = stringr::str_extract(.data$logger_id,
                                    "[^, ]+$"))
 
   if(!all(temp$date == light$date)) stop("Tables datetimes doesn't match")
@@ -68,8 +69,8 @@ longerHobo2202 <- function(inputFile,
     full_join(light,
               by = c("date" = "date",
                      "logger_id" = "logger_id")) %>%
-    arrange(logger_id,
-            date) %>%
+    arrange(.data$logger_id,
+            .data$date) %>%
     mutate(logger_type = "MX2202") %>%
     select(date,
            logger_type,

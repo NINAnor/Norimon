@@ -27,5 +27,6 @@ Imports:
     tidyr,
     sf
 Depends:
-  ggplot2
+  ggplot2,
+  rlang
 VignetteBuilder: knitr
