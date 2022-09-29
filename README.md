@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Norimon <img src="https://github.com/NINAnor/Norimon/inst/figures/Norimon.png" align="right" width="160px"/>
+# Norimon <img src="https://github.com/NINAnor/Norimon/blob/main/inst/figures/Norimon.png" align="right" width="160px"/>
 
 <!-- badges: start -->
 
@@ -33,8 +33,6 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(Norimon)
-#> Loading required package: NinaR
-#> Loading required package: rmarkdown
 #> Loading required package: ggplot2
 connect_to_insect_db()
 ```
