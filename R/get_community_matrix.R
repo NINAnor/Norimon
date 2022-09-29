@@ -20,7 +20,7 @@
 #'
 #' @examples
 #'
-#' dontrun{
+#' \dontrun{
 #'
 #'   connect_to_insect_db()
 #'

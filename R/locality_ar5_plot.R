@@ -5,24 +5,23 @@
 #' @param title Include title? Boolean.
 #' @param legend Include legend? Boolean.
 #' @param strip Strip plot of default ggplot theme?
-#' @param ...
 #'
 #' @return A plot of a the AR5 layer of a locality
 #' @export
 #'
 #' @examples
 #'
+#' \dontrun{
 #'
 #' locality_ar5_plot(locality = "Semi-nat_01")
-#'
+#'}
 #'
 
 locality_ar5_plot <- function(locality,
                               ano_circles = T,
                               title = T,
                               legend = T,
-                              strip = F,
-                              ...){
+                              strip = F){
 
   loc_filter <- dplyr::enquo(locality)
 

@@ -1,0 +1,54 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# Norimon <img src="https://github.com/NINAnor/Norimon/inst/figures/Norimon.png" align="right" width="160px"/>
+
+<!-- badges: start -->
+```{r, echo = F}
+library(badger)
+```
+`r badge_lifecycle("experimental")` 
+`r badge_github_version("NINAnor/Norimon", "blue")`
+`r badge_cran_release("Norimon")`
+`r badge_github_actions("NINAnor/Norimon")` 
+`r badge_code_size("NINAnor/Norimon")`
+<!-- badges: end -->
+
+Code for working with data from the Norwegian Insect Monitoring program. This is experimental and currently only for internal use. By Jens Åström, the Norwegian Institute for Nature Research.
+
+## Installation
+
+You can install the development version of Norimon from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("NINAnor/Norimon")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r connect}
+library(Norimon)
+connect_to_insect_db()
+```
+
+
+```{r beetles}
+beetles <- get_observations(subset_orders = "Coleoptera")
+beetles
+
+```

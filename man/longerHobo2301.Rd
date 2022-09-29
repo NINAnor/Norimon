@@ -11,7 +11,7 @@ longerHobo2301(inputFile, guess_max = 10000, ...)
 
 \item{guess_max}{optional number of rows to guess the data format from. May have to increase a lot}
 
-\item{...}{}
+\item{...}{additional arguments passed to read_csv}
 }
 \value{
 A tibble of well formatted logger data from the MX2301A type logger
@@ -21,7 +21,7 @@ Convenience function to read in a raw file of hobo logger MX2301A data and rearr
 }
 \examples{
 
-dontrun{
+\dontrun{
 
 mx2301A_data <- longerHobo2301(inputFile = "../rawData/temp_logger/NasIns_2021_all_MX2301A_2021_11_15_11_00_05_CET_1.csv")
 

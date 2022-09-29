@@ -18,9 +18,11 @@
 #' @return A tibble of insect observations from the database
 #' @export
 #'
+#'
+#' @importFrom rlang .data
 #' @examples
 #'
-#' dontrun{
+#' \dontrun{
 #'
 
 #'
@@ -51,6 +53,9 @@ get_observations <- function(id_type = c("metabarcoding"),
                         agg_level = "year_locality",
                         digits = 2,
                         as_tibble = F){
+
+  #Bind these variables to stop R CMD check complaints
+  if(!exists("con")) {con <- NULL}
 
   checkCon()
 
@@ -123,73 +128,73 @@ get_observations <- function(id_type = c("metabarcoding"),
   ##Exclude 2020 4 week samplings
 
   joined <-  joined %>%
-    mutate(weeks_sampled = ifelse(grepl("2020", year) & (grepl("1", trap_short_name) | grepl("3", trap_short_name)), 2, 4)) %>%
-    mutate(weeks_sampled = ifelse(grepl("2020", year), weeks_sampled, 2))
+    mutate(weeks_sampled = ifelse(grepl("2020", year) & (grepl("1", .data$trap_short_name) | grepl("3", trap_short_name)), 2, 4)) %>%
+    mutate(weeks_sampled = ifelse(grepl("2020", year), .data$weeks_sampled, 2))
 
   joined <- joined %>%
-    filter(weeks_sampled == 2)
+    filter(.data$weeks_sampled == 2)
 
 
   if(id_type == "metabarcoding"){
     joined <- joined %>%
-      filter(identification_type == "metabarcoding")
+      filter(.data$identification_type == "metabarcoding")
   }
 
   #Filter on region name
   if(!is.null(subset_region)){
     subset_region <- c("", subset_region)
     joined <- joined %>%
-      filter(region_name %IN% subset_region)
+      filter(.data$region_name %in% subset_region)
   }
 
   #Filter on region name
   if(!is.null(subset_habitat)){
     subset_habitat <- c("", subset_habitat)
     joined <- joined %>%
-      filter(habitat_type %IN% subset_habitat)
+      filter(.data$habitat_type %in% subset_habitat)
   }
 
   if(!is.null(subset_orders)){
     subset_orders <- c("", subset_orders) #To allow one-length subsets
     joined <- joined %>%
-      filter(id_order %IN% subset_orders)
+      filter(.data$id_order %IN% subset_orders)
   }
 
   if(!is.null(subset_families)){
     subset_families <- c("", subset_families)
     joined <- joined %>%
-      filter(id_family %IN% subset_families)
+      filter(.data$id_family %in% subset_families)
   }
 
   if(!is.null(subset_species)){
     subset_species <- c("", subset_species)
     joined <- joined %>%
-      filter(species_latin_fixed %in% subset_species)
+      filter(.data$species_latin_fixed %in% subset_species)
   }
 
   if(!is.null(subset_year)){
     subset_year <- c("", subset_year)
     joined <- joined %>%
-      filter(year %IN% subset_year)
+      filter(.data$year %in% subset_year)
   }
 
   if(!is.null(subset_genus)){
     subset_genus <- c("", subset_genus)
     joined <- joined %>%
-      filter(id_genus %IN% subset_genus)
+      filter(.data$id_genus %in% subset_genus)
   }
 
   #filter on dataset
 
   if(!is.null(dataset)){
     joined <- joined %>%
-      filter(project_short_name == dataset)
+      filter(.data$project_short_name == dataset)
   }
 
   #filter on trap type (recommended to only take MF)
   if(!is.null(trap_type) & trap_type != "All"){
     joined <- joined %>%
-      filter(grepl((trap_type), sample_name))
+      filter(grepl((trap_type), .data$sample_name))
   }
 
 
@@ -206,11 +211,11 @@ get_observations <- function(id_type = c("metabarcoding"),
     res <- res %>%
       collect() %>%
       group_by(year_locality_id, locality_id, species_latin_fixed) %>%
-      summarise(no_asv_per_species = n_distinct(sequence_id)) %>%
+      summarise(no_asv_per_species = n_distinct(.data$sequence_id)) %>%
       group_by(year_locality_id, locality_id) %>%
-      summarise(no_species = n_distinct(species_latin_fixed),
-                shannon_div = round(calc_shannon(species_latin_fixed), digits),
-                mean_asv_per_species = round(mean(no_asv_per_species), digits)) %>%
+      summarise(no_species = n_distinct(.data$species_latin_fixed),
+                shannon_div = round(calc_shannon(.data$species_latin_fixed), digits),
+                mean_asv_per_species = round(mean(.data$no_asv_per_species), digits)) %>%
       left_join(localities,
                 by = c("locality_id" = "id"),
                 copy = T) %>%
@@ -241,12 +246,12 @@ get_observations <- function(id_type = c("metabarcoding"),
     res <- res %>%
       collect() %>%
       group_by(start_date_obs, end_date_obs, sampling_name, year_locality_id, locality_id, species_latin_fixed) %>%
-      summarise(no_asv_per_species = n_distinct(sequence_id)) %>%
+      summarise(no_asv_per_species = n_distinct(.data$sequence_id)) %>%
       group_by(sampling_name, year_locality_id, locality_id) %>%
-      summarise(no_trap_days = mean(as.numeric(end_date_obs - start_date_obs)), ##to get the mean trap days from all traps within the sampling event (should be the same for all traps)
-                no_species = n_distinct(species_latin_fixed),
-                shannon_div = round(calc_shannon(species_latin_fixed), digits),
-                mean_asv_per_species = round(mean(no_asv_per_species), digits)) %>%
+      summarise(no_trap_days = mean(as.numeric(.data$end_date_obs - .data$start_date_obs)), ##to get the mean trap days from all traps within the sampling event (should be the same for all traps)
+                no_species = n_distinct(.data$species_latin_fixed),
+                shannon_div = round(calc_shannon(.data$species_latin_fixed), digits),
+                mean_asv_per_species = round(mean(.data$no_asv_per_species), digits)) %>%
       left_join(localities,
                 by = c("locality_id" = "id"),
                 copy = T) %>%
@@ -278,12 +283,12 @@ get_observations <- function(id_type = c("metabarcoding"),
       group_by(region_name,
                habitat_type,
                species_latin_fixed) %>%
-      summarise(no_asv_per_species = n_distinct(sequence_id)) %>%
+      summarise(no_asv_per_species = n_distinct(.data$sequence_id)) %>%
       group_by(region_name,
                habitat_type) %>%
-      summarise(no_species = n_distinct(species_latin_fixed),
-                shannon_div = round(calc_shannon(species_latin_fixed), digits),
-                mean_asv_per_species = round(mean(no_asv_per_species), digits)) %>%
+      summarise(no_species = n_distinct(.data$species_latin_fixed),
+                shannon_div = round(calc_shannon(.data$species_latin_fixed), digits),
+                mean_asv_per_species = round(mean(.data$no_asv_per_species), digits)) %>%
       ungroup() %>%
       select(habitat_type,
              region_name,
@@ -304,13 +309,13 @@ get_observations <- function(id_type = c("metabarcoding"),
                habitat_type,
                year,
                species_latin_fixed) %>%
-      summarise(no_asv_per_species = n_distinct(sequence_id)) %>%
+      summarise(no_asv_per_species = n_distinct(.data$sequence_id)) %>%
       group_by(region_name,
                habitat_type,
                year) %>%
-      summarise(no_species = n_distinct(species_latin_fixed),
-                shannon_div = round(calc_shannon(species_latin_fixed), digits),
-                mean_asv_per_species = round(mean(no_asv_per_species), digits)) %>%
+      summarise(no_species = n_distinct(.data$species_latin_fixed),
+                shannon_div = round(calc_shannon(.data$species_latin_fixed), digits),
+                mean_asv_per_species = round(mean(.data$no_asv_per_species), digits)) %>%
       ungroup() %>%
       select(year,
              habitat_type,
@@ -330,10 +335,10 @@ get_observations <- function(id_type = c("metabarcoding"),
     res <- res %>%
       collect() %>%
       group_by(species_latin_fixed) %>%
-      summarise(no_asv_per_species = n_distinct(sequence_id)) %>%
-      summarise(no_species = n_distinct(species_latin_fixed),
-                shannon_div = round(calc_shannon(species_latin_fixed), digits),
-                mean_asv_per_species = round(mean(no_asv_per_species), digits)) %>%
+      summarise(no_asv_per_species = n_distinct(.data$sequence_id)) %>%
+      summarise(no_species = n_distinct(.data$species_latin_fixed),
+                shannon_div = round(calc_shannon(.data$species_latin_fixed), digits),
+                mean_asv_per_species = round(mean(.data$no_asv_per_species), digits)) %>%
       ungroup() %>%
       select(no_species,
              shannon_div,

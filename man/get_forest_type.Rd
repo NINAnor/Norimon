@@ -27,8 +27,11 @@ Returns a tibble of forest data from the database.
 get_forest_type Get the forest types from a buffer around the sampling localities
 }
 \examples{
+
+\dontrun{
 connect_to_insect_db()
 forest_data <- get_forest_type()
+}
 
 
 }

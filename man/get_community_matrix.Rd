@@ -55,7 +55,7 @@ get_community_matrix
 }
 \examples{
 
-dontrun{
+\dontrun{
 
   connect_to_insect_db()
 

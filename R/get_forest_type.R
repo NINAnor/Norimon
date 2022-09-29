@@ -10,8 +10,11 @@
 #'
 #'
 #' @examples
+#'
+#' \dontrun{
 #' connect_to_insect_db()
 #' forest_data <- get_forest_type()
+#' }
 #'
 #'
 

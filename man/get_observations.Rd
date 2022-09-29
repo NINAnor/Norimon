@@ -58,7 +58,7 @@ get_observations Get insect observation data from the database
 }
 \examples{
 
-dontrun{
+\dontrun{
 
 
   connect_to_insect_db()
