@@ -21,6 +21,8 @@ get_climate_data <- function(locality = NULL){
 
   if(is.null(locality)) stop("Need a locality name as character")
 
+  Norimon:::checkCon()
+
   clim_tbl <- dplyr::tbl(con,
                        DBI::Id(schema = "climate_data",
                           table = "se_norge"
