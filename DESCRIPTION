@@ -1,6 +1,6 @@
 Package: Norimon
 Title: Utility Functions for the National Insect Monitoring in Norway
-Version: 0.0.0.9007
+Version: 0.0.0.9008
 Authors@R: 
     person("Jens", "Åström", , "jens.astrom@nina.no", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-6114-0440"))
