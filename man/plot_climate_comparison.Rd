@@ -10,7 +10,8 @@ plot_climate_comparison(
   focus_year = "latest",
   clip_to_1990 = TRUE,
   y_high_limit = 60,
-  language = c("Norwegian", "English")
+  language = c("Norwegian", "English"),
+  main_title = TRUE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ plot_climate_comparison(
 \item{y_high_limit}{The y-axis limit of the plot.}
 
 \item{language}{Figure text in "Norwegian" or "English"}
+
+\item{main_title}{Print plot title? Boolean.}
 }
 \value{
 A ggplot

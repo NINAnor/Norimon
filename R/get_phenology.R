@@ -243,17 +243,33 @@ get_phenology <- function(taxonomic_level = NULL,
               locality,
               sampling_name)
 
+
+    if(!is.null(limit)){
+      res <- joined %>%
+        head(limit)
+    }
+
+    if(as_tibble){
+      res <- res %>%
+        as_tibble()
+    }
+
+
+    class(res) <- c("phenology", class(res))
+
+    attr(res, "taxonomic_level") <- "id_order"
+
   }
 
 
   if(taxonomic_level == "Family"){
 
     res <- res %>%
-      group_by(start_date_obs, end_date_obs, sampling_name, year_locality_id, locality_id, id_family, species_latin_fixed) %>%
+      group_by(start_date_obs, end_date_obs, sampling_name, year_locality_id, locality_id, id_order, id_family, species_latin_fixed) %>%
       summarise(no_asv_per_species = as.integer(n_distinct(sequence_id)),
                 species_read_ab = sum(no_reads, na.rm = TRUE)) %>%
       collect() %>%
-      group_by(start_date_obs, end_date_obs, sampling_name, year_locality_id, locality_id, id_family) %>%
+      group_by(start_date_obs, end_date_obs, sampling_name, year_locality_id, locality_id, id_order, id_family) %>%
       summarise(no_trap_days = mean(as.numeric(.data$end_date_obs - .data$start_date_obs)), ##to get the mean trap days from all traps within the sampling event (should be the same for all traps)
                 no_species = n_distinct(.data$species_latin_fixed),
                 shannon_div = round(calc_shannon(.data$species_latin_fixed), digits),
@@ -280,6 +296,7 @@ get_phenology <- function(taxonomic_level = NULL,
              sampling_name,
              sampling_number,
              id_order,
+             id_family,
              habitat_type,
              region_name,
              start_date_obs,
@@ -296,10 +313,6 @@ get_phenology <- function(taxonomic_level = NULL,
               locality,
               sampling_name)
 
-  }
-
-
-
 
   if(!is.null(limit)){
     res <- joined %>%
@@ -314,7 +327,9 @@ get_phenology <- function(taxonomic_level = NULL,
 
   class(res) <- c("phenology", class(res))
 
-  attr(res, "taxonomic_level") <- colnames(res)[grep("id_", colnames(res))]
+  attr(res, "taxonomic_level") <- "id_family"
+
+  }
 
   return(res)
 

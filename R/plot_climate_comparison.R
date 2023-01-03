@@ -8,7 +8,7 @@
 #' @param clip_to_1990 Logical, should historical records be clipped to >1990.
 #' @param y_high_limit The y-axis limit of the plot.
 #' @param language Figure text in "Norwegian" or "English"
-#'
+#' @param main_title Print plot title? Boolean.
 #' @return A ggplot
 #' @export
 #'
@@ -33,7 +33,8 @@ plot_climate_comparison <- function(climate_data = NULL,
                                     clip_to_1990 = TRUE,
                                     y_high_limit = 60,
                                     language = c("Norwegian",
-                                                 "English")){
+                                                 "English"),
+                                    main_title = TRUE){
 
 
   # 2017-01-17
@@ -127,23 +128,23 @@ plot_climate_comparison <- function(climate_data = NULL,
   variable <- enquo(variable)
 
   placename <- climate_data %>%
-    distinct(locality) %>%
-    pull()
+    dplyr::distinct(locality) %>%
+    dplyr::pull()
 
   climate_data <- climate_data %>%
-    mutate(year = as.numeric(format(date,'%Y')),
+    dplyr::mutate(year = as.numeric(format(date,'%Y')),
            month = as.numeric(format(date,'%m')),
            day = as.numeric(format(date,'%d')),
            new_day = lubridate::yday(date))
 
   if(clip_to_1990){
     climate_data <- climate_data %>%
-      filter(year >= 1990)
+      dplyr::filter(year >= 1990)
   }
 
   latest_year <- climate_data %>%
-    summarise(max(year)) %>%
-    pull()
+    dplyr::summarise(max(year)) %>%
+    dplyr::pull()
 
   if(focus_year == "latest"){
     focus_year <- latest_year
@@ -152,42 +153,42 @@ plot_climate_comparison <- function(climate_data = NULL,
 
   #Set up average and present data
   past <- climate_data %>%
-    filter(year != focus_year) %>%
-    group_by(new_day) %>%
-    mutate(upper = my_max(!!variable, na.rm = TRUE), # identify max value for each day
+    dplyr::filter(year != focus_year) %>%
+    dplyr::group_by(new_day) %>%
+    dplyr:: mutate(upper = my_max(!!variable, na.rm = TRUE), # identify max value for each day
            lower = min(!!variable, na.rm = TRUE), # identify min value for each day
            avg = mean(!!variable, na.rm = TRUE),  # calculate mean value for each day
            se = sd(!!variable, na.rm = TRUE)/sqrt(length(!!variable))) %>%  # calculate standard error of mean
-    mutate(avg_upper = avg + (qt(1-.05/2, nrow(.)) * se),  # calculate 95% CI for mean (get the appropriate t-value for the number of observations)
+    dplyr::mutate(avg_upper = avg + (qt(1-.05/2, nrow(.)) * se),  # calculate 95% CI for mean (get the appropriate t-value for the number of observations)
            avg_lower = avg - (qt(1-.05/2, nrow(.)) * se)) %>%  # calculate 95% CI for mean
-    ungroup()
+    dplyr::ungroup()
 
   first_date <- past %>%
-    summarise(first_date = min(date, na.rm = TRUE)) %>%
-    mutate(first_date = format(first_date, "%d %B, %Y")) %>%
-    pull()
+    dplyr::summarise(first_date = min(date, na.rm = TRUE)) %>%
+    dplyr::mutate(first_date = format(first_date, "%d %B, %Y")) %>%
+    dplyr::pull()
 
   present <- climate_data %>%
-    filter(year == focus_year)
+    dplyr::filter(year == focus_year)
 
   past_lows <- past %>%
-    group_by(new_day) %>%
-    summarise(past_low = min(!!variable, na.rm = TRUE))
+    dplyr::group_by(new_day) %>%
+    dplyr::summarise(past_low = min(!!variable, na.rm = TRUE))
 
   present_lows <- present %>%
-    left_join(past_lows,
+    dplyr::left_join(past_lows,
               by = c("new_day" = "new_day")) %>%
-    filter(!!variable < past_low) %>%
-    arrange(date)
+    dplyr::filter(!!variable < past_low) %>%
+    dplyr::arrange(date)
 
   past_highs <- past %>%
-    group_by(new_day) %>%
-    summarise(past_high = my_max(!!variable, na.rm = TRUE))
+    dplyr::group_by(new_day) %>%
+    dplyr::summarise(past_high = my_max(!!variable, na.rm = TRUE))
 
   present_highs <- present %>%
-    left_join(past_highs,
+    dplyr::left_join(past_highs,
               by = c("new_day" = "new_day")) %>%
-    filter(!!variable > past_high)
+    dplyr::filter(!!variable > past_high)
 
 
 
@@ -233,17 +234,17 @@ p <- p +
              size = 1)
 
 #Add horizontal lines
-p <- p +
-  geom_hline(yintercept = -30, colour = "white", linetype = 1, size = .25) +
-  geom_hline(yintercept = -20, colour = "white", linetype = 1, size = .25) +
-  geom_hline(yintercept = -10, colour = "white", linetype = 1, size = .25) +
-  geom_hline(yintercept = 0, colour = "white", linetype = 1, size = .25) +
-  geom_hline(yintercept = 10, colour = "white", linetype = 1, size = .25) +
-  geom_hline(yintercept = 20, colour = "white", linetype = 1, size = .25) +
-  geom_hline(yintercept = 30, colour = "white", linetype = 1, size = .25) +
-  geom_hline(yintercept = 40, colour = "white", linetype = 1, size = .25) +
-  geom_hline(yintercept = 50, colour = "white", linetype = 1, size = .25) +
-  geom_hline(yintercept = 60, colour = "white", linetype = 1, size = .25)
+# p <- p +
+#   geom_hline(yintercept = -30, colour = "white", linetype = 1, size = .25) +
+#   geom_hline(yintercept = -20, colour = "white", linetype = 1, size = .25) +
+#   geom_hline(yintercept = -10, colour = "white", linetype = 1, size = .25) +
+#   geom_hline(yintercept = 0, colour = "white", linetype = 1, size = .25) +
+#   geom_hline(yintercept = 10, colour = "white", linetype = 1, size = .25) +
+#   geom_hline(yintercept = 20, colour = "white", linetype = 1, size = .25) +
+#   geom_hline(yintercept = 30, colour = "white", linetype = 1, size = .25) +
+#   geom_hline(yintercept = 40, colour = "white", linetype = 1, size = .25) +
+#   geom_hline(yintercept = 50, colour = "white", linetype = 1, size = .25) +
+#   geom_hline(yintercept = 60, colour = "white", linetype = 1, size = .25)
 
 #Add vertical lines
 p <- p +
@@ -277,12 +278,13 @@ p <- p +
 
 
 high_annot_coord <- present_highs %>%
-  filter(!!variable == my_max(!!variable, na.rm = TRUE)) %>%
-  select(new_day,
+  dplyr::filter(!!variable == my_max(!!variable, na.rm = TRUE)) %>%
+  dplyr::select(new_day,
          !!variable) %>%
   as.vector()
 
 no_high_days <- nrow(present_highs)
+
 
 p <- p +
   annotate("segment", x = high_annot_coord[[1]], xend = high_annot_coord[[1]] + 10,
@@ -292,7 +294,7 @@ p <- p +
            colour = "firebrick3",
            hjust = 0,
            vjust = 0) +
-  annotate("text", x = high_annot_coord[[1]] + 12, y = high_annot_coord[[2]] + 2,
+  annotate("text", x = high_annot_coord[[1]] + 12, y = high_annot_coord[[2]] + 1,
            label = text_table[[language]][5], size = 3, colour = "firebrick3",
            hjust = 0,
            vjust = 0)
@@ -301,27 +303,68 @@ p <- p +
 
 low_annot_coord <- present_lows %>%
   #filter(!!variable == suppressWarnings(min(!!variable, na.rm = TRUE))) %>%
-  slice(1) %>%
-  select(new_day,
+  dplyr::slice(1) %>%
+  dplyr::select(new_day,
          !!variable) %>%
   as.vector()
 
+
 no_low_days <- nrow(present_lows)
 
+
+#Displace low annot cord if the first coldest day is to late to fit the text
+if(low_annot_coord[[1]] > 250) {
+
+
 p <- p +
-  annotate("segment", x = low_annot_coord[[1]], xend = low_annot_coord[[1]] + 10,
+  annotate("segment", x = low_annot_coord[[1]], xend = low_annot_coord[[1]] - 40,
            y = low_annot_coord[[2]], yend = low_annot_coord[[2]] - 5, colour = "blue3") +
-  annotate("text", x = low_annot_coord[[1]] + 12, y = low_annot_coord[[2]] - 4 ,
+  annotate("text", x = low_annot_coord[[1]] - 135, y = low_annot_coord[[2]] - 7 ,
            label = paste0(no_low_days, text_table[[language]][6]), size = 3,
            colour = "blue3",
            hjust = 0,
            vjust = 0) +
-  annotate("text", x = low_annot_coord[[1]] + 12, y = low_annot_coord[[2]] - 6,
+  annotate("text", x = low_annot_coord[[1]] - 135, y = low_annot_coord[[2]] - 10,
            label = text_table[[language]][7], size = 3, colour = "blue3",
            hjust = 0,
            vjust = 0)
 
+} else{
 
+if(low_annot_coord[[1]] <= 250 & low_annot_coord[[1]] > 150){
+
+  p <- p +
+    annotate("segment", x = low_annot_coord[[1]], xend = low_annot_coord[[1]] - 40,
+             y = low_annot_coord[[2]], yend = low_annot_coord[[2]] - 15, colour = "blue3") +
+    annotate("text", x = low_annot_coord[[1]] - 135, y = low_annot_coord[[2]] - 17 ,
+             label = paste0(no_low_days, text_table[[language]][6]), size = 3,
+             colour = "blue3",
+             hjust = 0,
+             vjust = 0) +
+    annotate("text", x = low_annot_coord[[1]] - 135, y = low_annot_coord[[2]] - 20,
+             label = text_table[[language]][7], size = 3, colour = "blue3",
+             hjust = 0,
+             vjust = 0)
+
+} else {
+
+  p <- p +
+    annotate("segment", x = low_annot_coord[[1]], xend = low_annot_coord[[1]] + 10,
+             y = low_annot_coord[[2]], yend = low_annot_coord[[2]] - 5, colour = "blue3") +
+    annotate("text", x = low_annot_coord[[1]] + 12, y = low_annot_coord[[2]] - 4 ,
+             label = paste0(no_low_days, text_table[[language]][6]), size = 3,
+             colour = "blue3",
+             hjust = 0,
+             vjust = 0) +
+    annotate("text", x = low_annot_coord[[1]] + 12, y = low_annot_coord[[2]] - 7,
+             label = text_table[[language]][7], size = 3, colour = "blue3",
+             hjust = 0,
+             vjust = 0)
+}
+}
+
+
+if(main_title){
 p <- p +
   ggtitle(paste(placename, text_table[[language]][1], focus_year, sep = "")) +
   theme(plot.title=element_text(face = "bold", hjust = .012, vjust = .8, colour = "#3C3C3C", size = 20)) +
@@ -332,7 +375,7 @@ p <- p +
            size = 4,
            fontface = "bold",
            hjust = 0)
-
+}
 
 p <- p +
   annotate("text",
@@ -350,7 +393,7 @@ p <- p +
 
 
 #Annotate max and 95% intervals
-legend_pos <- tibble(x = 300, y = y_high_limit - 30)
+legend_pos <- tibble::tibble(x = 300, y = y_high_limit - 30)
 
 legend_data <- data.frame(x = seq(legend_pos$x - 6, legend_pos$x + 1), y = rnorm(8, legend_pos$y + 10, 2))
 
