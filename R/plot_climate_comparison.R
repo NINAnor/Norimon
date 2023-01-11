@@ -9,6 +9,7 @@
 #' @param y_high_limit The y-axis limit of the plot.
 #' @param language Figure text in "Norwegian" or "English"
 #' @param main_title Print plot title? Boolean.
+#' @param rolling_mean Plot rolling mean of 5 days? Suitable for precipitation
 #' @return A ggplot
 #' @export
 #'
@@ -32,9 +33,11 @@ plot_climate_comparison <- function(climate_data = NULL,
                                     focus_year = "latest",
                                     clip_to_1990 = TRUE,
                                     y_high_limit = 60,
+                                    y_low_limit = -30,
                                     language = c("Norwegian",
                                                  "English"),
-                                    main_title = TRUE){
+                                    main_title = TRUE,
+                                    rolling_mean = FALSE){
 
 
   # 2017-01-17
@@ -64,38 +67,42 @@ plot_climate_comparison <- function(climate_data = NULL,
 
 
   text_table <- list("Norwegian" = c("s vær i ",
-                                     "Data representer gjennomsnittlig ",
+                                     "Fargete områder representer gjennomsnittlig ",
                                      ".\nReferansedata strekker seg fra ",
-                                     " dager med høyere",
+                                     " dager med høyere\n",
                                      "verdier enn referansedata",
-                                     " dager med lavere",
+                                     " dager med lavere\n",
                                      "verdier enn referansedata",
                                      "Historisk maksimum",
                                      "Historisk minimum",
-                                     "95% konfidanse"),
+                                     "95% konfidanse",
+                                     "Denne figur viser daglige verdier.\n",
+                                     "Denne figur viser glidende middelverdi over 5 dager.\n"),
                      "English" = c("'s weather in ",
-                                   "Data represents average ",
+                                   "Colored regions represents average ",
                                    ".\nReference data beginning from ",
-                                   " days with higher",
+                                   " days with higher\n",
                                    "values than reference data",
-                                   " days with lower",
+                                   " days with lower\n",
                                    "values han reference data",
                                    "Historical max",
                                    "Historical low",
-                                   "95% confidence"))
+                                   "95% confidence",
+                                   "This graph show daily values.\n",
+                                   "This graph shows rolling mean over 5 days.\n"))
 
   variable <- match.arg(variable, c("temperature",
                                     "precipitation",
                                     "snow_depth")
-                        )
+  )
   legend_variable <- variable
 
   legend_table <- list("Norwegian" = list(temperature = "temperatur",
-                                           precipitation = "nedbør",
-                                           snow_depth = "snødybde"),
-                          "English" = list(temperature = "temperature",
-                                           precipitation = "precipitation",
-                                           snow_depth = "snow depth")
+                                          precipitation = "nedbør",
+                                          snow_depth = "snødybde"),
+                       "English" = list(temperature = "temperature",
+                                        precipitation = "precipitation",
+                                        snow_depth = "snow depth")
 
   )
 
@@ -105,25 +112,35 @@ plot_climate_comparison <- function(climate_data = NULL,
 
   if(language == "Norwegian"){
     month_lab <- c("jan.",
-               "febr.",
-               "mar.",
-               "apr.",
-               "mai",
-               "jun.",
-               "jul.",
-               "aug.",
-               "sept.",
-               "okt.",
-               "nov.",
-               "des."
+                   "febr.",
+                   "mar.",
+                   "apr.",
+                   "mai",
+                   "jun.",
+                   "jul.",
+                   "aug.",
+                   "sept.",
+                   "okt.",
+                   "nov.",
+                   "des."
     )
   } else {month_lab <- month.abb}
 
-  variable <- switch(variable,
-         temperature = sym("daily_mean_temp"),
-         precipitation = sym("daily_sum_precip"),
-         snow_depth = sym("daily_mean_snow_depth")
-  )
+  if(rolling_mean){
+    variable <- switch(variable,
+                       temperature = sym("moving_avg_temp"),
+                       precipitation = sym("moving_avg_precip"),
+                       snow_depth = sym("moving_avg_snow_depth")
+    )
+
+  } else {
+
+    variable <- switch(variable,
+                       temperature = sym("daily_mean_temp"),
+                       precipitation = sym("daily_sum_precip"),
+                       snow_depth = sym("daily_mean_snow_depth")
+    )
+  }
 
   variable <- enquo(variable)
 
@@ -133,9 +150,21 @@ plot_climate_comparison <- function(climate_data = NULL,
 
   climate_data <- climate_data %>%
     dplyr::mutate(year = as.numeric(format(date,'%Y')),
-           month = as.numeric(format(date,'%m')),
-           day = as.numeric(format(date,'%d')),
-           new_day = lubridate::yday(date))
+                  month = as.numeric(format(date,'%m')),
+                  day = as.numeric(format(date,'%d')),
+                  new_day = lubridate::yday(date))
+
+  if(rolling_mean){
+
+    climate_data <- climate_data %>%
+      group_by(locality) %>%
+      arrange(date) %>%
+      mutate(moving_avg_precip = zoo::rollmean(daily_sum_precip, k = 5, fill = NA, align = 'center'),
+             moving_avg_temp = zoo::rollmean(daily_mean_temp, k = 5, fill = NA, align = 'center'),
+             moving_avg_snow_depth = zoo::rollmean(daily_mean_snow_depth, k = 5, fill = NA, align = 'center')) %>%
+      ungroup()
+
+  }
 
   if(clip_to_1990){
     climate_data <- climate_data %>%
@@ -156,11 +185,11 @@ plot_climate_comparison <- function(climate_data = NULL,
     dplyr::filter(year != focus_year) %>%
     dplyr::group_by(new_day) %>%
     dplyr:: mutate(upper = my_max(!!variable, na.rm = TRUE), # identify max value for each day
-           lower = min(!!variable, na.rm = TRUE), # identify min value for each day
-           avg = mean(!!variable, na.rm = TRUE),  # calculate mean value for each day
-           se = sd(!!variable, na.rm = TRUE)/sqrt(length(!!variable))) %>%  # calculate standard error of mean
+                   lower = min(!!variable, na.rm = TRUE), # identify min value for each day
+                   avg = mean(!!variable, na.rm = TRUE),  # calculate mean value for each day
+                   se = sd(!!variable, na.rm = TRUE)/sqrt(length(!!variable))) %>%  # calculate standard error of mean
     dplyr::mutate(avg_upper = avg + (qt(1-.05/2, nrow(.)) * se),  # calculate 95% CI for mean (get the appropriate t-value for the number of observations)
-           avg_lower = avg - (qt(1-.05/2, nrow(.)) * se)) %>%  # calculate 95% CI for mean
+                  avg_lower = avg - (qt(1-.05/2, nrow(.)) * se)) %>%  # calculate 95% CI for mean
     dplyr::ungroup()
 
   first_date <- past %>%
@@ -177,7 +206,7 @@ plot_climate_comparison <- function(climate_data = NULL,
 
   present_lows <- present %>%
     dplyr::left_join(past_lows,
-              by = c("new_day" = "new_day")) %>%
+                     by = c("new_day" = "new_day")) %>%
     dplyr::filter(!!variable < past_low) %>%
     dplyr::arrange(date)
 
@@ -187,289 +216,342 @@ plot_climate_comparison <- function(climate_data = NULL,
 
   present_highs <- present %>%
     dplyr::left_join(past_highs,
-              by = c("new_day" = "new_day")) %>%
+                     by = c("new_day" = "new_day")) %>%
     dplyr::filter(!!variable > past_high)
 
 
 
-dgr_fmt <- function(x, ...) {
-  parse(text = paste(x, "*degree", sep = ""))
-}
+  dgr_fmt <- function(x, ...) {
+    parse(text = paste(x, "*degree", sep = ""))
+  }
 
-a <- dgr_fmt(seq(-30, y_high_limit, by = 10))
+  if(grepl("temp", quo_name(variable))){
+    y_label <- dgr_fmt(seq(y_low_limit, y_high_limit, by = 10))
+  } else  if(grepl("precip", quo_name(variable))){
+    y_label <- paste0(seq(y_low_limit, y_high_limit, by = 10), " mm")
+
+  } else if(grepl("temp", quo_name(variable))){
+    y_label <- paste0(seq(y_low_limit, y_high_limit, by = 10), " cm")
+
+  }
 
 
-#Build the plot, add daily min and max
-p <- ggplot(past, aes(new_day, !!variable)) +
-  theme(plot.background = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.border = element_blank(),
-        panel.background = element_blank(),
-        axis.ticks = element_blank(),
-        #axis.text = element_blank(),
-        axis.title = element_blank()) +
-  geom_linerange(past, mapping = aes(x = new_day,
-                                     ymin = lower,
-                                     ymax = upper),
-                 colour = "wheat2",
-                 alpha=.1)
 
-#add confidence bound
-p <- p +
-  geom_linerange(past,
-                 mapping = aes(x = new_day,
-                               ymin = avg_lower,
-                               ymax = avg_upper),
-                 colour = "wheat4")
 
-#Add focus year
-p <- p +
-  geom_line(present, mapping = aes(x = new_day,
-                                   y = !!variable,
-                                   group = 1)) +
-  geom_vline(xintercept = 0,
+  #Build the plot, add daily min and max
+  p <- ggplot(past, aes(new_day, !!variable)) +
+    theme(plot.background = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.border = element_blank(),
+          panel.background = element_blank(),
+          axis.ticks = element_blank(),
+          #axis.text = element_blank(),
+          axis.title = element_blank()) +
+    geom_linerange(past, mapping = aes(x = new_day,
+                                       ymin = lower,
+                                       ymax = upper),
+                   colour = "wheat2",
+                   alpha=.1)
+
+  #add confidence bound
+  p <- p +
+    geom_linerange(past,
+                   mapping = aes(x = new_day,
+                                 ymin = avg_lower,
+                                 ymax = avg_upper),
+                   colour = "wheat4")
+
+  #Add focus year
+  p <- p +
+    geom_line(present, mapping = aes(x = new_day,
+                                     y = !!variable,
+                                     group = 1)) +
+    geom_vline(xintercept = 0,
+               colour = "wheat4",
+               linetype = 1,
+               size = 1)
+
+  #Add horizontal lines
+  # p <- p +
+  #   geom_hline(yintercept = -30, colour = "white", linetype = 1, size = .25) +
+  #   geom_hline(yintercept = -20, colour = "white", linetype = 1, size = .25) +
+  #   geom_hline(yintercept = -10, colour = "white", linetype = 1, size = .25) +
+  #   geom_hline(yintercept = 0, colour = "white", linetype = 1, size = .25) +
+  #   geom_hline(yintercept = 10, colour = "white", linetype = 1, size = .25) +
+  #   geom_hline(yintercept = 20, colour = "white", linetype = 1, size = .25) +
+  #   geom_hline(yintercept = 30, colour = "white", linetype = 1, size = .25) +
+  #   geom_hline(yintercept = 40, colour = "white", linetype = 1, size = .25) +
+  #   geom_hline(yintercept = 50, colour = "white", linetype = 1, size = .25) +
+  #   geom_hline(yintercept = 60, colour = "white", linetype = 1, size = .25)
+
+  #Add vertical lines
+  p <- p +
+    geom_vline(xintercept = 31, colour = "wheat4", linetype = 3, size =.25) +
+    geom_vline(xintercept = 59, colour = "wheat4", linetype = 3, size =.25) +
+    geom_vline(xintercept = 90, colour = "wheat4", linetype = 3, size =.25) +
+    geom_vline(xintercept = 120, colour = "wheat4", linetype = 3, size =.25) +
+    geom_vline(xintercept = 151, colour = "wheat4", linetype = 3, size =.25) +
+    geom_vline(xintercept = 181, colour = "wheat4", linetype = 3, size =.25) +
+    geom_vline(xintercept = 212, colour = "wheat4", linetype = 3, size =.25) +
+    geom_vline(xintercept = 243, colour = "wheat4", linetype = 3, size =.25) +
+    geom_vline(xintercept = 273, colour = "wheat4", linetype = 3, size =.25) +
+    geom_vline(xintercept = 304, colour = "wheat4", linetype = 3, size =.25) +
+    geom_vline(xintercept = 334, colour = "wheat4", linetype = 3, size =.25) +
+    geom_vline(xintercept = 365, colour = "wheat4", linetype = 3, size =.25)
+
+
+  #Add scale
+  p <- p +
+    coord_cartesian(ylim = c(y_low_limit, y_high_limit)) +
+    scale_y_continuous(breaks = seq(y_low_limit, y_high_limit, by = 10), labels = y_label) +
+    scale_x_continuous(expand = c(0, 0),
+                       breaks = c(15, 45, 75, 105, 135, 165, 195, 228, 258, 288, 320, 350),
+                       labels = month_lab)
+
+
+  #Add high and low datapoints
+  p <- p +
+    geom_point(data = present_lows, aes(x = new_day, y = !!variable), colour = "blue3") +
+    geom_point(data = present_highs, aes(x = new_day, y = !!variable), colour = "firebrick3")
+
+
+  high_annot_coord <- present_highs %>%
+    dplyr::filter(!!variable == my_max(!!variable, na.rm = TRUE)) %>%
+    dplyr::select(new_day,
+                  !!variable) %>%
+    slice(1) %>% #Break ties
+    as.vector()
+
+  no_high_days <- nrow(present_highs)
+
+
+  if(no_high_days > 0){
+
+
+    if(high_annot_coord[[1]] > 250) {
+
+      p <- p +
+        annotate("segment", x = high_annot_coord[[1]], xend = high_annot_coord[[1]] - 40,
+                 y = high_annot_coord[[2]], yend = high_annot_coord[[2]] + 5, colour = "firebrick3") +
+        annotate("text", x = high_annot_coord[[1]] - 150, y = high_annot_coord[[2]] + 4 ,
+                 label = paste0(no_high_days,
+                                text_table[[language]][4],
+                                text_table[[language]][5]), size = 3,
+                 colour = "firebrick3",
+                 hjust = 0,
+                 vjust = 0)
+
+    } else {
+
+      p <- p +
+        annotate("segment", x = high_annot_coord[[1]], xend = high_annot_coord[[1]] + 10,
+                 y = high_annot_coord[[2]], yend = high_annot_coord[[2]] + 5, colour = "firebrick3") +
+        annotate("text", x = high_annot_coord[[1]] + 12, y = high_annot_coord[[2]] + 4 ,
+                 label = paste0(no_high_days,
+                                text_table[[language]][4],
+                                text_table[[language]][5]), size = 3,
+                 colour = "firebrick3",
+                 hjust = 0,
+                 vjust = 0)
+
+
+    }
+
+  }
+
+  low_annot_coord <- present_lows %>%
+    #filter(!!variable == suppressWarnings(min(!!variable, na.rm = TRUE))) %>%
+    dplyr::slice(1) %>%
+    dplyr::select(new_day,
+                  !!variable) %>%
+    as.vector()
+
+
+  no_low_days <- nrow(present_lows)
+
+
+  #Displace low annot cord if the first coldest day is to late to fit the text
+  if(no_low_days > 0){
+
+    if(low_annot_coord[[1]] > 250) {
+
+
+      p <- p +
+        annotate("segment", x = low_annot_coord[[1]], xend = low_annot_coord[[1]] - 40,
+                 y = low_annot_coord[[2]], yend = low_annot_coord[[2]] - 5, colour = "blue3") +
+        annotate("text", x = low_annot_coord[[1]] - 60, y = low_annot_coord[[2]] - 10 ,
+                 label = paste0(no_low_days,
+                                text_table[[language]][6],
+                                text_table[[language]][7]), size = 3,
+                 colour = "blue3",
+                 hjust = 0,
+                 vjust = 0)
+
+    } else{
+
+      if(low_annot_coord[[1]] <= 250 & low_annot_coord[[1]] > 150){
+
+        p <- p +
+          annotate("segment", x = low_annot_coord[[1]], xend = low_annot_coord[[1]] - 40,
+                   y = low_annot_coord[[2]], yend = low_annot_coord[[2]] - 15, colour = "blue3") +
+          annotate("text", x = low_annot_coord[[1]] - 38, y = low_annot_coord[[2]] - 20 ,
+                   label = paste0(no_low_days,
+                                  text_table[[language]][6],
+                                  text_table[[language]][7]), size = 3,
+                   colour = "blue3",
+                   hjust = 0,
+                   vjust = 0)
+
+
+      } else {
+
+        p <- p +
+          annotate("segment", x = low_annot_coord[[1]], xend = low_annot_coord[[1]] + 10,
+                   y = low_annot_coord[[2]], yend = low_annot_coord[[2]] - 5, colour = "blue3") +
+          annotate("text", x = low_annot_coord[[1]] + 12, y = low_annot_coord[[2]] - 10 ,
+                   label = paste0(no_low_days,
+                                  text_table[[language]][6],
+                                  text_table[[language]][7]), size = 3,
+                   colour = "blue3",
+                   hjust = 0,
+                   vjust = 0)
+      }
+    }
+
+  }
+
+  if(main_title){
+    p <- p +
+      ggtitle(paste(placename, text_table[[language]][1], focus_year, sep = "")) +
+      theme(plot.title=element_text(face = "bold", hjust = .012, vjust = .8, colour = "#3C3C3C", size = 20)) +
+      annotate("text",
+               x = 14,
+               y = y_high_limit - 5,
+               label = stringr::str_to_sentence(legend_table[[language]][[legend_variable]]),
+               size = 4,
+               fontface = "bold",
+               hjust = 0)
+  }
+
+
+  if(rolling_mean){
+
+    p <- p +
+      annotate("text",
+               x = 14,
+               y = y_high_limit - 15,
+               label = paste0(text_table[[language]][12],
+                              text_table[[language]][2],
+                              legend_table[[language]][[legend_variable]],
+                              text_table[[language]][3],
+                              first_date, "."),
+               size = 3,
+               colour="gray30",
+               hjust = 0,
+               vjust = 0)
+
+  } else {
+    p <- p +
+      annotate("text",
+               x = 14,
+               y = y_high_limit - 15,
+               label = paste0(text_table[[language]][11],
+                              text_table[[language]][2],
+                              legend_table[[language]][[legend_variable]],
+                              text_table[[language]][3],
+                              first_date, "."),
+               size = 3,
+               colour="gray30",
+               hjust = 0,
+               vjust = 0)
+
+
+
+  }
+
+
+
+
+
+  #Annotate max and 95% intervals
+  legend_pos <- tibble::tibble(x = 300, y = y_high_limit - 30)
+
+  legend_data <- data.frame(x = seq(legend_pos$x - 6, legend_pos$x + 1), y = rnorm(8, legend_pos$y + 10, 2))
+
+  p <- p +
+    annotate("segment",
+             x = legend_pos$x,
+             xend = legend_pos$x,
+             y = legend_pos$y,
+             yend = legend_pos$y +
+               20,
+             colour = "wheat2",
+             size = 3) +
+    annotate("segment",
+             x = legend_pos$x,
+             xend = legend_pos$x,
+             y = legend_pos$y + 7,
+             yend = legend_pos$y + 13,
              colour = "wheat4",
-             linetype = 1,
-             size = 1)
-
-#Add horizontal lines
-# p <- p +
-#   geom_hline(yintercept = -30, colour = "white", linetype = 1, size = .25) +
-#   geom_hline(yintercept = -20, colour = "white", linetype = 1, size = .25) +
-#   geom_hline(yintercept = -10, colour = "white", linetype = 1, size = .25) +
-#   geom_hline(yintercept = 0, colour = "white", linetype = 1, size = .25) +
-#   geom_hline(yintercept = 10, colour = "white", linetype = 1, size = .25) +
-#   geom_hline(yintercept = 20, colour = "white", linetype = 1, size = .25) +
-#   geom_hline(yintercept = 30, colour = "white", linetype = 1, size = .25) +
-#   geom_hline(yintercept = 40, colour = "white", linetype = 1, size = .25) +
-#   geom_hline(yintercept = 50, colour = "white", linetype = 1, size = .25) +
-#   geom_hline(yintercept = 60, colour = "white", linetype = 1, size = .25)
-
-#Add vertical lines
-p <- p +
-  geom_vline(xintercept = 31, colour = "wheat4", linetype = 3, size =.25) +
-  geom_vline(xintercept = 59, colour = "wheat4", linetype = 3, size =.25) +
-  geom_vline(xintercept = 90, colour = "wheat4", linetype = 3, size =.25) +
-  geom_vline(xintercept = 120, colour = "wheat4", linetype = 3, size =.25) +
-  geom_vline(xintercept = 151, colour = "wheat4", linetype = 3, size =.25) +
-  geom_vline(xintercept = 181, colour = "wheat4", linetype = 3, size =.25) +
-  geom_vline(xintercept = 212, colour = "wheat4", linetype = 3, size =.25) +
-  geom_vline(xintercept = 243, colour = "wheat4", linetype = 3, size =.25) +
-  geom_vline(xintercept = 273, colour = "wheat4", linetype = 3, size =.25) +
-  geom_vline(xintercept = 304, colour = "wheat4", linetype = 3, size =.25) +
-  geom_vline(xintercept = 334, colour = "wheat4", linetype = 3, size =.25) +
-  geom_vline(xintercept = 365, colour = "wheat4", linetype = 3, size =.25)
-
-
-#Add scale
-p <- p +
-  coord_cartesian(ylim = c(-30, y_high_limit)) +
-  scale_y_continuous(breaks = seq(-30, y_high_limit, by = 10), labels = a) +
-  scale_x_continuous(expand = c(0, 0),
-                     breaks = c(15, 45, 75, 105, 135, 165, 195, 228, 258, 288, 320, 350),
-                     labels = month_lab)
-
-
-#Add high and low datapoints
-p <- p +
-  geom_point(data = present_lows, aes(x = new_day, y = !!variable), colour = "blue3") +
-  geom_point(data = present_highs, aes(x = new_day, y = !!variable), colour = "firebrick3")
-
-
-high_annot_coord <- present_highs %>%
-  dplyr::filter(!!variable == my_max(!!variable, na.rm = TRUE)) %>%
-  dplyr::select(new_day,
-         !!variable) %>%
-  as.vector()
-
-no_high_days <- nrow(present_highs)
-
-
-p <- p +
-  annotate("segment", x = high_annot_coord[[1]], xend = high_annot_coord[[1]] + 10,
-           y = high_annot_coord[[2]], yend = high_annot_coord[[2]] + 5, colour = "firebrick3") +
-  annotate("text", x = high_annot_coord[[1]] + 12, y = high_annot_coord[[2]] + 4 ,
-           label = paste0(no_high_days, text_table[[language]][4]), size = 3,
-           colour = "firebrick3",
-           hjust = 0,
-           vjust = 0) +
-  annotate("text", x = high_annot_coord[[1]] + 12, y = high_annot_coord[[2]] + 1,
-           label = text_table[[language]][5], size = 3, colour = "firebrick3",
-           hjust = 0,
-           vjust = 0)
-
-
-
-low_annot_coord <- present_lows %>%
-  #filter(!!variable == suppressWarnings(min(!!variable, na.rm = TRUE))) %>%
-  dplyr::slice(1) %>%
-  dplyr::select(new_day,
-         !!variable) %>%
-  as.vector()
-
-
-no_low_days <- nrow(present_lows)
-
-
-#Displace low annot cord if the first coldest day is to late to fit the text
-if(low_annot_coord[[1]] > 250) {
-
-
-p <- p +
-  annotate("segment", x = low_annot_coord[[1]], xend = low_annot_coord[[1]] - 40,
-           y = low_annot_coord[[2]], yend = low_annot_coord[[2]] - 5, colour = "blue3") +
-  annotate("text", x = low_annot_coord[[1]] - 135, y = low_annot_coord[[2]] - 7 ,
-           label = paste0(no_low_days, text_table[[language]][6]), size = 3,
-           colour = "blue3",
-           hjust = 0,
-           vjust = 0) +
-  annotate("text", x = low_annot_coord[[1]] - 135, y = low_annot_coord[[2]] - 10,
-           label = text_table[[language]][7], size = 3, colour = "blue3",
-           hjust = 0,
-           vjust = 0)
-
-} else{
-
-if(low_annot_coord[[1]] <= 250 & low_annot_coord[[1]] > 150){
-
-  p <- p +
-    annotate("segment", x = low_annot_coord[[1]], xend = low_annot_coord[[1]] - 40,
-             y = low_annot_coord[[2]], yend = low_annot_coord[[2]] - 15, colour = "blue3") +
-    annotate("text", x = low_annot_coord[[1]] - 135, y = low_annot_coord[[2]] - 17 ,
-             label = paste0(no_low_days, text_table[[language]][6]), size = 3,
-             colour = "blue3",
+             size = 3) +
+    geom_line(data = legend_data, aes(x = x, y = y)) +
+    annotate("segment",
+             x = legend_pos$x + 2,
+             xend = legend_pos$x + 4,
+             y = legend_pos$y + 12.3,
+             yend = legend_pos$y + 12.3,
+             colour = "wheat4",
+             size = .5) +
+    annotate("segment",
+             x = legend_pos$x + 2,
+             xend = legend_pos$x + 4,
+             y = legend_pos$y + 7.7,
+             yend = legend_pos$y + 7.7,
+             colour = "wheat4",
+             size = .5) +
+    annotate("segment",
+             x = legend_pos$x + 4,
+             xend = legend_pos$x + 4,
+             y = legend_pos$y + 7.7,
+             yend = legend_pos$y + 12.3,
+             colour = "wheat4",
+             size = .5) +
+    annotate("text",
+             x = legend_pos$x + 7,
+             y = legend_pos$y + 9.75,
+             label = text_table[[language]][10],
+             size = 2,
+             colour = "gray30",
              hjust = 0,
              vjust = 0) +
-    annotate("text", x = low_annot_coord[[1]] - 135, y = low_annot_coord[[2]] - 20,
-             label = text_table[[language]][7], size = 3, colour = "blue3",
+    annotate("text",
+             x = legend_pos$x - 10,
+             y = legend_pos$y + 9.75,
+             label = paste0(focus_year, stringr::str_to_sentence(legend_table[[language]][[legend_variable]])),
+             size = 2,
+             colour = "gray30",
+             hjust = 1,
+             vjust = 0) +
+    annotate("text",
+             x = legend_pos$x + 7,
+             y = legend_pos$y + 19,
+             label = text_table[[language]][8],
+             size = 2,
+             colour = "gray30",
+             hjust = 0,
+             vjust = 0) +
+    annotate("text",
+             x = legend_pos$x + 7,
+             y = legend_pos$y,
+             label = text_table[[language]][9],
+             size = 2,
+             colour = "gray30",
              hjust = 0,
              vjust = 0)
 
-} else {
+  suppressWarnings(print(p))
 
-  p <- p +
-    annotate("segment", x = low_annot_coord[[1]], xend = low_annot_coord[[1]] + 10,
-             y = low_annot_coord[[2]], yend = low_annot_coord[[2]] - 5, colour = "blue3") +
-    annotate("text", x = low_annot_coord[[1]] + 12, y = low_annot_coord[[2]] - 4 ,
-             label = paste0(no_low_days, text_table[[language]][6]), size = 3,
-             colour = "blue3",
-             hjust = 0,
-             vjust = 0) +
-    annotate("text", x = low_annot_coord[[1]] + 12, y = low_annot_coord[[2]] - 7,
-             label = text_table[[language]][7], size = 3, colour = "blue3",
-             hjust = 0,
-             vjust = 0)
-}
-}
-
-
-if(main_title){
-p <- p +
-  ggtitle(paste(placename, text_table[[language]][1], focus_year, sep = "")) +
-  theme(plot.title=element_text(face = "bold", hjust = .012, vjust = .8, colour = "#3C3C3C", size = 20)) +
-  annotate("text",
-           x = 14,
-           y = y_high_limit - 5,
-           label = stringr::str_to_sentence(legend_table[[language]][[legend_variable]]),
-           size = 4,
-           fontface = "bold",
-           hjust = 0)
-}
-
-p <- p +
-  annotate("text",
-           x = 14,
-           y = y_high_limit - 15,
-           label = paste0(text_table[[language]][2], legend_table[[language]][[legend_variable]],
-                          text_table[[language]][3],
-                          first_date, "."),
-           size = 3,
-           colour="gray30",
-           hjust = 0,
-           vjust = 0)
-
-
-
-
-#Annotate max and 95% intervals
-legend_pos <- tibble::tibble(x = 300, y = y_high_limit - 30)
-
-legend_data <- data.frame(x = seq(legend_pos$x - 6, legend_pos$x + 1), y = rnorm(8, legend_pos$y + 10, 2))
-
-p <- p +
-  annotate("segment",
-           x = legend_pos$x,
-           xend = legend_pos$x,
-           y = legend_pos$y,
-           yend = legend_pos$y +
-             20,
-           colour = "wheat2",
-           size = 3) +
-  annotate("segment",
-           x = legend_pos$x,
-           xend = legend_pos$x,
-           y = legend_pos$y + 7,
-           yend = legend_pos$y + 13,
-           colour = "wheat4",
-           size = 3) +
-  geom_line(data = legend_data, aes(x = x, y = y)) +
-  annotate("segment",
-           x = legend_pos$x + 2,
-           xend = legend_pos$x + 4,
-           y = legend_pos$y + 12.3,
-           yend = legend_pos$y + 12.3,
-           colour = "wheat4",
-           size = .5) +
-  annotate("segment",
-           x = legend_pos$x + 2,
-           xend = legend_pos$x + 4,
-           y = legend_pos$y + 7.7,
-           yend = legend_pos$y + 7.7,
-           colour = "wheat4",
-           size = .5) +
-  annotate("segment",
-           x = legend_pos$x + 4,
-           xend = legend_pos$x + 4,
-           y = legend_pos$y + 7.7,
-           yend = legend_pos$y + 12.3,
-           colour = "wheat4",
-           size = .5) +
-  annotate("text",
-           x = legend_pos$x + 7,
-           y = legend_pos$y + 9.75,
-           label = text_table[[language]][10],
-           size = 2,
-           colour = "gray30",
-           hjust = 0,
-           vjust = 0) +
-  annotate("text",
-           x = legend_pos$x - 10,
-           y = legend_pos$y + 9.75,
-           label = paste0(focus_year, stringr::str_to_sentence(legend_table[[language]][[legend_variable]])),
-           size = 2,
-           colour = "gray30",
-           hjust = 1,
-           vjust = 0) +
-  annotate("text",
-           x = legend_pos$x + 7,
-           y = legend_pos$y + 19,
-           label = text_table[[language]][8],
-           size = 2,
-           colour = "gray30",
-           hjust = 0,
-           vjust = 0) +
-  annotate("text",
-           x = legend_pos$x + 7,
-           y = legend_pos$y,
-           label = text_table[[language]][9],
-           size = 2,
-           colour = "gray30",
-           hjust = 0,
-           vjust = 0)
-
-suppressWarnings(print(p))
-
-invisible(Sys.setlocale(category = "LC_TIME", old_LC_TIME))
+  invisible(Sys.setlocale(category = "LC_TIME", old_LC_TIME))
 
 }

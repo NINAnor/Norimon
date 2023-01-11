@@ -7,7 +7,7 @@
 get_climate_data(locality = NULL)
 }
 \arguments{
-\item{locality}{A character of the locality name, e.g. "Semi-nat_01"}
+\item{locality}{A character vector of the locality name, e.g. "Semi-nat_01", or c("Semi-nat_32", "Semi-nat_33", ...)}
 }
 \value{
 A tibble of daily climate data from 1957.

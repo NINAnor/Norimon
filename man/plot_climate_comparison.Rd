@@ -10,8 +10,10 @@ plot_climate_comparison(
   focus_year = "latest",
   clip_to_1990 = TRUE,
   y_high_limit = 60,
+  y_low_limit = -30,
   language = c("Norwegian", "English"),
-  main_title = TRUE
+  main_title = TRUE,
+  rolling_mean = FALSE
 )
 }
 \arguments{
@@ -28,6 +30,8 @@ plot_climate_comparison(
 \item{language}{Figure text in "Norwegian" or "English"}
 
 \item{main_title}{Print plot title? Boolean.}
+
+\item{rolling_mean}{Plot rolling mean of 5 days? Suitable for precipitation}
 }
 \value{
 A ggplot
