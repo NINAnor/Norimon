@@ -102,7 +102,7 @@ get_observations <- function(id_type = c("metabarcoding"),
               by = c("identification_id" = "id"),
               suffix = c("_obs", "_ids")) %>%
     left_join(identification_techniques,
-              by = c("identification_name", "identification_name"),
+              by = c("identification_name" = "identification_name"),
               suffix = c("_obs", "_idtechn")) %>%
     left_join(sampling_trap,
               by = c("sampling_trap_id" = "id"),
