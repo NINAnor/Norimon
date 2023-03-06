@@ -1,6 +1,7 @@
 #' Plot a boot_stat object
 #'
 #' @param x boot_stat_object
+#' @param palette named nina-palette (see NinaR::nina_palettes)
 #' @param ... additional parameters passed to geom_density_ridges_gradient, e.g. bandwidth
 #'
 #' @return A ggridges plot of the bootrapped values in a boot_stat object.

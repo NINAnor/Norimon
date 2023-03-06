@@ -43,14 +43,14 @@ locality_ar5_plot <- function(locality,
 
 
   lok <- sf::st_read(con,
-                 layer = Id(schema = "locations",
+                 layer = DBI::Id(schema = "locations",
                             table = "localities"),
                  geometry_column = "geom") %>%
     filter(locality == !!loc_filter)
 
 
   traps <- sf::st_read(con,
-                   layer = Id(schema = "locations",
+                   layer = DBI::Id(schema = "locations",
                               table = "traps"),
                    geometry_column = "geom") %>%
     filter(locality == !!loc_filter)

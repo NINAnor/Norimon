@@ -49,18 +49,18 @@ get_map <- function(region_subset = NULL){
     select(fylke = navn)
 
 
-    region_def <- tibble(region = c("Trøndelag",
-                                         "Østlandet",
-                                         "Østlandet",
-                                         "Østlandet",
-                                         "Østlandet",
-                                         "Sørlandet",
-                                         "Sørlandet",
+    region_def <- tibble(region = c("Tr\u00f8ndelag",
+                                         "\u00d8stlandet",
+                                         "\u00d8stlandet",
+                                         "\u00d8stlandet",
+                                         "\u00d8stlandet",
+                                         "S\u00f8rlandet",
+                                         "S\u00f8rlandet",
                                          "Vestlandet",
                                          "Vestlandet",
                                          "Nord-Norge",
                                          "Nord-Norge"),
-                         fylke = c("Trøndelag",
+                         fylke = c("Tr\u00f8ndelag",
                                         "Innlandet",
                                         "Oslo",
                                         "Vestfold og Telemark",
@@ -68,7 +68,7 @@ get_map <- function(region_subset = NULL){
                                         "Rogaland",
                                         "Agder",
                                         "Vestland",
-                                        "Møre og Romsdal",
+                                        "M\u00f8re og Romsdal",
                                         "Troms og Finnmark",
                                         "Nordland"))
 

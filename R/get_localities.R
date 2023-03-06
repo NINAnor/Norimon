@@ -4,6 +4,7 @@
 #'
 #' @param dataset Which dataset to fetch ("NasIns", "OkoTrond", "TidVar", "Nerlandsøya", "All") . Default to "NasIns" for the national insect monitoring data
 #' @param as_sf Return an sf object? Boolean.
+#' @param habitat_type Optional habitat type to subset
 #'
 #' @return An sf or tibble with the location info
 #' @export
@@ -22,7 +23,7 @@
 get_localities <- function(dataset = c("NasIns",
                                        "OkoTrond",
                                        "TidVar",
-                                       "Nerlandsøya",
+                                       "Nerlands\u00f8ya",
                                        "All"),
                            as_sf = TRUE,
                            habitat_type = c("All",
@@ -35,12 +36,12 @@ get_localities <- function(dataset = c("NasIns",
 
 
 
-  Norimon:::checkCon()
+  Norimon::checkCon()
 
   dataset <- match.arg(dataset, choices = c("NasIns",
                                             "OkoTrond",
                                             "TidVar",
-                                            "Nerlandsøya",
+                                            "Nerlands\u00f8ya",
                                             "All"))
 
   habitat_type_subset <- match.arg(habitat_type,

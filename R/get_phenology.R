@@ -51,11 +51,11 @@ get_phenology <- function(taxonomic_level = NULL,
   #Bind these variables to stop R CMD check complaints
   if(!exists("con")) {con <- NULL}
 
-  Norimon:::checkCon()
+  Norimon::checkCon()
 
   if(!is.null(subset_region)){
   subset_region <- match.arg(subset_region,
-                             choices = c("Østlandet", "Trøndelag"))
+                             choices = c("\u00d8stlandet", "Tr\u00f8ndelag"))
   }
 
   if(!is.null(subset_habitat)){

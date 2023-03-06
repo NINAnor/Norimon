@@ -2,8 +2,6 @@
 #'
 #' Best practice is to not store your username and password in any scripts. See example for a way to script retrieval of credentials
 #'
-#' @param myusername Username as character. Will look for a variable called username as default.
-#' @param mypassword Password as character. Will look for a variable called password as default.
 #' @param host Hostname of database
 #' @param dbname Database name
 #' @param ... additional parameter to DBI:dbConnect, such as username and password, if not provided in ~/.pgpass

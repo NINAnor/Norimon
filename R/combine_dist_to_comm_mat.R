@@ -41,8 +41,8 @@ combine_dist_to_comm_mat <- function(comm_mat,
 
   #It ain't pretty but it saves some code in the document
   loc_in_comm_mat <- comm_mat %>%
-    select(locality) %>%
-    pull()
+    dplyr::select(locality) %>%
+    dplyr::pull()
 
 
   dist_q <- paste0("
@@ -86,7 +86,7 @@ combine_dist_to_comm_mat <- function(comm_mat,
     matrix(.,
            ncol = 1)
 
-  dist_beta <- dist %>%
+  dist_beta <- dist %>%s
     cbind(beta_sim) %>%
     cbind(beta_sne) %>%
     cbind(beta_sor) %>%

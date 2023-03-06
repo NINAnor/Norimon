@@ -27,13 +27,13 @@ get_logger_data <- function(limit = NULL,
                                              "locality_sampling"),
                                as_tibble = F){
 
-  checkCon()
+  Norimon::checkCon()
 
 
   dataset <- match.arg(dataset, choices = c("NasIns",
                                             "OkoTrond",
                                             "TidVar",
-                                            "Nerlandsøya"))
+                                            "Nerlands\u00f8ya"))
   agg_level <- match.arg(agg_level, choices = c("year_locality",
                                                 "locality_sampling"))
 

@@ -1,19 +1,11 @@
 #' @import tidyr
-#' @noRd
-checkCon <- function() {if(!exists("con")){ stop("No connection!")} else{
-  if(class(con)!= "PqConnection"){ stop("\"con\" is not of class \"PqConnection\". Have you connected to the database?")}
-  if(!DBI::dbIsValid(con)) { stop("No connection")}
-}
-}
-
-
-#' Get fylke names for the regions
+# Get fylke names for the regions
 #' @noRd
 region_fylke <- function() {
 
-  tibble(region_name = c(rep("Østlandet", 4),
-                                       rep("Sørlandet", 2),
-                                       "Trøndelag",
+  tibble(region_name = c(rep("\u00f8stlandet", 4),
+                                       rep("S\u00f8rlandet", 2),
+                                       "Tr\u00f8ndelag",
                                        rep("Nord-Norge", 2),
                          rep("Vestlandet", 2)),
                        fylke = c("Innlandet",
@@ -22,11 +14,11 @@ region_fylke <- function() {
                                  "Vestfold og Telemark",
                                  "Rogaland",
                                  "Agder",
-                                 "Trøndelag",
+                                 "Tr\u00f8ndelag",
                                  "Nordland",
                                  "Troms og Finnmark",
                                  "Vestland",
-                                 "Møre og Romsdal"))
+                                 "M\u00f8re og Romsdal"))
 }
 
 
@@ -78,10 +70,10 @@ ar5_colors <- tibble(arealtype = c("Fulldyrka jord",
                                    "Innmarksbeite",
                                    "Skog",
                                    "Myr",
-                                   "Åpen fastmark",
+                                   "\u00c5pen fastmark",
                                    "Ferskvann",
                                    "Hav",
-                                   "Snøisbre",
+                                   "Sn\u00f8isbre",
                                    "Bebygd",
                                    "Samferdsel",
                                    "Ikke kartlagt"),
@@ -181,8 +173,8 @@ scale_fill_treslag <- function(...) {
 
 #' Bonitet scale
 #' @noRd
-bonitet_colors <- tibble(bonitet = c("Særs høg",
-                                     "Høg",
+bonitet_colors <- tibble(bonitet = c("S\u00e6rs h\u00f8g",
+                                     "H\u00f8g",
                                      "Middels",
                                      "Lav",
                                      "Impediment",

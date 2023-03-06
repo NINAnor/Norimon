@@ -42,19 +42,19 @@ get_community_matrix <- function(limit = NULL,
                                      subset_families = NULL,
                                      subset_species = NULL,
                                      subset_habitat = NULL,
-                                     subset_region = c(NULL, "Østlandet", "Trøndelag"),
+                                     subset_region = c(NULL, "\u00d8stlandet", "Tr\u00f8ndelag"),
                                      exclude_singletons = F,
                                      transposed_matrix = F,
                                      as_tibble = F){
 
-  checkCon()
+  Norimon::checkCon()
 
 
   dataset <- match.arg(dataset,
                        choices = c("NasIns",
                                    "OkoTrond",
                                    "TidVar",
-                                   "Nerlandsøya"))
+                                   "Nerlands\u00f8ya"))
 
   trap_type <- match.arg(trap_type,
                          choices = c("MF", "VF", "All", NULL))
@@ -236,7 +236,6 @@ get_community_matrix <- function(limit = NULL,
       t()
 
   }
-
 
 
   return(res)

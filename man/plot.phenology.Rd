@@ -4,7 +4,13 @@
 \alias{plot.phenology}
 \title{Plot a phenology object}
 \usage{
-\method{plot}{phenology}(x, y_value = "taxa_biomass", x_axis_type = "Date", aggregation = "Smooth")
+\method{plot}{phenology}(
+  x,
+  y_value = "taxa_biomass",
+  x_axis_type = "Date",
+  aggregation = "Smooth",
+  ...
+)
 }
 \arguments{
 \item{x}{a phenology object}
@@ -14,6 +20,8 @@
 \item{x_axis_type}{What x type to use (date, sampling number)}
 
 \item{aggregation}{type of line aggregation (geom_smooth, etc)}
+
+\item{...}{additional parameters, not currently implemented}
 }
 \value{
 a ggplot of the phenology

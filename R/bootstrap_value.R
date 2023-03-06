@@ -2,7 +2,7 @@
 #'
 #' @param df dataframe (or tibble)
 #' @param value Column to bootstrap, "no_species" (default), "shannon_div", "mean_asv_per_species"
-#' @param groupings Optional grouping variables as character vector.
+#' @param groups Optional grouping variables as character vector.
 #' @param lower_limit Lower limit to confidence intervals, e.g. 0.025 for lower 2.5%
 #' @param upper_limit Upper limit to confidence intervals, e.g. 0.975 for upper 97.5%
 #' @param R Number of bootstrap samples

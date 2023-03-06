@@ -4,6 +4,7 @@
 #' @param y_value What y_value to plot (taxa_biomass, no_species)
 #' @param x_axis_type What x type to use (date, sampling number)
 #' @param aggregation type of line aggregation (geom_smooth, etc)
+#' @param ... additional parameters, not currently implemented
 #'
 #' @return a ggplot of the phenology
 #' @export
@@ -23,7 +24,8 @@
 plot.phenology <- function(x,
                            y_value = "taxa_biomass",
                            x_axis_type = "Date",
-                           aggregation = "Smooth") {
+                           aggregation = "Smooth",
+                           ...) {
 
 
   if(!"phenology" %in% class(x)) stop("Input object must be of class 'phenology'")

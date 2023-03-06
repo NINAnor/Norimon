@@ -27,7 +27,7 @@ get_forest_type <- function(limit = NULL,
   dataset <- match.arg(dataset, choices = c("NasIns",
                                             "OkoTrond",
                                             "TidVar",
-                                            "Nerlandsøya"))
+                                            "Nerlands\u00f8ya"))
 
   proj_filter <- dplyr::enquo(dataset)
 

@@ -18,10 +18,10 @@
 
 plot_ano_herb_sum <- function(){
 
-  Norimon:::checkCon()
+  Norimon::checkCon()
 
   ano_herb_agg <- tbl(con,
-                      Id(schema = "views",
+                      DBI::Id(schema = "views",
                          table = "ano_herb_agg")) %>%
     filter(project_short_name == "NasIns")
 
@@ -56,7 +56,7 @@ plot_ano_herb_sum <- function(){
     scale_color_nina(name = "Region") +
     scale_size(name = "Artantall\nkarplanter") +
     guides(color = guide_legend(override.aes = list(size=5))) +
-    xlab("År") +
+    xlab("\u00e5r") +
     ylab("Dekningsgrad %")
 
 }

@@ -1,7 +1,7 @@
 #' clim_trend_plot
 #'
 #' Summarises mean values of the weather (temperature and precipitation) during chosen months for the localities within a chosen region.
-#'
+#' @encoding UTF-8
 #' @param region Which region to plot? Currently available: c("Trøndelag", "Østlandet", "Sørlandet").
 #' @param dataset Which dataset to use? Is used to select the localities within regions.
 #' @param from_year Plot data from what year= Integer.
@@ -30,8 +30,8 @@
 #'
 
 
-clim_trend_plot <- function(region = c("Trøndelag", "Østlandet", "Sørlandet"),
-                            dataset = c("NasIns", "TidVar", "ØkoTrond"),
+clim_trend_plot <- function(region = c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u00f8rlandet"),
+                            dataset = c("NasIns", "TidVar", "\u00d8koTrond"),
                             from_year = 2010,
                             to_year = 2022,
                             from_month = 6,
@@ -43,8 +43,8 @@ clim_trend_plot <- function(region = c("Trøndelag", "Østlandet", "Sørlandet")
   from_month = from_month
   to_month = to_month
 
-  region = match.arg(region, c("Trøndelag", "Østlandet", "Sørlandet"))
-  dataset = match.arg(dataset, c("NasIns", "TidVar", "ØkoTrond"))
+  region = match.arg(region, c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u00f8rlandet"))
+  dataset = match.arg(dataset, c("NasIns", "TidVar", "\u00d8koTrond"))
 
   loc_in_region_q <- "
   SELECT l.locality
@@ -57,13 +57,13 @@ clim_trend_plot <- function(region = c("Trøndelag", "Østlandet", "Sørlandet")
 
   "
 
-  loc_in_region_san <- sqlInterpolate(con,
+  loc_in_region_san <- DBI::sqlInterpolate(con,
                                       loc_in_region_q,
                                       id1 = focus_year,
                                       id2 = region,
                                       id3 = dataset)
 
-  loc_in_region <- dbGetQuery(con,
+  loc_in_region <- DBI::dbGetQuery(con,
                               loc_in_region_san) %>%
     pull()
 
@@ -104,7 +104,7 @@ clim_trend_plot <- function(region = c("Trøndelag", "Østlandet", "Sørlandet")
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
     scale_x_continuous(breaks = from_year:to_year) +
     ylab("Temperatursum") +
-    xlab("År")
+    xlab("\u00C5r")
 
 
   p2 <-  ggplot(clim_data_agg) +
@@ -121,8 +121,8 @@ clim_trend_plot <- function(region = c("Trøndelag", "Østlandet", "Sørlandet")
               lwd = 1.2) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
     scale_x_continuous(breaks = from_year:to_year) +
-    ylab("Nedbørsum") +
-    xlab("År")
+    ylab("Nedb\u00f8rsum") +
+    xlab("\u00C5r")
 
 
   marrangeGrob(list(p1,

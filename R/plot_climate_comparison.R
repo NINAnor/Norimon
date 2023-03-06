@@ -6,7 +6,8 @@
 #' @param variable Which variable to choose. "temperature"(default), "precipitation", or "snow_depth"
 #' @param focus_year Focus on "latest" year (default) or optional year as numerical value (e.g. 2021)
 #' @param clip_to_1990 Logical, should historical records be clipped to >1990.
-#' @param y_high_limit The y-axis limit of the plot.
+#' @param y_high_limit The y-axis higher limit of the plot.
+#' @param y_low_limit The y-axix lower limit of the plot
 #' @param language Figure text in "Norwegian" or "English"
 #' @param main_title Print plot title? Boolean.
 #' @param rolling_mean Plot rolling mean of 5 days? Suitable for precipitation
@@ -66,10 +67,10 @@ plot_climate_comparison <- function(climate_data = NULL,
   )
 
 
-  text_table <- list("Norwegian" = c("s vær i ",
-                                     "Fargete områder representer gjennomsnittlig ",
+  text_table <- list("Norwegian" = c("s v\u00e6r i ",
+                                     "Fargete omr\u00e5der representer gjennomsnittlig ",
                                      ".\nReferansedata strekker seg fra ",
-                                     " dager med høyere\n",
+                                     " dager med h\u00f8yere\n",
                                      "verdier enn referansedata",
                                      " dager med lavere\n",
                                      "verdier enn referansedata",
@@ -98,8 +99,8 @@ plot_climate_comparison <- function(climate_data = NULL,
   legend_variable <- variable
 
   legend_table <- list("Norwegian" = list(temperature = "temperatur",
-                                          precipitation = "nedbør",
-                                          snow_depth = "snødybde"),
+                                          precipitation = "nedb\u00f8r",
+                                          snow_depth = "sn\u00f8dybde"),
                        "English" = list(temperature = "temperature",
                                         precipitation = "precipitation",
                                         snow_depth = "snow depth")

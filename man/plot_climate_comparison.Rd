@@ -25,7 +25,9 @@ plot_climate_comparison(
 
 \item{clip_to_1990}{Logical, should historical records be clipped to >1990.}
 
-\item{y_high_limit}{The y-axis limit of the plot.}
+\item{y_high_limit}{The y-axis higher limit of the plot.}
+
+\item{y_low_limit}{The y-axix lower limit of the plot}
 
 \item{language}{Figure text in "Norwegian" or "English"}
 

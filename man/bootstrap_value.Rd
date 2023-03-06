@@ -18,13 +18,13 @@ bootstrap_value(
 
 \item{value}{Column to bootstrap, "no_species" (default), "shannon_div", "mean_asv_per_species"}
 
+\item{groups}{Optional grouping variables as character vector.}
+
 \item{lower_limit}{Lower limit to confidence intervals, e.g. 0.025 for lower 2.5\%}
 
 \item{upper_limit}{Upper limit to confidence intervals, e.g. 0.975 for upper 97.5\%}
 
 \item{R}{Number of bootstrap samples}
-
-\item{groupings}{Optional grouping variables as character vector.}
 }
 \value{
 Returns an object of class boot_stat.

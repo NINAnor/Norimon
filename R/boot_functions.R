@@ -15,29 +15,15 @@
 #' group_by(year) %>%
 #'   summarise(boot_mean = boot_mean(shannon_div),
 #'             boot_lower25 = boot_lower(shannon_div),
-#'            boot_upper975 = boot_upper(shannon_div))
+#'             boot_upper975 = boot_upper(shannon_div))
 #'
 #' }
 #'
 #'
-
-
-
-
-boot_mean <- function(x,
-                      R = 999) {
-  mean(replicate(R,
-                 mean(sample(x,
-                             size = length(x),
-                             replace = TRUE)
-                 )
-  )
-  )
-}
-
-
-#' @rdname boot_mean
 #' @export
+#' @rdname boot_mean
+
+
   boot_lower <- function(x,
                          limit = 0.025,
                          R = 999){
@@ -53,8 +39,9 @@ boot_mean <- function(x,
     return(lower)
   }
 
-#' @rdname boot_mean
 #' @export
+#' @rdname boot_mean
+
   boot_upper <- function(x,
                          limit = 0.975,
                          R = 999){

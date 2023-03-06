@@ -14,6 +14,8 @@ get_localities(
 \item{dataset}{Which dataset to fetch ("NasIns", "OkoTrond", "TidVar", "Nerlandsøya", "All") . Default to "NasIns" for the national insect monitoring data}
 
 \item{as_sf}{Return an sf object? Boolean.}
+
+\item{habitat_type}{Optional habitat type to subset}
 }
 \value{
 An sf or tibble with the location info

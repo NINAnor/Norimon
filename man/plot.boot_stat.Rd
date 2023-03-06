@@ -9,6 +9,8 @@
 \arguments{
 \item{x}{boot_stat_object}
 
+\item{palette}{named nina-palette (see NinaR::nina_palettes)}
+
 \item{...}{additional parameters passed to geom_density_ridges_gradient, e.g. bandwidth}
 }
 \value{

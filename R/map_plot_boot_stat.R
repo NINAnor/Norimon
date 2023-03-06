@@ -2,6 +2,8 @@
 #'
 #' @param x A boot_stat object
 #' @param whole_country Plot whole country (and not only regions with values). Boolean
+#' @param alpha_from_sd Boolean, compute alpha (transparancy) values from sd?
+#' @param alpha_range Range of alpha values
 #' @param ... Additional parameters passed to scale_fill_nina. e.g. palette
 #'
 #' @return A ggplot
@@ -32,11 +34,13 @@
 #'
 #' @export
 #'
-map_plot <- function(x, ...){
-  UseMethod("map_plot")
-}
 
-#' @export
+
+# map_plot <- function(x, ...){
+#   UseMethod("map_plot")
+# }
+
+
 map_plot.boot_stat <- function(x,
                                whole_country = FALSE,
                                alpha_from_sd = FALSE,
@@ -56,7 +60,7 @@ map_plot.boot_stat <- function(x,
   if(!whole_country){
 
     values_fylke <- df %>%
-      left_join(Norimon:::region_fylke(),
+      left_join(region_fylke(),
                 by = c("region_name" = "region_name"))
 
     map_to_get <- df %>%
@@ -74,7 +78,7 @@ map_plot.boot_stat <- function(x,
     possible_years <- df %>%
       select(-c(region_name, boot_value, boot_sd, boot_lower2.5, boot_upper97.5))
 
-    all_fylkes <- Norimon:::region_fylke() %>%
+    all_fylkes <- region_fylke() %>%
       select(region_name)
 
     all_fylke_years <- crossing(possible_years, all_fylkes)
@@ -83,7 +87,7 @@ map_plot.boot_stat <- function(x,
 
       values_fylke <- df %>%
       right_join(all_fylke_years) %>%
-      left_join(Norimon:::region_fylke(),
+      left_join(region_fylke(),
                 by = c("region_name" = "region_name"))
     })
 

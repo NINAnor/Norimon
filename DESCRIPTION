@@ -25,7 +25,11 @@ Imports:
     dplyr,
     magrittr,
     tidyr,
-    sf
+    sf,
+    NinaR,
+    DBI,
+    dbplyr,
+    tibble,
 Depends:
   ggplot2,
   rlang

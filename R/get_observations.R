@@ -60,7 +60,7 @@ get_observations <- function(id_type = c("metabarcoding"),
   checkCon()
 
   if(!is.null(subset_region)){
-  subset_region <- match.arg(subset_region, choices = c("Østlandet", "Trøndelag"))
+  subset_region <- match.arg(subset_region, choices = c("\u00d8stlandet", "Tr\u00f8ndelag"))
   }
 
   if(!is.null(subset_habitat)){
@@ -71,7 +71,7 @@ get_observations <- function(id_type = c("metabarcoding"),
   dataset <- match.arg(dataset, choices = c("NasIns",
                                             "OkoTrond",
                                             "TidVar",
-                                            "Nerlandsøya"))
+                                            "Nerlands\u00f8ya"))
 
   agg_level <- match.arg(agg_level, choices = c("year_locality",
                                                 "locality_sampling",

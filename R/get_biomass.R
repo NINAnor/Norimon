@@ -1,8 +1,9 @@
 #' get_biomass Get biomass data from the database
 #'
+#' @encoding UTF-8
 #' @param limit Optional row limit on output (for testing)
 #' @param trap_type Which trap types to fetch data for. "All" (defult), "MF", or "VF".
-#' @param subset_region Optional subset of region. Currently allowing "Østlandet", "Trøndelag", "Sørlandet"
+#' @param subset_region Optional subset of region. Currently allowing "Trøndelag", "Østlandet", "Sørlandet"
 #' @param dataset Which dataset to fetch data for. Default "NasIns".
 #' @param agg_level Aggregate level of data. "year_locality" (default), "locality_sampling", "total".
 #' @param as_tibble Return as tibble? Boolean
@@ -24,12 +25,12 @@
 
 get_biomass <- function(limit = NULL,
                             trap_type = "MF",
-                            subset_region = c(NULL, "Østlandet", "Trøndelag", "Sørlandet"),
+                            subset_region = c(NULL, "\u00d8stlandet", "Tr\u00f8ndelag", "S\u00f8rlandet"),
                             dataset = "NasIns",
                             agg_level = "year_locality",
                             as_tibble = F){
 
-  Norimon:::checkCon()
+  Norimon::checkCon()
 
 
 
@@ -37,7 +38,7 @@ get_biomass <- function(limit = NULL,
                        choices = c("NasIns",
                                    "OkoTrond",
                                    "TidVar",
-                                   "Nerlandsøya"))
+                                   "Nerlands\u00f8ya"))
 
   agg_level <- match.arg(agg_level,
                          choices = c("year_locality",

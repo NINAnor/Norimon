@@ -16,10 +16,6 @@ connect_to_insect_db(
 \item{dbname}{Database name}
 
 \item{...}{additional parameter to DBI:dbConnect, such as username and password, if not provided in ~/.pgpass}
-
-\item{myusername}{Username as character. Will look for a variable called username as default.}
-
-\item{mypassword}{Password as character. Will look for a variable called password as default.}
 }
 \value{
 A PostgreS connection to a database called "con"
