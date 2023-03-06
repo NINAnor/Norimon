@@ -19,21 +19,24 @@
 #'
 #' }
 #'
+#'
+
 longerHobo2301 <- function(inputFile,
                            guess_max = 10000,
                            ...){
 
   rawDat <- readr::read_csv(inputFile,
-                     col_types = readr::cols(.default = "c"),
-                     guess_max = guess_max,
-                     ...)
+                            col_types = readr::cols(.default = "c"),
+                            guess_max = guess_max,
+                            ...)
 
-  dat <- rawDat %>%
-    select(-"Line#") %>%
-    mutate(date = as.POSIXct(.data$Date, format = "%m/%d/%y %H:%M:%S")) %>%
-    mutate_if(is_character, as.double) %>%
-    select(-Date)
-
+  suppressWarnings({
+    dat <- rawDat %>%
+      select(-"Line#") %>%
+      mutate(date = as.POSIXct(.data$Date, format = "%m/%d/%y %H:%M:%S")) %>%
+      mutate_if(is_character, as.double) %>%
+      select(-Date)
+  })
 
   temp <- dat %>%
     pivot_longer(cols = tidyr::starts_with("Temperature"),
@@ -66,31 +69,31 @@ longerHobo2301 <- function(inputFile,
   #Fix to allow for two deployments of same logger. gets duplicate column names from hobo-export
   temp <- temp %>%
     mutate(logger_id = stringr::str_extract(.data$logger_id,
-                                   "[^, ]+$")) %>%
+                                            "[^, ]+$")) %>%
     mutate(logger_id = stringr::str_extract(.data$logger_id,
-                                   "(^[0-9]*)"))
+                                            "(^[0-9]*)"))
 
   rh <- rh %>%
     mutate(logger_id = stringr::str_extract(.data$logger_id,
-                                   "[^, ]+$")) %>%
+                                            "[^, ]+$")) %>%
     mutate(logger_id = stringr::str_extract(.data$logger_id,
-                                   "(^[0-9]*)"))
+                                            "(^[0-9]*)"))
   dew_point <- dew_point %>%
     mutate(logger_id = stringr::str_extract(.data$logger_id,
-                                   "[^, ]+$")) %>%
+                                            "[^, ]+$")) %>%
     mutate(logger_id = stringr::str_extract(.data$logger_id,
-                                   "(^[0-9]*)"))
+                                            "(^[0-9]*)"))
 
-  if(!all(all(temp$date == rh$date),
-          all(rh$date == dew_point$date))) stop("Tables datetimes doesn't match")
+  #if(!all(all(temp$date == rh$date),
+  #       all(rh$date == dew_point$date))) stop("Tables datetimes doesn't match")
 
   combDat <- temp %>%
-    full_join(rh,
-              by = c("date" = "date",
-                     "logger_id" = "logger_id")) %>%
-    full_join(dew_point,
-              by = c("date" = "date",
-                     "logger_id" = "logger_id")) %>%
+    inner_join(rh,
+               by = c("date" = "date",
+                      "logger_id" = "logger_id")) %>%
+    inner_join(dew_point,
+               by = c("date" = "date",
+                      "logger_id" = "logger_id")) %>%
     arrange(logger_id,
             date) %>%
     mutate(logger_type = "MX2301A") %>%

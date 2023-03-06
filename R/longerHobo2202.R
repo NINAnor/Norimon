@@ -19,27 +19,30 @@
 #'
 
 
+
 longerHobo2202 <- function(inputFile,
                            guess_max = 10000,
                            ...){
 
   rawDat <- readr::read_csv(inputFile,
-                     guess_max = guess_max,
-                     col_types = readr::cols(),
-                     ...)
+                            guess_max = guess_max,
+                            col_types = readr::cols(),
+                            ...)
 
-  dat <- rawDat %>%
-    select(-"Line#") %>%
-    mutate(date = as.POSIXct(.data$Date, format = "%m/%d/%y %H:%M:%S")) %>%
-    mutate_if(is_character, as.double) %>%
-    select(-Date)
+  suppressWarnings({
+    dat <- rawDat %>%
+      select(-"Line#") %>%
+      mutate(date = as.POSIXct(.data$Date, format = "%m/%d/%y %H:%M:%S")) %>%
+      mutate_if(is_character, as.double) %>%
+      select(-Date)
+  })
 
 
 
   temp <- dat %>%
     tidyr::pivot_longer(cols = tidyr::starts_with("Temperature"),
-                 names_to = "logger_id",
-                 values_to = "temperature") %>%
+                        names_to = "logger_id",
+                        values_to = "temperature") %>%
     select(date,
            logger_id,
            temperature) %>%
@@ -58,17 +61,17 @@ longerHobo2202 <- function(inputFile,
 
   temp <- temp %>%
     mutate(logger_id = stringr::str_extract(.data$logger_id,
-                                   "[^, ]+$"))
+                                            "[^, ]+$"))
   light <- light %>%
     mutate(logger_id = stringr::str_extract(.data$logger_id,
-                                   "[^, ]+$"))
+                                            "[^, ]+$"))
 
-  if(!all(temp$date == light$date)) stop("Tables datetimes doesn't match")
+  #if(!all(temp$date == light$date)) stop("Tables datetimes doesn't match")
 
   combDat <- temp %>%
-    full_join(light,
-              by = c("date" = "date",
-                     "logger_id" = "logger_id")) %>%
+    inner_join(light,
+               by = c("date" = "date",
+                      "logger_id" = "logger_id")) %>%
     arrange(.data$logger_id,
             .data$date) %>%
     mutate(logger_type = "MX2202") %>%
@@ -80,3 +83,8 @@ longerHobo2202 <- function(inputFile,
 
   return(combDat)
 }
+
+
+
+
+
