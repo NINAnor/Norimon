@@ -30,6 +30,17 @@ Imports:
     DBI,
     dbplyr,
     tibble,
+    PerformanceAnalytics,
+    RPostgres,
+    betapart,
+    fasterize,
+    ggridges,
+    gridExtra,
+    latex2exp,
+    lubridate,
+    readr,
+    stringr,
+    zoo
 Depends:
   ggplot2,
   rlang
