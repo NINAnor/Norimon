@@ -96,6 +96,8 @@ plot_climate_comparison <- function(climate_data = NULL,
                                     "precipitation",
                                     "snow_depth")
   )
+
+
   legend_variable <- variable
 
   legend_table <- list("Norwegian" = list(temperature = "temperatur",
@@ -158,12 +160,12 @@ plot_climate_comparison <- function(climate_data = NULL,
   if(rolling_mean){
 
     climate_data <- climate_data %>%
-      group_by(locality) %>%
-      arrange(date) %>%
-      mutate(moving_avg_precip = zoo::rollmean(daily_sum_precip, k = 5, fill = NA, align = 'center'),
+      dplyr::group_by(locality) %>%
+      dplyr::arrange(date) %>%
+      dplyr::mutate(moving_avg_precip = zoo::rollmean(daily_sum_precip, k = 5, fill = NA, align = 'center'),
              moving_avg_temp = zoo::rollmean(daily_mean_temp, k = 5, fill = NA, align = 'center'),
              moving_avg_snow_depth = zoo::rollmean(daily_mean_snow_depth, k = 5, fill = NA, align = 'center')) %>%
-      ungroup()
+      dplyr::ungroup()
 
   }
 
@@ -271,7 +273,7 @@ plot_climate_comparison <- function(climate_data = NULL,
     geom_vline(xintercept = 0,
                colour = "wheat4",
                linetype = 1,
-               size = 1)
+               linewidth = 1)
 
   #Add horizontal lines
   # p <- p +
@@ -321,7 +323,7 @@ plot_climate_comparison <- function(climate_data = NULL,
     dplyr::filter(!!variable == my_max(!!variable, na.rm = TRUE)) %>%
     dplyr::select(new_day,
                   !!variable) %>%
-    slice(1) %>% #Break ties
+    dplyr::slice(1) %>% #Break ties
     as.vector()
 
   no_high_days <- nrow(present_highs)
@@ -335,7 +337,7 @@ plot_climate_comparison <- function(climate_data = NULL,
       p <- p +
         annotate("segment", x = high_annot_coord[[1]], xend = high_annot_coord[[1]] - 40,
                  y = high_annot_coord[[2]], yend = high_annot_coord[[2]] + 5, colour = "firebrick3") +
-        annotate("text", x = high_annot_coord[[1]] - 150, y = high_annot_coord[[2]] + 4 ,
+        annotate("text", x = high_annot_coord[[1]] - 140, y = high_annot_coord[[2]] + 4 ,
                  label = paste0(no_high_days,
                                 text_table[[language]][4],
                                 text_table[[language]][5]), size = 3,
@@ -381,7 +383,7 @@ plot_climate_comparison <- function(climate_data = NULL,
       p <- p +
         annotate("segment", x = low_annot_coord[[1]], xend = low_annot_coord[[1]] - 40,
                  y = low_annot_coord[[2]], yend = low_annot_coord[[2]] - 5, colour = "blue3") +
-        annotate("text", x = low_annot_coord[[1]] - 60, y = low_annot_coord[[2]] - 10 ,
+        annotate("text", x = low_annot_coord[[1]] - 70, y = low_annot_coord[[2]] - 12 ,
                  label = paste0(no_low_days,
                                 text_table[[language]][6],
                                 text_table[[language]][7]), size = 3,
@@ -396,7 +398,7 @@ plot_climate_comparison <- function(climate_data = NULL,
         p <- p +
           annotate("segment", x = low_annot_coord[[1]], xend = low_annot_coord[[1]] - 40,
                    y = low_annot_coord[[2]], yend = low_annot_coord[[2]] - 15, colour = "blue3") +
-          annotate("text", x = low_annot_coord[[1]] - 38, y = low_annot_coord[[2]] - 20 ,
+          annotate("text", x = low_annot_coord[[1]] - 38, y = low_annot_coord[[2]] - 22 ,
                    label = paste0(no_low_days,
                                   text_table[[language]][6],
                                   text_table[[language]][7]), size = 3,
