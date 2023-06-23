@@ -6,7 +6,7 @@
 \alias{/.boot_stat}
 \title{Contrast functions for boot_stat object}
 \usage{
-boot_contrast(x, ...)
+boot_contrast(x, level = NULL, ...)
 
 \method{-}{boot_stat}(x, ...)
 
@@ -15,9 +15,9 @@ boot_contrast(x, ...)
 \arguments{
 \item{x}{Boot object}
 
-\item{...}{additional parameters}
-
 \item{level}{Level to use as reference}
+
+\item{...}{additional parameters}
 }
 \description{
 Contrast functions for boot_stat object

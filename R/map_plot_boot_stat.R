@@ -7,7 +7,6 @@
 #' @param ... Additional parameters passed to scale_fill_nina. e.g. palette
 #'
 #' @return A ggplot
-#' @export
 #'
 #' @examples
 #'
@@ -31,10 +30,7 @@
 #'          palette = "blue-orange")
 #'
 #' }
-#'
-#'
-
-
+#' @export
 map_plot <- function(x,
                      whole_country = FALSE,
                      alpha_from_sd = FALSE,
