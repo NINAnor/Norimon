@@ -7,10 +7,19 @@
 #' @param level Level to use as reference
 #' @param ... additional parameters
 #'
+
+
+#' @rdname boot_contrast.boot_stat
 #' @export
 #'
-#'
-#'
+
+boot_contrast <- function(x,
+                          level = NULL,
+                          ...){
+  UseMethod("boot_contrast", x)
+}
+
+#' @export
 boot_contrast.boot_stat <- function(x,
                                     level = NULL,
                                     ...){

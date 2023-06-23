@@ -3,7 +3,7 @@
 #' @noRd
 region_fylke <- function() {
 
-  tibble(region_name = c(rep("\u00f8stlandet", 4),
+  tibble(region_name = c(rep("\u00d8stlandet", 4),
                                        rep("S\u00f8rlandet", 2),
                                        "Tr\u00f8ndelag",
                                        rep("Nord-Norge", 2),
