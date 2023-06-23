@@ -4,18 +4,24 @@
 \alias{map_plot}
 \title{map_plot Plots bootstrap values from boot_stat object on map}
 \usage{
-map_plot(x, ...)
+map_plot(
+  x,
+  whole_country = FALSE,
+  alpha_from_sd = FALSE,
+  alpha_range = c(0.3, 0.9),
+  ...
+)
 }
 \arguments{
 \item{x}{A boot_stat object}
-
-\item{...}{Additional parameters passed to scale_fill_nina. e.g. palette}
 
 \item{whole_country}{Plot whole country (and not only regions with values). Boolean}
 
 \item{alpha_from_sd}{Boolean, compute alpha (transparancy) values from sd?}
 
 \item{alpha_range}{Range of alpha values}
+
+\item{...}{Additional parameters passed to scale_fill_nina. e.g. palette}
 }
 \value{
 A ggplot
@@ -45,6 +51,4 @@ map_plot(beetle_asv_div_boot,
          palette = "blue-orange")
 
 }
-
-
 }

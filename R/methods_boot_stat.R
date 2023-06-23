@@ -7,8 +7,6 @@
 #' @param level Level to use as reference
 #' @param ... additional parameters
 #'
-
-
 #' @rdname boot_contrast.boot_stat
 #' @export
 #'
