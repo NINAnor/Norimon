@@ -7,6 +7,7 @@
 #' @param ... Additional parameters passed to scale_fill_nina. e.g. palette
 #'
 #' @return A ggplot
+#' @export
 #'
 #' @examples
 #'
@@ -32,15 +33,14 @@
 #' }
 #'
 #'
+
+
+map_plot <- function(x, ...){
+  UseMethod("map_plot", x)
+}
+
+
 #' @export
-#'
-
-
-# map_plot <- function(x, ...){
-#   UseMethod("map_plot")
-# }
-
-
 map_plot.boot_stat <- function(x,
                                whole_country = FALSE,
                                alpha_from_sd = FALSE,
@@ -48,6 +48,8 @@ map_plot.boot_stat <- function(x,
                                ...){
 
   checkCon()
+
+
 
   df <- x[[1]] %>%
     tidyr::as_tibble()
