@@ -13,7 +13,9 @@
 #' @export
 #'
 
-boot_contrast <- function(x, ...){
+boot_contrast <- function(x,
+                          level = NULL,
+                          ...){
   UseMethod("boot_contrast", x)
 }
 
