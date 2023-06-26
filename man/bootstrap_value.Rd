@@ -6,8 +6,9 @@
 \usage{
 bootstrap_value(
   df,
-  value = c(no_species, shannon_div, mean_asv_per_species),
-  groups,
+  value = c(no_species, shannon_div, mean_asv_per_species, sum_wet_weight,
+    avg_wet_weight),
+  groups = NULL,
   lower_limit = 0.025,
   upper_limit = 0.975,
   R = 999

@@ -46,7 +46,7 @@ plot.boot_stat <- function(x,
 
     if(length(cols) > 1){
     p <- ggplot(df,
-                aes(x = boot_values, y = year, fill = stat(x))) +
+                aes(x = boot_values, y = year, fill = after_stat(x))) +
       ggridges::geom_density_ridges_gradient() +
       NinaR::scale_fill_nina(name = x_axis_name,
                       discrete = F,
@@ -72,8 +72,10 @@ plot.boot_stat <- function(x,
     }
 
 
+  suppressMessages({
+    print(p)
+  })
 
-    p
 
 }
 

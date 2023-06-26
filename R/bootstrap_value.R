@@ -31,25 +31,36 @@
 #'
 #'
 bootstrap_value <- function(df,
-                            value = c(no_species, shannon_div, mean_asv_per_species),
-                            groups,
+                            value = c(no_species, shannon_div, mean_asv_per_species, sum_wet_weight, avg_wet_weight),
+                            groups = NULL,
                             lower_limit = 0.025,
                             upper_limit = 0.975,
                             R = 999){
 
 
   groupings <- groups
-  value_quote <- enquo(value)
+
+
+
+    # bootstrap_values <- df %>%
+  #   group_by_at(groupings) %>%
+  #   summarise(boot_values = list(replicate(R,
+  #                                      mean(sample(!!value_quote,
+  #                                                  size = length(!!value_quote),
+  #                                                  replace = TRUE)
+  #                                      )
+  #   )),
+  #   .groups = "keep")
 
   bootstrap_values <- df %>%
     group_by_at(groupings) %>%
     summarise(boot_values = list(replicate(R,
-                                       mean(sample(!!value_quote,
-                                                   size = length(!!value_quote),
-                                                   replace = TRUE)
-                                       )
+                                           mean(sample({{value}},
+                                                       size = length({{value}}),
+                                                       replace = TRUE)
+                                           )
     )),
-    .groups = "keep") %>%
+    .groups = "keep")  %>%
     unnest(cols = c(boot_values))
 
 

@@ -7,8 +7,14 @@
 \usage{
 get_biomass(
   limit = NULL,
+  subset_orders = NULL,
+  subset_families = NULL,
+  subset_genus = NULL,
+  subset_species = NULL,
+  subset_year = NULL,
+  subset_habitat = NULL,
   trap_type = "MF",
-  subset_region = c(NULL, "Østlandet", "Trøndelag", "Sørlandet"),
+  subset_region = c(NULL, "Østlandet", "Trøndelag", "Sørlandet", "Nord-Norge"),
   dataset = "NasIns",
   agg_level = "year_locality",
   as_tibble = F
@@ -16,6 +22,18 @@ get_biomass(
 }
 \arguments{
 \item{limit}{Optional row limit on output (for testing)}
+
+\item{subset_orders}{Optional subset of order}
+
+\item{subset_families}{Optional subset of families}
+
+\item{subset_genus}{Optional subset of genus}
+
+\item{subset_species}{Optional subset of species}
+
+\item{subset_year}{Optional subset of year}
+
+\item{subset_habitat}{Optional subset of habitat type ("Forest" or "Semi-nat")}
 
 \item{trap_type}{Which trap types to fetch data for. "All" (defult), "MF", or "VF".}
 
