@@ -3,6 +3,12 @@
 #' @encoding UTF-8
 #' @param limit Optional row limit on output (for testing)
 #' @param trap_type Which trap types to fetch data for. "All" (defult), "MF", or "VF".
+#' @param subset_orders Optional subset of order
+#' @param subset_families Optional subset of families
+#' @param subset_genus Optional subset of genus
+#' @param subset_species Optional subset of species
+#' @param subset_year Optional subset of year
+#' @param subset_habitat Optional subset of habitat type ("Forest" or "Semi-nat")
 #' @param subset_region Optional subset of region. Currently allowing "Trøndelag", "Østlandet", "Sørlandet"
 #' @param dataset Which dataset to fetch data for. Default "NasIns".
 #' @param agg_level Aggregate level of data. "year_locality" (default), "locality_sampling", "total".
