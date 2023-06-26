@@ -7,8 +7,14 @@
 \usage{
 get_biomass(
   limit = NULL,
+  subset_orders = NULL,
+  subset_families = NULL,
+  subset_genus = NULL,
+  subset_species = NULL,
+  subset_year = NULL,
+  subset_habitat = NULL,
   trap_type = "MF",
-  subset_region = c(NULL, "Østlandet", "Trøndelag", "Sørlandet"),
+  subset_region = c(NULL, "Østlandet", "Trøndelag", "Sørlandet", "Nord-Norge"),
   dataset = "NasIns",
   agg_level = "year_locality",
   as_tibble = F

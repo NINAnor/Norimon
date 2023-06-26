@@ -24,31 +24,44 @@
 #'
 
 get_biomass <- function(limit = NULL,
-                            trap_type = "MF",
-                            subset_region = c(NULL, "\u00d8stlandet", "Tr\u00f8ndelag", "S\u00f8rlandet"),
-                            dataset = "NasIns",
-                            agg_level = "year_locality",
-                            as_tibble = F){
+                        subset_orders = NULL,
+                        subset_families = NULL,
+                        subset_genus = NULL,
+                        subset_species = NULL,
+                        subset_year = NULL,
+                        subset_habitat = NULL,
+                        trap_type = "MF",
+                        subset_region = c(NULL, "\u00d8stlandet", "Tr\u00f8ndelag", "S\u00f8rlandet", "Nord-Norge"),
+                        dataset = "NasIns",
+                        agg_level = "year_locality",
+                        as_tibble = F){
 
-  Norimon::checkCon()
+  if(!exists("con")) {con <- NULL}
 
+  checkCon()
 
+  if(!is.null(subset_region)){
+    subset_region <- match.arg(subset_region, choices = c(NULL, "\u00d8stlandet", "Tr\u00f8ndelag", "S\u00f8rlandet", "Nord-Norge"))
+  }
 
-  dataset <- match.arg(dataset,
-                       choices = c("NasIns",
-                                   "OkoTrond",
-                                   "TidVar",
-                                   "Nerlands\u00f8ya"))
+  if(!is.null(subset_habitat)){
+    subset_habitat <- match.arg(subset_habitat, choices = c("Forest", "Semi-nat"))
+  }
 
-  agg_level <- match.arg(agg_level,
-                         choices = c("year_locality",
-                                     "locality_sampling",
-                                     "total",
-                                     "none"))
+  dataset <- match.arg(dataset, choices = c("NasIns",
+                                            "OkoTrond",
+                                            "TidVar",
+                                            "Nerlands\u00f8ya"))
+
+  agg_level <- match.arg(agg_level, choices = c("year_locality",
+                                                "locality_sampling",
+                                                "region_habitat",
+                                                "region_habitat_year",
+                                                "total",
+                                                "none"))
 
   trap_type <- match.arg(trap_type,
-                         choices = c("ALL", "MF", "VF", NULL))
-
+                         choices = c("All", "MF", "VF", NULL))
 
   ##Set up table sources
   ##Probably needs updating after new batch of data. Also need to test filtering of different identification types
@@ -107,8 +120,60 @@ get_biomass <- function(limit = NULL,
       filter(region_name %IN% subset_region)
   }
 
-  ##Aggregate data to choosen level
-  ##Add more choices?
+  #Filter on habitat
+  if(!is.null(subset_habitat)){
+    subset_habitat <- c("", subset_habitat)
+    joined <- joined %>%
+      filter(.data$habitat_type %in% subset_habitat)
+  }
+
+  #Filter on order
+  if(!is.null(subset_orders)){
+    subset_orders <- c("", subset_orders) #To allow one-length subsets
+    joined <- joined %>%
+      filter(.data$id_order %IN% subset_orders)
+  }
+
+  #Filter on families
+  if(!is.null(subset_families)){
+    subset_families <- c("", subset_families)
+    joined <- joined %>%
+      filter(.data$id_family %in% subset_families)
+  }
+
+  #Filter on species
+  if(!is.null(subset_species)){
+    subset_species <- c("", subset_species)
+    joined <- joined %>%
+      filter(.data$species_latin_fixed %in% subset_species)
+  }
+
+  #Filter on year
+  if(!is.null(subset_year)){
+    subset_year <- c("", subset_year)
+    joined <- joined %>%
+      filter(.data$year %in% subset_year)
+  }
+
+  #Filter on genus
+  if(!is.null(subset_genus)){
+    subset_genus <- c("", subset_genus)
+    joined <- joined %>%
+      filter(.data$id_genus %in% subset_genus)
+  }
+
+  #filter on dataset
+
+  if(!is.null(dataset)){
+    joined <- joined %>%
+      filter(.data$project_short_name == dataset)
+  }
+
+  #filter on trap type (recommended to only take MF)
+  if(!is.null(trap_type) & trap_type != "All"){
+    joined <- joined %>%
+      filter(grepl((trap_type), .data$sample_name))
+  }
 
   res <- joined
 
@@ -122,7 +187,8 @@ get_biomass <- function(limit = NULL,
       collect() %>%
       group_by(year_locality_id, locality_id) %>%
       summarise(sum_wet_weight = sum(wet_weight_bottle - weight_empty_bottle, na.rm = T),
-                avg_wet_weight = mean(wet_weight_bottle - weight_empty_bottle, na.rm = T)) %>%
+                avg_wet_weight = mean(wet_weight_bottle - weight_empty_bottle, na.rm = T),
+                .groups = "keep") %>%
       left_join(localities,
                 by = c("locality_id" = "id"),
                 copy = T) %>%
@@ -154,7 +220,8 @@ get_biomass <- function(limit = NULL,
       group_by(sampling_name, year_locality_id, locality_id) %>%
       summarise(no_trap_days = mean(as.numeric(end_date_obs - start_date_obs)),
                 sum_wet_weight = sum(wet_weight_bottle - weight_empty_bottle, na.rm = T),
-                avg_wet_weight = mean(wet_weight_bottle - weight_empty_bottle, na.rm = T)) %>%
+                avg_wet_weight = mean(wet_weight_bottle - weight_empty_bottle, na.rm = T),
+                .groups = "keep") %>%
       left_join(localities,
                 by = c("locality_id" = "id"),
                 copy = T) %>%
@@ -185,7 +252,8 @@ get_biomass <- function(limit = NULL,
     res <- res %>%
       collect() %>%
       summarise(sum_wet_weight = sum(wet_weight_bottle - weight_empty_bottle, na.rm = T),
-                avg_wet_weight = mean(wet_weight_bottle - weight_empty_bottle, na.rm = T)) %>%
+                avg_wet_weight = mean(wet_weight_bottle - weight_empty_bottle, na.rm = T),
+                .groups = "keep") %>%
       select(sum_wet_weight,
              avg_wet_weight)
 
