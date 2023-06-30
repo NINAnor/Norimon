@@ -48,6 +48,10 @@ get_observations(
 
 \item{agg_level}{Aggregation level of data. "year_locality", "region_habitat", "region_habitat_year", "locality_sampling", "total". Default to year_locality}
 
+\item{Hill}{Calculate shannon diversity as Hill number (exp(Shann_div)). Boolean}
+
+\item{richn_corr}{Correct GDE calculation by number of species (doi: https://doi.org/10.1101/2022.02.09.479762). Boolean.}
+
 \item{digits}{Number of digits to round shannon diversity and mean ASV counts to. (defaults to 2)}
 
 \item{as_tibble}{Coerce output to class tibble}

@@ -12,6 +12,8 @@
 #' @param limit Optional limit the output to number of rows (for testing)
 #' @param dataset Choose the dataset to fetch data from. Default "NasIns" for national insect monitoring data
 #' @param agg_level Aggregation level of data. "year_locality", "region_habitat", "region_habitat_year", "locality_sampling", "total". Default to year_locality
+#' @param Hill Calculate shannon diversity as Hill number (exp(Shann_div)). Boolean
+#' @param richn_corr Correct GDE calculation by number of species (doi: https://doi.org/10.1101/2022.02.09.479762). Boolean.
 #' @param digits Number of digits to round shannon diversity and mean ASV counts to. (defaults to 2)
 #' @param as_tibble Coerce output to class tibble
 #'

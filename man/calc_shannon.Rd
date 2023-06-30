@@ -9,6 +9,8 @@ calc_shannon(community, no_asv_per_species, Hill = TRUE)
 \arguments{
 \item{community}{Community.}
 
+\item{no_asv_per_species}{Number of genetic variants per species.}
+
 \item{Hill}{Return as first order Hill number. Boolean}
 }
 \value{

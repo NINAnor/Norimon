@@ -1,6 +1,7 @@
 #' Calculate Shannon index on a community.
 #'
 #' @param community Community.
+#' @param no_asv_per_species Number of genetic variants per species.
 #' @param Hill Return as first order Hill number. Boolean
 #'
 #' @return Shannon diversity.

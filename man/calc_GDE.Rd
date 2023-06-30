@@ -7,11 +7,11 @@
 calc_GDE(gdm, Hill = TRUE, richn_corr = TRUE)
 }
 \arguments{
+\item{gdm}{A GDM calculation. (doi: https://doi.org/10.1101/2022.02.09.479762)}
+
 \item{Hill}{Return as first order Hill number. Boolean}
 
 \item{richn_corr}{Correct for species richness, dividing by number of species. Boolean}
-
-\item{community}{Community.}
 }
 \value{
 Shannon diversity.

@@ -4,6 +4,7 @@
 #' @param whole_country Plot whole country (and not only regions with values). Boolean
 #' @param alpha_from_sd Boolean, compute alpha (transparancy) values from sd?
 #' @param alpha_range Range of alpha values
+#' @param palette The palette to be used in scale_fill_nina
 #' @param ... Additional parameters passed to scale_fill_nina. e.g. palette
 #'
 #' @return A ggplot

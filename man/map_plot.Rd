@@ -22,6 +22,8 @@ map_plot(
 
 \item{alpha_range}{Range of alpha values}
 
+\item{palette}{The palette to be used in scale_fill_nina}
+
 \item{...}{Additional parameters passed to scale_fill_nina. e.g. palette}
 }
 \value{
