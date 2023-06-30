@@ -112,6 +112,7 @@ map_plot.boot_stat <- function(x,
                   alpha = 1/boot_sd)) +
       NinaR::scale_fill_nina(name = value_name,
                              discrete = FALSE,
+                             palette = palette,
                              ...) +
       scale_alpha(range = alpha_range,
                   guide = "none")
@@ -123,6 +124,7 @@ map_plot.boot_stat <- function(x,
     geom_sf(aes(fill = boot_value)) +
     NinaR::scale_fill_nina(name = value_name,
                            discrete = FALSE,
+                           palette = palette,
                            ...)
   }
 
