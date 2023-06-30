@@ -136,6 +136,8 @@ print.boot_stat <- function(x,
     if(length(...) > 1) stop("Can only divide by a single value")
 
     bootstrap_values$boot_values <- exp(log(bootstrap_values$boot_values) - log(...))
+    ##Truncate bootstrap_values to max 1
+    bootstrap_values$boot_values[bootstrap_values$boot_values > 1] <- 1
 
     bootstrap_summary <- bootstrap_values %>%
       dplyr::group_by(across(!boot_values)) %>%
@@ -153,6 +155,8 @@ print.boot_stat <- function(x,
       subtr_values <- ...[[2]]
 
       bootstrap_values$boot_values <- exp(log(bootstrap_values$boot_values) - log(subtr_values$boot_values))
+      ##Truncate bootstrap_values to max 1
+      bootstrap_values$boot_values[bootstrap_values$boot_values > 1] <- 1
 
       bootstrap_summary <- bootstrap_values %>%
         dplyr::group_by(across(!boot_values)) %>%

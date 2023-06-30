@@ -1,6 +1,8 @@
 #' Calculate Shannon index on a community.
 #'
 #' @param community Community.
+#' @param Hill Return as first order Hill number. Boolean
+#'
 #' @return Shannon diversity.
 #' @examples
 #'
@@ -27,8 +29,20 @@
 
 
 
-calc_shannon <- function(community) {
-  p <- table(community)/length(community) # Find proportions
-  p <- p[p > 0] # Get rid of zero proportions (log zero is undefined)
-  -sum(p * log(p)) # Calculate index
+calc_shannon <- function(community,
+                         no_asv_per_species,
+                         Hill = TRUE) {
+    community_aug <- rep(community, no_asv_per_species)
+
+    p <- table(community_aug)/length(community_aug) # Find proportions
+    p <- p[p > 0] # Get rid of zero proportions (log zero is undefined)
+    out <- -sum(p * log(p)) # Calculate index
+
+    if(Hill){
+      out <- exp(out)
+    }
+
+    return(out)
+
 }
+

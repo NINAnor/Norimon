@@ -17,6 +17,8 @@ get_observations(
   limit = NULL,
   dataset = "NasIns",
   agg_level = "year_locality",
+  Hill = TRUE,
+  richn_corr = TRUE,
   digits = 2,
   as_tibble = F
 )

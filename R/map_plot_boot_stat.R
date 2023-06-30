@@ -35,6 +35,7 @@ map_plot <- function(x,
                      whole_country = FALSE,
                      alpha_from_sd = FALSE,
                      alpha_range = c(0.3, 0.9),
+                     palette = "blue-orange",
                      ...){
   UseMethod("map_plot", x)
 }
@@ -45,6 +46,7 @@ map_plot.boot_stat <- function(x,
                                whole_country = FALSE,
                                alpha_from_sd = FALSE,
                                alpha_range = c(0.3, 0.9),
+                               palette = "blue-orange",
                                ...){
 
   checkCon()
