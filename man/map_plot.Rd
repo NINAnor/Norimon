@@ -9,6 +9,7 @@ map_plot(
   whole_country = FALSE,
   alpha_from_sd = FALSE,
   alpha_range = c(0.3, 0.9),
+  palette = "blue-orange",
   ...
 )
 }
@@ -20,6 +21,8 @@ map_plot(
 \item{alpha_from_sd}{Boolean, compute alpha (transparancy) values from sd?}
 
 \item{alpha_range}{Range of alpha values}
+
+\item{palette}{The palette to be used in scale_fill_nina}
 
 \item{...}{Additional parameters passed to scale_fill_nina. e.g. palette}
 }

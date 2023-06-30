@@ -4,10 +4,14 @@
 \alias{calc_shannon}
 \title{Calculate Shannon index on a community.}
 \usage{
-calc_shannon(community)
+calc_shannon(community, no_asv_per_species, Hill = TRUE)
 }
 \arguments{
 \item{community}{Community.}
+
+\item{no_asv_per_species}{Number of genetic variants per species.}
+
+\item{Hill}{Return as first order Hill number. Boolean}
 }
 \value{
 Shannon diversity.

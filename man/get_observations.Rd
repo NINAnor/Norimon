@@ -17,6 +17,8 @@ get_observations(
   limit = NULL,
   dataset = "NasIns",
   agg_level = "year_locality",
+  Hill = TRUE,
+  richn_corr = TRUE,
   digits = 2,
   as_tibble = F
 )
@@ -45,6 +47,10 @@ get_observations(
 \item{dataset}{Choose the dataset to fetch data from. Default "NasIns" for national insect monitoring data}
 
 \item{agg_level}{Aggregation level of data. "year_locality", "region_habitat", "region_habitat_year", "locality_sampling", "total". Default to year_locality}
+
+\item{Hill}{Calculate shannon diversity as Hill number (exp(Shann_div)). Boolean}
+
+\item{richn_corr}{Correct GDE calculation by number of species (doi: https://doi.org/10.1101/2022.02.09.479762). Boolean.}
 
 \item{digits}{Number of digits to round shannon diversity and mean ASV counts to. (defaults to 2)}
 
