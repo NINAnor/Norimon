@@ -204,7 +204,7 @@ get_phenology <- function(taxonomic_level = NULL,
       summarise(no_trap_days = mean(as.numeric(.data$end_date_obs - .data$start_date_obs)), ##to get the mean trap days from all traps within the sampling event (should be the same for all traps)
                 no_species = n_distinct(.data$species_latin_fixed),
                 shannon_div = round(calc_shannon(.data$species_latin_fixed), digits),
-                mean_asv_per_species = round(mean(.data$no_asv_per_species), digits),
+                mean_no_asv_per_species = round(mean(.data$no_asv_per_species), digits),
                 order_read_ab = sum(species_read_ab, na.rm = TRUE)
                 ) %>%
       group_by(start_date_obs, end_date_obs, sampling_name, year_locality_id, locality_id) %>%
@@ -234,7 +234,7 @@ get_phenology <- function(taxonomic_level = NULL,
              no_trap_days,
              no_species,
              shannon_div,
-             mean_asv_per_species,
+             mean_no_asv_per_species,
              rel_read_ab,
              taxa_biomass) %>%
       arrange(year,
@@ -273,7 +273,7 @@ get_phenology <- function(taxonomic_level = NULL,
       summarise(no_trap_days = mean(as.numeric(.data$end_date_obs - .data$start_date_obs)), ##to get the mean trap days from all traps within the sampling event (should be the same for all traps)
                 no_species = n_distinct(.data$species_latin_fixed),
                 shannon_div = round(calc_shannon(.data$species_latin_fixed), digits),
-                mean_asv_per_species = round(mean(.data$no_asv_per_species), digits),
+                mean_no_asv_per_species = round(mean(.data$no_asv_per_species), digits),
                 family_read_ab = sum(species_read_ab, na.rm = TRUE)
       ) %>%
       group_by(start_date_obs, end_date_obs, sampling_name, year_locality_id, locality_id) %>%
@@ -304,7 +304,7 @@ get_phenology <- function(taxonomic_level = NULL,
              no_trap_days,
              no_species,
              shannon_div,
-             mean_asv_per_species,
+             mean_no_asv_per_species,
              rel_read_ab,
              taxa_biomass) %>%
       arrange(year,

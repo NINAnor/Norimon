@@ -32,21 +32,21 @@
 
 
 
-calc_GDE <- function(gdm,
+calc_GDE <- function(GD,
                      Hill = TRUE,
                      richn_corr = TRUE) {
 
     #Temporary hack to get the (wrong, temporary) gdms below zero
-    gdm_temp <- gdm / sum(gdm)
+    GDM_temp <- GD / sum(GD)
 
-    out <- -sum(gdm_temp * log(gdm_temp)) # Calculate index
+    out <- -sum(GDM_temp * log(GDM_temp)) # Calculate index
 
     if(Hill){
       out <- exp(out)
     }
 
     if(richn_corr){
-      out <- out / length(gdm)
+      out <- out / length(GD)
     }
 
     return(out)

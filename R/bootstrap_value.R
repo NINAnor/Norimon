@@ -1,7 +1,7 @@
 #' Bootstrap value
 #'
 #' @param df dataframe (or tibble)
-#' @param value Column to bootstrap, "no_species" (default), "shannon_div", "mean_asv_per_species"
+#' @param value Column to bootstrap, "no_species" (default), "shannon_div", "mean_no_asv_per_species"
 #' @param groups Optional grouping variables as character vector.
 #' @param lower_limit Lower limit to confidence intervals, e.g. 0.025 for lower 2.5%
 #' @param upper_limit Upper limit to confidence intervals, e.g. 0.975 for upper 97.5%
@@ -31,7 +31,7 @@
 #'
 #'
 bootstrap_value <- function(df,
-                            value = c(no_species, shannon_div, mean_asv_per_species, sum_wet_weight, avg_wet_weight),
+                            value = c(no_species, shannon_div, mean_no_asv_per_species, sum_wet_weight, avg_wet_weight),
                             groups = NULL,
                             lower_limit = 0.025,
                             upper_limit = 0.975,
@@ -40,17 +40,6 @@ bootstrap_value <- function(df,
 
   groupings <- groups
 
-
-
-    # bootstrap_values <- df %>%
-  #   group_by_at(groupings) %>%
-  #   summarise(boot_values = list(replicate(R,
-  #                                      mean(sample(!!value_quote,
-  #                                                  size = length(!!value_quote),
-  #                                                  replace = TRUE)
-  #                                      )
-  #   )),
-  #   .groups = "keep")
 
   bootstrap_values <- df %>%
     group_by_at(groupings) %>%

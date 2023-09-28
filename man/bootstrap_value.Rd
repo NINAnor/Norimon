@@ -6,7 +6,7 @@
 \usage{
 bootstrap_value(
   df,
-  value = c(no_species, shannon_div, mean_asv_per_species, sum_wet_weight,
+  value = c(no_species, shannon_div, mean_no_asv_per_species, sum_wet_weight,
     avg_wet_weight),
   groups = NULL,
   lower_limit = 0.025,
@@ -17,7 +17,7 @@ bootstrap_value(
 \arguments{
 \item{df}{dataframe (or tibble)}
 
-\item{value}{Column to bootstrap, "no_species" (default), "shannon_div", "mean_asv_per_species"}
+\item{value}{Column to bootstrap, "no_species" (default), "shannon_div", "mean_no_asv_per_species"}
 
 \item{groups}{Optional grouping variables as character vector.}
 

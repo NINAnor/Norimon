@@ -22,7 +22,7 @@
 #'
 #'
 #' beetle_asv_div_boot <- bootstrap_value(beetles,
-#'                                       value = mean_asv_per_species,
+#'                                       value = mean_no_asv_per_species,
 #'                                       groups = c("year",
 #'                                                  "region_name"))
 #'

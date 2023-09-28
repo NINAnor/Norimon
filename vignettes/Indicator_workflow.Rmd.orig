@@ -88,7 +88,7 @@ The observations can be subsetted on taxonomy, at different taxonomic levels. Yo
 ```{r}
 beetles <- get_observations(subset_orders = "Coleoptera")
 ```
-This function provides both the number of species, the shannon diversity, and the mean intraspecific variation per species (the mean number of unique ASV's per species). Note that currently, we don't have ASV-data for the 2020 dataset, i.e. we get a mean_asv_per_species of 1 for all these records. Here only the first 5 rows are shown.
+This function provides both the number of species, the shannon diversity, and the mean intraspecific variation per species (the mean number of unique ASV's per species). Here only the first 5 rows are shown.
 
 ```{r, echo = FALSE}
 beetles %>%
