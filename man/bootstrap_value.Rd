@@ -9,6 +9,7 @@ bootstrap_value(
   value = c(no_species, shannon_div, mean_no_asv_per_species, sum_wet_weight,
     avg_wet_weight),
   groups = NULL,
+  rolling_year_window = TRUE,
   lower_limit = 0.025,
   upper_limit = 0.975,
   R = 999
@@ -20,6 +21,8 @@ bootstrap_value(
 \item{value}{Column to bootstrap, "no_species" (default), "shannon_div", "mean_no_asv_per_species"}
 
 \item{groups}{Optional grouping variables as character vector.}
+
+\item{rolling_year_window}{Should the yearly values be calculated around a 5 year rolling window? Only applies if "year" is present in the groupings}
 
 \item{lower_limit}{Lower limit to confidence intervals, e.g. 0.025 for lower 2.5\%}
 
