@@ -41,12 +41,21 @@ plot.boot_stat <- function(x,
       mutate(across(!boot_values, as.factor))
 
     cols <- colnames(df)[(colnames(df) != "boot_values")]
+
+    if("year_window" %in% cols){
+      y_axis <- "year_window"
+      y_axis_name <- "5-year period"
+    } else {
+      y_axis <- "year"
+      y_axis_name <- stringr::str_to_sentence(y_axis)
+    }
+
     x_axis_name <- stringr::str_to_sentence(attr(x, "value_name"))
-    y_axis_name <- stringr::str_to_sentence("year")
+
 
     if(length(cols) > 1){
     p <- ggplot(df,
-                aes(x = boot_values, y = year, fill = after_stat(x))) +
+                aes(x = boot_values, y = get(y_axis), fill = after_stat(x))) +
       ggridges::geom_density_ridges_gradient() +
       NinaR::scale_fill_nina(name = x_axis_name,
                       discrete = F,
@@ -55,11 +64,11 @@ plot.boot_stat <- function(x,
       xlab(x_axis_name) +
       ylab(y_axis_name) +
       facet_wrap(cols[2], scales = "fixed") +
-      scale_y_discrete(limits=rev)
+      scale_y_discrete(limits = rev)
     } else {
 
       p <- ggplot(df,
-                  aes(x = boot_values, y = year, fill = stat(x))) +
+                  aes(x = boot_values, y = get(y_axis), fill = stat(x))) +
         ggridges::geom_density_ridges_gradient() +
         NinaR::scale_fill_nina(name = x_axis_name,
                         discrete = F,
@@ -67,7 +76,7 @@ plot.boot_stat <- function(x,
                         ...) +
         xlab(x_axis_name) +
         ylab(y_axis_name) +
-        scale_y_discrete(limits=rev)
+        scale_y_discrete(limits = rev)
 
     }
 

@@ -1,8 +1,8 @@
 Package: Norimon
 Title: Utility Functions for the National Insect Monitoring in Norway
-Version: 0.0.0.9014
+Version: 0.0.0.9016
 Authors@R: 
-    person("Jens", "Åström", , "jens.astrom@nina.no", role = c("aut", "cre"),
+    person(given = "Jens", family = "Åström", email = "jens.astrom@nina.no", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-6114-0440"))
 Description: This package provides functions to read and analyse data connected with the national monitoring scheme of insects in Norway
   It documentents the methods used in the analysis of the data, and in the calculation of indicators that describe the ecological state of the insect communities.

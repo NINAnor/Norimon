@@ -225,7 +225,7 @@ get_observations <- function(id_type = c("metabarcoding"),
       group_by(year_locality_id, locality_id) %>%
       summarise(no_species = n_distinct(species_latin_fixed),
                 shannon_div = round(calc_shannon(species_latin_fixed, no_asv_per_species, Hill = Hill), digits),
-                mean_asv_per_species = round(mean(no_asv_per_species), digits),
+                mean_no_asv_per_species = round(mean(no_asv_per_species), digits),
                 GDE_by_asv = round(calc_GDE(no_asv_per_species, Hill = Hill, richn_corr = richn_corr), digits),
                 .groups = "keep") %>%
       left_join(localities,
@@ -244,7 +244,7 @@ get_observations <- function(id_type = c("metabarcoding"),
              region_name,
              no_species,
              shannon_div,
-             mean_asv_per_species,
+             mean_no_asv_per_species,
              GDE_by_asv) %>%
       arrange(year,
               region_name,
@@ -265,7 +265,7 @@ get_observations <- function(id_type = c("metabarcoding"),
       summarise(no_trap_days = mean(as.numeric(end_date_obs - start_date_obs)), ##to get the mean trap days from all traps within the sampling event (should be the same for all traps)
                 no_species = n_distinct(species_latin_fixed),
                 shannon_div = round(calc_shannon(species_latin_fixed, no_asv_per_species, Hill = Hill), digits),
-                mean_asv_per_species = round(mean(no_asv_per_species), digits),
+                mean_no_asv_per_species = round(mean(no_asv_per_species), digits),
                 GDE_by_asv = calc_GDE(no_asv_per_species, Hill = Hill, richn_corr = richn_corr),
                 .groups = "keep") %>%
       left_join(localities,
@@ -283,7 +283,7 @@ get_observations <- function(id_type = c("metabarcoding"),
              no_trap_days,
              no_species,
              shannon_div,
-             mean_asv_per_species,
+             mean_no_asv_per_species,
              GDE_by_asv) %>%
       arrange(year,
               region_name,
@@ -306,7 +306,7 @@ get_observations <- function(id_type = c("metabarcoding"),
                habitat_type) %>%
       summarise(no_species = n_distinct(species_latin_fixed),
                 shannon_div = round(calc_shannon(species_latin_fixed, no_asv_per_species, Hill = Hill), digits),
-                mean_asv_per_species = round(mean(no_asv_per_species), digits),
+                mean_no_asv_per_species = round(mean(no_asv_per_species), digits),
                 GDE_by_asv = calc_GDE(no_asv_per_species, Hill = Hill, richn_corr = richn_corr),
                 .groups = "keep") %>%
       ungroup() %>%
@@ -314,7 +314,7 @@ get_observations <- function(id_type = c("metabarcoding"),
              region_name,
              no_species,
              shannon_div,
-             mean_asv_per_species,
+             mean_no_asv_per_species,
              GDE_by_asv) %>%
       arrange(habitat_type,
               region_name)
@@ -337,7 +337,7 @@ get_observations <- function(id_type = c("metabarcoding"),
                year) %>%
       summarise(no_species = n_distinct(species_latin_fixed),
                 shannon_div = round(calc_shannon(species_latin_fixed, no_asv_per_species, Hill = Hill), digits),
-                mean_asv_per_species = round(mean(no_asv_per_species), digits),
+                mean_no_asv_per_species = round(mean(no_asv_per_species), digits),
                 GDE_by_asv = calc_GDE(no_asv_per_species, Hill = Hill, richn_corr = richn_corr),
                 .groups = "keep") %>%
       ungroup() %>%
@@ -346,7 +346,7 @@ get_observations <- function(id_type = c("metabarcoding"),
              region_name,
              no_species,
              shannon_div,
-             mean_asv_per_species,
+             mean_no_asv_per_species,
              GDE_by_asv) %>%
       arrange(year,
               habitat_type,
@@ -364,13 +364,13 @@ get_observations <- function(id_type = c("metabarcoding"),
                 .groups = "keep") %>%
       summarise(no_species = n_distinct(species_latin_fixed),
                 shannon_div = round(calc_shannon(species_latin_fixed, no_asv_per_species, Hill = Hill), digits),
-                mean_asv_per_species = round(mean(no_asv_per_species), digits),
+                mean_no_asv_per_species = round(mean(no_asv_per_species), digits),
                 GDE_by_asv = calc_GDE(no_asv_per_species, Hill = Hill, richn_corr = richn_corr),
                 .groups = "keep") %>%
       ungroup() %>%
       select(no_species,
              shannon_div,
-             mean_asv_per_species,
+             mean_no_asv_per_species,
              GDE_by_asv)
 
 
