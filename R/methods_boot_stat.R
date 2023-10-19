@@ -45,7 +45,7 @@ boot_contrast.boot_stat <- function(x,
               "bootstrap_values" = bootstrap_values)
 
 
-  attr(out, "value_name") <- attr(x, "value_name")
+  attributes(out) <- attributes(x)
 
   class(out) <- c("boot_stat", "list")
   return(out)
@@ -113,7 +113,7 @@ print.boot_stat <- function(x,
               "bootstrap_values" = bootstrap_values)
 
 
-  attr(out, "value_name") <- attr(x, "value_name")
+  attributes(out) <- attributes(x)
 
   class(out) <- c("boot_stat", "list")
 
@@ -175,7 +175,7 @@ print.boot_stat <- function(x,
               "bootstrap_values" = bootstrap_values)
 
 
-  attr(out, "value_name") <- attr(x, "value_name")
+  attributes(out) <- attributes(x)
 
   class(out) <- c("boot_stat", "list")
 
