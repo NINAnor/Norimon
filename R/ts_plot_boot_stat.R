@@ -13,7 +13,7 @@ ts_plot <- function(x,
   UseMethod("ts_plot", x)
 }
 
-
+#'@export
 ts_plot.boot_stat <- function(x,
                                palette = "blue-orange",
                                ...){
