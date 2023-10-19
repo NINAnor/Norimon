@@ -57,16 +57,15 @@ map_plot.boot_stat <- function(x,
   df <- x[[1]] %>%
     tidyr::as_tibble()
 
-  value_name <- stringr::str_to_sentence(attr(x, "value_name"))
-
-
+  y_value_name <- stringr::str_replace(stringr::str_to_sentence(attr(x, "value_name")), "_", " ")
 
 
   if(!whole_country){
 
     values_fylke <- df %>%
       left_join(region_fylke(),
-                by = c("region_name" = "region_name"))
+                by = c("region_name" = "region_name"),
+                relationship = "many-to-many")
 
     map_to_get <- df %>%
       select(region_name) %>%
@@ -93,7 +92,8 @@ map_plot.boot_stat <- function(x,
       values_fylke <- df %>%
       right_join(all_fylke_years) %>%
       left_join(region_fylke(),
-                by = c("region_name" = "region_name"))
+                by = c("region_name" = "region_name"),
+                relationship = "many-to-many")
     })
 
     map <- get_map()
@@ -110,7 +110,7 @@ map_plot.boot_stat <- function(x,
       ggplot(.) +
       geom_sf(aes(fill = boot_value,
                   alpha = 1/boot_sd)) +
-      NinaR::scale_fill_nina(name = value_name,
+      NinaR::scale_fill_nina(name = y_value_name,
                              discrete = FALSE,
                              palette = palette,
                              ...) +
@@ -122,7 +122,7 @@ map_plot.boot_stat <- function(x,
   p <- map %>%
     ggplot(.) +
     geom_sf(aes(fill = boot_value)) +
-    NinaR::scale_fill_nina(name = value_name,
+    NinaR::scale_fill_nina(name = y_value_name,
                            discrete = FALSE,
                            palette = palette,
                            ...)
@@ -131,7 +131,8 @@ map_plot.boot_stat <- function(x,
   if("year" %in% colnames(map)){
     p <- p +
       facet_wrap("year")
-    }
+  }
+
 
 
   p

@@ -50,14 +50,14 @@ bootstrap_value <- function(df,
 
       subset <- df %>%
         filter(year >= subset_year - 2 & year <= subset_year + 2) %>%
-        mutate(year_window = subset_year)
+        mutate(year = subset_year)
 
       out <- rbind(out, subset)
 
     }
 
     df <- out
-    groups[groups == "year"] <- "year_window"
+    #groups[groups == "year"] <- "year_window"
     }
 
   groupings <- groups
@@ -93,6 +93,11 @@ bootstrap_value <- function(df,
 
   attr(out, "value_name") <- deparse(substitute(value))
 
+  if("year" %in% groups & rolling_year_window){
+    attr(out, "temporal_resolution") <- "5-year"
+  } else{
+    attr(out, "temporal_resolution") <- "1-year"
+  }
 
   return(out)
 
