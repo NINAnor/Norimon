@@ -7,7 +7,7 @@
 #' @param rolling_year_window Should the yearly values be calculated around a 5 year rolling window? Only applies if "year" is present in the groupings
 #' @param lower_limit Lower limit to confidence intervals, e.g. 0.025 for lower 2.5%
 #' @param upper_limit Upper limit to confidence intervals, e.g. 0.975 for upper 97.5%
-#' @param Hill Calculate Shannon information as Hill number. Boolean
+#' @param only_no_spec Calculate only sum of species (number of alien species) and not sum frequencies. Boolean
 #' @param R Number of bootstrap samples
 #'
 #' @return Returns an object of class boot_stat.
@@ -28,26 +28,12 @@ bootstrap_alien_obs <- function(df,
                                 rolling_year_window = TRUE,
                                 lower_limit = 0.025,
                                 upper_limit = 0.975,
-                                Hill = TRUE,
+                                only_no_spec = FALSE,
                                 R = 999){
 
   if("locality" %in% groups & rolling_year_window) stop("Can't use rolling window with stratified by localities, they only occur once per rolling window")
 
   df <- df
-
-  calc_shannon_alien <- function(x,
-                                 ...) {
-
-    p <- x[x > 0] # Get rid of zero proportions (log zero is undefined)
-    out <- -sum(p * log(p)) # Calculate index
-
-    if(Hill){
-      out <- exp(out)
-    }
-
-    return(out)
-
-  }
 
   #Expand dataset to include up to 5 year window around every year
   if("year" %in% groups & rolling_year_window){
@@ -75,6 +61,21 @@ bootstrap_alien_obs <- function(df,
 
   one_boot <- function(x) {
 
+      out <- x %>%
+      group_by_at(groupings_spec) %>%
+      slice_sample(prop = 1, replace = TRUE) %>%
+      group_by_at(groupings_spec) %>%
+      summarise(freq = sum(present) / n(),
+                .groups = "drop") %>%
+      group_by_at(groupings) %>%
+      summarise(boot_values = sum(freq),
+                .groups = "drop")
+
+    return(out)
+  }
+
+  one_boot_only_no_spec <- function(x) {
+
     out <- x %>%
       group_by_at(groupings_spec) %>%
       slice_sample(prop = 1, replace = TRUE) %>%
@@ -82,23 +83,29 @@ bootstrap_alien_obs <- function(df,
       summarise(freq = sum(present) / n(),
                 .groups = "drop") %>%
       group_by_at(groupings) %>%
-      summarise(boot_values = calc_shannon_alien(freq),
+      summarise(boot_values = sum(freq > 0),
                 .groups = "drop")
 
     return(out)
   }
 
 
+
   no_cores <- pmin(parallel::detectCores() - 1, 10) ##set maximum cores to 10, otherwise all but 1
   cl <- parallel::makeCluster(no_cores)
   suppressWarnings(parallel::clusterEvalQ(cl, require(dplyr)))
   parallel::clusterExport(cl,
-                          c("df", "calc_shannon_alien", "one_boot", "groupings_spec", "groupings"),
+                          c("df", "one_boot", "one_boot_only_no_spec", "groupings_spec", "groupings"),
                           envir = environment())
   parallel::clusterSetRNGStream(cl)
 
   ##<5 sec with R=999, and 10 cores
-  boot_temp_res <- parallel::parSapply(cl, 1:R, function(i, ...) one_boot(df))
+  if(only_no_spec){
+    boot_temp_res <- parallel::parSapply(cl, 1:R, function(i, ...) one_boot_only_no_spec(df))
+  } else {
+    boot_temp_res <- parallel::parSapply(cl, 1:R, function(i, ...) one_boot(df))
+  }
+
   parallel::stopCluster(cl)
   ##51 sec
   #system.time(boot_temp_res <- replicate(R, one_boot(df)))

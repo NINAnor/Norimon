@@ -2,6 +2,7 @@
 #'
 #' @param community Community.
 #' @param no_asv_per_species Number of genetic variants per species.
+#' @param augment_community Build up community by from species and number of occurences (TRUE), or use raw occurrences (FALSE)
 #' @param Hill Return as first order Hill number. Boolean
 #'
 #' @return Shannon diversity.
@@ -32,12 +33,21 @@
 
 calc_shannon <- function(community,
                          no_asv_per_species,
+                         augment_community = TRUE,
                          Hill = TRUE) {
+    if(augment_community){
     community_aug <- rep(community, no_asv_per_species)
-
     p <- table(community_aug)/length(community_aug) # Find proportions
+    } else{
+      p <- community
+    }
+
     p <- p[p > 0] # Get rid of zero proportions (log zero is undefined)
+    if(only_sum_freq){
+      out <- sum(p)
+    } else {
     out <- -sum(p * log(p)) # Calculate index
+    }
 
     if(Hill){
       out <- exp(out)

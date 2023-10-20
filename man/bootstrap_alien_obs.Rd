@@ -10,7 +10,7 @@ bootstrap_alien_obs(
   rolling_year_window = TRUE,
   lower_limit = 0.025,
   upper_limit = 0.975,
-  Hill = TRUE,
+  only_no_spec = FALSE,
   R = 999
 )
 }
@@ -25,7 +25,7 @@ bootstrap_alien_obs(
 
 \item{upper_limit}{Upper limit to confidence intervals, e.g. 0.975 for upper 97.5\%}
 
-\item{Hill}{Calculate Shannon information as Hill number. Boolean}
+\item{only_no_spec}{Calculate only sum of species (number of alien species) and not sum frequencies. Boolean}
 
 \item{R}{Number of bootstrap samples}
 }

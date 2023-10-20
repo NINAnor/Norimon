@@ -4,12 +4,19 @@
 \alias{calc_shannon}
 \title{Calculate Shannon index on a community.}
 \usage{
-calc_shannon(community, no_asv_per_species, Hill = TRUE)
+calc_shannon(
+  community,
+  no_asv_per_species,
+  augment_community = TRUE,
+  Hill = TRUE
+)
 }
 \arguments{
 \item{community}{Community.}
 
 \item{no_asv_per_species}{Number of genetic variants per species.}
+
+\item{augment_community}{Build up community by from species and number of occurences (TRUE), or use raw occurrences (FALSE)}
 
 \item{Hill}{Return as first order Hill number. Boolean}
 }
