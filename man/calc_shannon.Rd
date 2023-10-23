@@ -8,6 +8,7 @@ calc_shannon(
   community,
   no_asv_per_species,
   augment_community = TRUE,
+  only_sum_freq = FALSE,
   Hill = TRUE
 )
 }
@@ -17,6 +18,8 @@ calc_shannon(
 \item{no_asv_per_species}{Number of genetic variants per species.}
 
 \item{augment_community}{Build up community by from species and number of occurences (TRUE), or use raw occurrences (FALSE)}
+
+\item{only_sum_freq}{Only sum the frequencies together, instead of calculating Shannon information.}
 
 \item{Hill}{Return as first order Hill number. Boolean}
 }

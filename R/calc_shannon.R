@@ -3,6 +3,7 @@
 #' @param community Community.
 #' @param no_asv_per_species Number of genetic variants per species.
 #' @param augment_community Build up community by from species and number of occurences (TRUE), or use raw occurrences (FALSE)
+#' @param only_sum_freq Only sum the frequencies together, instead of calculating Shannon information.
 #' @param Hill Return as first order Hill number. Boolean
 #'
 #' @return Shannon diversity.
@@ -34,6 +35,7 @@
 calc_shannon <- function(community,
                          no_asv_per_species,
                          augment_community = TRUE,
+                         only_sum_freq = FALSE,
                          Hill = TRUE) {
     if(augment_community){
     community_aug <- rep(community, no_asv_per_species)
