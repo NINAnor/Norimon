@@ -2,7 +2,7 @@
 #'
 #' Summarises mean values of the weather (temperature and precipitation) during chosen months for the localities within a chosen region.
 #' @encoding UTF-8
-#' @param region Which region to plot? Currently available: c("Trøndelag", "Østlandet", "Sørlandet").
+#' @param region Which region to plot? Currently available: c("Trøndelag", "Østlandet", "Sørlandet", "Nord-Norge").
 #' @param dataset Which dataset to use? Is used to select the localities within regions.
 #' @param from_year Plot data from what year= Integer.
 #' @param to_year Plot data to what year? Integer.
@@ -30,10 +30,10 @@
 #'
 
 
-clim_trend_plot <- function(region = c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u00f8rlandet"),
-                            dataset = c("NasIns", "TidVar", "\u00d8koTrond"),
+clim_trend_plot <- function(region = c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u00f8rlandet", "Nord-Norge"),
+                            dataset = c("NasIns", "TidVar", "\u00d8koTrond", "HulEik"),
                             from_year = 2010,
-                            to_year = 2022,
+                            to_year = 2023,
                             from_month = 6,
                             to_month = 7){
 
@@ -43,8 +43,8 @@ clim_trend_plot <- function(region = c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u0
   from_month = from_month
   to_month = to_month
 
-  region = match.arg(region, c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u00f8rlandet"))
-  dataset = match.arg(dataset, c("NasIns", "TidVar", "\u00d8koTrond"))
+  region = match.arg(region, c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u00f8rlandet", "Nord-Norge"))
+  dataset = match.arg(dataset, c("NasIns", "TidVar", "\u00d8koTrond", "HulEik"))
 
   loc_in_region_q <- "
   SELECT l.locality
@@ -125,7 +125,7 @@ clim_trend_plot <- function(region = c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u0
     xlab("\u00C5r")
 
 
-  marrangeGrob(list(p1,
+  gridExtra::marrangeGrob(list(p1,
                     p2),
                top = "",
                ncol = 1,

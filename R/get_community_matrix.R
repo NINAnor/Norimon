@@ -42,7 +42,11 @@ get_community_matrix <- function(limit = NULL,
                                      subset_families = NULL,
                                      subset_species = NULL,
                                      subset_habitat = NULL,
-                                     subset_region = c(NULL, "\u00d8stlandet", "Tr\u00f8ndelag"),
+                                     subset_region = c(NULL,
+                                                       "\u00d8stlandet",
+                                                       "Tr\u00f8ndelag",
+                                                       "S\u00f8rlandet",
+                                                       "Nord-Norge"),
                                      exclude_singletons = F,
                                      transposed_matrix = F,
                                      as_tibble = F){
@@ -55,7 +59,9 @@ get_community_matrix <- function(limit = NULL,
                                    "OkoTrond",
                                    "TidVar",
                                    "Nerlands\u00f8ya"))
-
+  if(subset_region){
+    subset_region = match.arg(subset_region, c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u00f8rlandet", "Nord-Norge"))
+}
   trap_type <- match.arg(trap_type,
                          choices = c("MF", "VF", "All", NULL))
 

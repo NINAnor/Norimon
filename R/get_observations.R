@@ -64,7 +64,7 @@ get_observations <- function(id_type = c("metabarcoding"),
   checkCon()
 
   if(!is.null(subset_region)){
-  subset_region <- match.arg(subset_region, choices = c("\u00d8stlandet", "Tr\u00f8ndelag"))
+  subset_region <- match.arg(subset_region, choices = c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u00f8rlandet", "Nord-Norge"))
   }
 
   if(!is.null(subset_habitat)){

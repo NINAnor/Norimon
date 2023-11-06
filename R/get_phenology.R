@@ -55,7 +55,7 @@ get_phenology <- function(taxonomic_level = NULL,
 
   if(!is.null(subset_region)){
   subset_region <- match.arg(subset_region,
-                             choices = c("\u00d8stlandet", "Tr\u00f8ndelag"))
+                             choices = c("\u00d8stlandet", "Tr\u00f8ndelag", "S\u00f8rlandet", "Nord-Norge"))
   }
 
   if(!is.null(subset_habitat)){

@@ -6,16 +6,16 @@
 \title{clim_trend_plot}
 \usage{
 clim_trend_plot(
-  region = c("Trøndelag", "Østlandet", "Sørlandet"),
-  dataset = c("NasIns", "TidVar", "ØkoTrond"),
+  region = c("Trøndelag", "Østlandet", "Sørlandet", "Nord-Norge"),
+  dataset = c("NasIns", "TidVar", "ØkoTrond", "HulEik"),
   from_year = 2010,
-  to_year = 2022,
+  to_year = 2023,
   from_month = 6,
   to_month = 7
 )
 }
 \arguments{
-\item{region}{Which region to plot? Currently available: c("Trøndelag", "Østlandet", "Sørlandet").}
+\item{region}{Which region to plot? Currently available: c("Trøndelag", "Østlandet", "Sørlandet", "Nord-Norge").}
 
 \item{dataset}{Which dataset to use? Is used to select the localities within regions.}
 
