@@ -290,18 +290,18 @@ plot_climate_comparison <- function(climate_data = NULL,
 
   #Add vertical lines
   p <- p +
-    geom_vline(xintercept = 31, colour = "wheat4", linetype = 3, size =.25) +
-    geom_vline(xintercept = 59, colour = "wheat4", linetype = 3, size =.25) +
-    geom_vline(xintercept = 90, colour = "wheat4", linetype = 3, size =.25) +
-    geom_vline(xintercept = 120, colour = "wheat4", linetype = 3, size =.25) +
-    geom_vline(xintercept = 151, colour = "wheat4", linetype = 3, size =.25) +
-    geom_vline(xintercept = 181, colour = "wheat4", linetype = 3, size =.25) +
-    geom_vline(xintercept = 212, colour = "wheat4", linetype = 3, size =.25) +
-    geom_vline(xintercept = 243, colour = "wheat4", linetype = 3, size =.25) +
-    geom_vline(xintercept = 273, colour = "wheat4", linetype = 3, size =.25) +
-    geom_vline(xintercept = 304, colour = "wheat4", linetype = 3, size =.25) +
-    geom_vline(xintercept = 334, colour = "wheat4", linetype = 3, size =.25) +
-    geom_vline(xintercept = 365, colour = "wheat4", linetype = 3, size =.25)
+    geom_vline(xintercept = 31, colour = "wheat4", linetype = 3, linewidth =.25) +
+    geom_vline(xintercept = 59, colour = "wheat4", linetype = 3, linewidth =.25) +
+    geom_vline(xintercept = 90, colour = "wheat4", linetype = 3, linewidth =.25) +
+    geom_vline(xintercept = 120, colour = "wheat4", linetype = 3, linewidth =.25) +
+    geom_vline(xintercept = 151, colour = "wheat4", linetype = 3, linewidth =.25) +
+    geom_vline(xintercept = 181, colour = "wheat4", linetype = 3, linewidth =.25) +
+    geom_vline(xintercept = 212, colour = "wheat4", linetype = 3, linewidth =.25) +
+    geom_vline(xintercept = 243, colour = "wheat4", linetype = 3, linewidth =.25) +
+    geom_vline(xintercept = 273, colour = "wheat4", linetype = 3, linewidth =.25) +
+    geom_vline(xintercept = 304, colour = "wheat4", linetype = 3, linewidth =.25) +
+    geom_vline(xintercept = 334, colour = "wheat4", linetype = 3, linewidth =.25) +
+    geom_vline(xintercept = 365, colour = "wheat4", linetype = 3, linewidth =.25)
 
 
   #Add scale
@@ -430,7 +430,7 @@ plot_climate_comparison <- function(climate_data = NULL,
       theme(plot.title=element_text(face = "bold", hjust = .012, vjust = .8, colour = "#3C3C3C", size = 20)) +
       annotate("text",
                x = 14,
-               y = y_high_limit - 5,
+               y = y_high_limit,
                label = stringr::str_to_sentence(legend_table[[language]][[legend_variable]]),
                size = 4,
                fontface = "bold",
@@ -443,7 +443,7 @@ plot_climate_comparison <- function(climate_data = NULL,
     p <- p +
       annotate("text",
                x = 14,
-               y = y_high_limit - 15,
+               y = y_high_limit * 0.75,
                label = paste0(text_table[[language]][12],
                               text_table[[language]][2],
                               legend_table[[language]][[legend_variable]],
@@ -458,7 +458,7 @@ plot_climate_comparison <- function(climate_data = NULL,
     p <- p +
       annotate("text",
                x = 14,
-               y = y_high_limit - 15,
+               y = y_high_limit * 0.75,
                label = paste0(text_table[[language]][11],
                               text_table[[language]][2],
                               legend_table[[language]][[legend_variable]],
