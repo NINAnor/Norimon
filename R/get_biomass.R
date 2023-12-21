@@ -37,7 +37,7 @@ get_biomass <- function(limit = NULL,
                         subset_year = NULL,
                         subset_habitat = NULL,
                         trap_type = "MF",
-                        subset_region = c(NULL, "\u00d8stlandet", "Tr\u00f8ndelag", "S\u00f8rlandet", "Nord-Norge"),
+                        subset_region = NULL,
                         dataset = "NasIns",
                         agg_level = "year_locality",
                         as_tibble = F){
@@ -81,104 +81,104 @@ get_biomass <- function(limit = NULL,
   ##Join the tables
 
   joined <- sampling_trap %>%
-    left_join(locality_sampling,
+    dplyr::left_join(locality_sampling,
               by = c("locality_sampling_id" = "id"),
               suffix = c("_obs", "_ls")) %>%
-    left_join(year_locality,
+    dplyr::left_join(year_locality,
               by = c("year_locality_id" = "id"),
               suffix = c("_obs", "_yl")) %>%
-    left_join(localities,
+    dplyr::left_join(localities,
               by = c("locality_id" = "id"),
               suffix = c("_obs", "_loc")) %>%
-    left_join(traps,
+    dplyr::left_join(traps,
               by = c("trap_id" = "id",
                      "year" = "year")
     ) %>%
-    mutate(year = as.character(year))
+    dplyr::mutate(year = as.character(year))
 
 
   ##Exclude 2020 4 week samplings
 
   joined <-  joined %>%
-    mutate(weeks_sampled = ifelse(grepl("2020", year) & (grepl("1", trap_short_name) | grepl("3", trap_short_name)), 2, 4)) %>%
-    mutate(weeks_sampled = ifelse(grepl("2020", year), weeks_sampled, 2))
+    dplyr::mutate(weeks_sampled = ifelse(grepl("2020", year) & (grepl("1", trap_short_name) | grepl("3", trap_short_name)), 2, 4)) %>%
+    dplyr::mutate(weeks_sampled = ifelse(grepl("2020", year), weeks_sampled, 2))
 
   joined <- joined %>%
-    filter(weeks_sampled == 2)
+    dplyr:: filter(weeks_sampled == 2)
 
   #filter on dataset
 
   if(!is.null(dataset)){
     joined <- joined %>%
-      filter(project_short_name == dataset)
+      dplyr::filter(project_short_name == dataset)
   }
 
   #filter on trap type (recommended to only take MF)
   if(!is.null(trap_type) & trap_type != "All"){
     joined <- joined %>%
-      filter(grepl((trap_type), sample_name))
+      dplyr::filter(grepl((trap_type), sample_name))
   }
 
   #Filter on region name
   if(!is.null(subset_region)){
     subset_region <- c("", subset_region)
     joined <- joined %>%
-      filter(region_name %IN% subset_region)
+      dplyr::filter(region_name %IN% subset_region)
   }
 
   #Filter on habitat
   if(!is.null(subset_habitat)){
     subset_habitat <- c("", subset_habitat)
     joined <- joined %>%
-      filter(.data$habitat_type %in% subset_habitat)
+      dplyr::filter(.data$habitat_type %in% subset_habitat)
   }
 
   #Filter on order
   if(!is.null(subset_orders)){
     subset_orders <- c("", subset_orders) #To allow one-length subsets
     joined <- joined %>%
-      filter(.data$id_order %IN% subset_orders)
+      dplyr::filter(.data$id_order %IN% subset_orders)
   }
 
   #Filter on families
   if(!is.null(subset_families)){
     subset_families <- c("", subset_families)
     joined <- joined %>%
-      filter(.data$id_family %in% subset_families)
+      dplyr::filter(.data$id_family %in% subset_families)
   }
 
   #Filter on species
   if(!is.null(subset_species)){
     subset_species <- c("", subset_species)
     joined <- joined %>%
-      filter(.data$species_latin_fixed %in% subset_species)
+      dplyr::filter(.data$species_latin_fixed %in% subset_species)
   }
 
   #Filter on year
   if(!is.null(subset_year)){
     subset_year <- c("", subset_year)
     joined <- joined %>%
-      filter(.data$year %in% subset_year)
+      dplyr::filter(.data$year %in% subset_year)
   }
 
   #Filter on genus
   if(!is.null(subset_genus)){
     subset_genus <- c("", subset_genus)
     joined <- joined %>%
-      filter(.data$id_genus %in% subset_genus)
+      dplyr::filter(.data$id_genus %in% subset_genus)
   }
 
   #filter on dataset
 
   if(!is.null(dataset)){
     joined <- joined %>%
-      filter(.data$project_short_name == dataset)
+      dplyr::filter(.data$project_short_name == dataset)
   }
 
   #filter on trap type (recommended to only take MF)
   if(!is.null(trap_type) & trap_type != "All"){
     joined <- joined %>%
-      filter(grepl((trap_type), .data$sample_name))
+      dplyr::filter(grepl((trap_type), .data$sample_name))
   }
 
   res <- joined
@@ -190,28 +190,28 @@ get_biomass <- function(limit = NULL,
   if(agg_level == "year_locality"){
 
     res <- res %>%
-      collect() %>%
-      group_by(year_locality_id, locality_id) %>%
-      summarise(sum_wet_weight = sum(wet_weight_bottle - weight_empty_bottle, na.rm = T),
+      dplyr::collect() %>%
+      dplyr::group_by(year_locality_id, locality_id) %>%
+      dplyr::summarise(sum_wet_weight = sum(wet_weight_bottle - weight_empty_bottle, na.rm = T),
                 avg_wet_weight = mean(wet_weight_bottle - weight_empty_bottle, na.rm = T),
                 .groups = "keep") %>%
-      left_join(localities,
+      dplyr::left_join(localities,
                 by = c("locality_id" = "id"),
                 copy = T) %>%
-      left_join(year_locality,
+      dplyr::left_join(year_locality,
                 by = c("year_locality_id" = "id",
                        "locality_id" = "locality_id",
                        "ano_flate_id" = "ano_flate_id",
                        "ssbid" = "ssbid"),
                 copy = T) %>%
-      ungroup() %>%
-      select(year,
+      dplyr::ungroup() %>%
+      dplyr::select(year,
              locality,
              habitat_type,
              region_name,
              sum_wet_weight,
              avg_wet_weight) %>%
-      arrange(year,
+      dplyr::arrange(year,
               region_name,
               habitat_type,
               locality)
@@ -222,20 +222,20 @@ get_biomass <- function(limit = NULL,
   if(agg_level == "locality_sampling"){
 
     res <- res %>%
-      collect() %>%
-      group_by(sampling_name, year_locality_id, locality_id) %>%
-      summarise(no_trap_days = mean(as.numeric(end_date_obs - start_date_obs)),
+      dplyr::collect() %>%
+      dplyr::group_by(sampling_name, year_locality_id, locality_id) %>%
+      dplyr::summarise(no_trap_days = mean(as.numeric(end_date_obs - start_date_obs)),
                 sum_wet_weight = sum(wet_weight_bottle - weight_empty_bottle, na.rm = T),
                 avg_wet_weight = mean(wet_weight_bottle - weight_empty_bottle, na.rm = T),
                 .groups = "keep") %>%
-      left_join(localities,
+      dplyr::left_join(localities,
                 by = c("locality_id" = "id"),
                 copy = T) %>%
-      left_join(year_locality,
+      dplyr::left_join(year_locality,
                 by = c("year_locality_id" = "id"),
                 copy = T) %>%
-      ungroup() %>%
-      select(year,
+      dplyr::ungroup() %>%
+      dplyr::select(year,
              locality,
              sampling_name,
              habitat_type,
@@ -243,7 +243,7 @@ get_biomass <- function(limit = NULL,
              no_trap_days,
              sum_wet_weight,
              avg_wet_weight) %>%
-      arrange(year,
+      dplyr::arrange(year,
               region_name,
               habitat_type,
               locality,
@@ -256,11 +256,11 @@ get_biomass <- function(limit = NULL,
   if(agg_level == "total"){
 
     res <- res %>%
-      collect() %>%
-      summarise(sum_wet_weight = sum(wet_weight_bottle - weight_empty_bottle, na.rm = T),
+      dplyr::collect() %>%
+      dplyr::summarise(sum_wet_weight = sum(wet_weight_bottle - weight_empty_bottle, na.rm = T),
                 avg_wet_weight = mean(wet_weight_bottle - weight_empty_bottle, na.rm = T),
                 .groups = "keep") %>%
-      select(sum_wet_weight,
+      dplyr::select(sum_wet_weight,
              avg_wet_weight)
 
   }
@@ -272,12 +272,12 @@ get_biomass <- function(limit = NULL,
 
 
   res <- res %>%
-    mutate(sum_wet_weight = round(sum_wet_weight, 2),
+    dplyr::mutate(sum_wet_weight = round(sum_wet_weight, 2),
            avg_wet_weight = round(avg_wet_weight, 2))
 
   if(as_tibble){
     res <- res %>%
-      as_tibble()
+      dplyr::as_tibble()
   }
 
 

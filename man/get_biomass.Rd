@@ -14,7 +14,7 @@ get_biomass(
   subset_year = NULL,
   subset_habitat = NULL,
   trap_type = "MF",
-  subset_region = c(NULL, "Østlandet", "Trøndelag", "Sørlandet", "Nord-Norge"),
+  subset_region = NULL,
   dataset = "NasIns",
   agg_level = "year_locality",
   as_tibble = F
