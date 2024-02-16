@@ -34,41 +34,37 @@
 
 
 get_community_matrix <- function(limit = NULL,
-                                     id_type = c("metabarcoding"),
-                                     trap_type = "MF",
-                                     dataset = "NasIns",
-                                     subset_years = NULL,
-                                     subset_orders = NULL,
-                                     subset_families = NULL,
-                                     subset_species = NULL,
-                                     subset_habitat = NULL,
-                                     subset_region = c(NULL,
-                                                       "\u00d8stlandet",
-                                                       "Tr\u00f8ndelag",
-                                                       "S\u00f8rlandet",
-                                                       "Nord-Norge"),
-                                     exclude_singletons = F,
-                                     transposed_matrix = F,
-                                     as_tibble = F){
+                                 id_type = c("metabarcoding"),
+                                 trap_type = "MF",
+                                 dataset = "NasIns",
+                                 subset_years = NULL,
+                                 subset_orders = NULL,
+                                 subset_families = NULL,
+                                 subset_species = NULL,
+                                 subset_habitat = NULL,
+                                 subset_region = NULL,
+                                 exclude_singletons = F,
+                                 transposed_matrix = F,
+                                 as_tibble = F){
 
   Norimon::checkCon()
-
 
   dataset <- match.arg(dataset,
                        choices = c("NasIns",
                                    "OkoTrond",
                                    "TidVar",
                                    "Nerlands\u00f8ya"))
-  if(subset_region){
-    subset_region = match.arg(subset_region, c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u00f8rlandet", "Nord-Norge"))
-}
+
   trap_type <- match.arg(trap_type,
                          choices = c("MF", "VF", "All", NULL))
 
   if(!is.null(subset_years)){
-  subset_years <- as.numeric(subset_years)
+    subset_years <- as.numeric(subset_years)
   }
 
+  if(!is.null(subset_region)){
+    subset_region = match.arg(subset_region, c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u00f8rlandet", "Nord-Norge"))
+  }
 
   ##Set up table sources
   ##Probably needs updating after new batch of data. Also need to test filtering of different identification types
@@ -107,13 +103,10 @@ get_community_matrix <- function(limit = NULL,
                      "year" = "year",
                      "locality" = "locality"))
 
-
-
   if(id_type == "metabarcoding"){
     joined <- joined %>%
       filter(identification_type == "metabarcoding")
   }
-
 
   if(!is.null(subset_years)){
     subset_years <- c(NA, subset_years) #To allow one-length subsets
@@ -154,8 +147,6 @@ get_community_matrix <- function(limit = NULL,
       filter(habitat_type %IN% subset_habitat)
   }
 
-
-
   #filter on dataset
 
   if(!is.null(dataset)){
@@ -163,10 +154,7 @@ get_community_matrix <- function(limit = NULL,
       filter(project_short_name == dataset)
   }
 
-
-
   ##Aggregate data to choosen level
-
 
   ##Exclude 2020 4 week samplings
 
@@ -212,8 +200,6 @@ get_community_matrix <- function(limit = NULL,
       filter(!(species_latin_fixed %in% to_exclude))
   }
 
-
-
   res <- res %>%
     select(-count) %>%
     pivot_wider(names_from = species_latin_fixed,
@@ -221,8 +207,6 @@ get_community_matrix <- function(limit = NULL,
                 values_fill = 0) %>%
     arrange(year,
             locality)
-
-
 
 
   if(!is.null(limit)){
@@ -235,14 +219,12 @@ get_community_matrix <- function(limit = NULL,
       as_tibble()
   }
 
-
   if(transposed_matrix){
     res <- res %>%
       select(-c(1:2)) %>%
       t()
 
   }
-
 
   return(res)
 

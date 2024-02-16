@@ -35,7 +35,6 @@ combine_dist_to_comm_mat <- function(comm_mat,
                                      region_name,
                                      habitat_type){
 
-
   comm_mat_to_prosess <- comm_mat %>%
     select(-c(year, locality))
 
@@ -43,7 +42,6 @@ combine_dist_to_comm_mat <- function(comm_mat,
   loc_in_comm_mat <- comm_mat %>%
     dplyr::select(locality) %>%
     dplyr::pull()
-
 
   dist_q <- paste0("
   SELECT a.locality as loc_a, b.locality loc_b,
@@ -69,7 +67,7 @@ combine_dist_to_comm_mat <- function(comm_mat,
   ")
 
   dist <- DBI::dbGetQuery(con,
-                     dist_q)
+                          dist_q)
 
   ##Now arrange these together and plot
   #something like this?
@@ -86,7 +84,7 @@ combine_dist_to_comm_mat <- function(comm_mat,
     matrix(.,
            ncol = 1)
 
-  dist_beta <- dist %>%s
+  dist_beta <- dist %>%
     cbind(beta_sim) %>%
     cbind(beta_sne) %>%
     cbind(beta_sor) %>%
