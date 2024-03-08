@@ -14,7 +14,7 @@ get_community_matrix(
   subset_families = NULL,
   subset_species = NULL,
   subset_habitat = NULL,
-  subset_region = c(NULL, "Østlandet", "Trøndelag", "Sørlandet", "Nord-Norge"),
+  subset_region = NULL,
   exclude_singletons = F,
   transposed_matrix = F,
   as_tibble = F
