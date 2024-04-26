@@ -6,7 +6,7 @@
 #' @param dbname Database name
 #' @param ... additional parameter to DBI:dbConnect, such as username and password, if not provided in ~/.pgpass
 #'
-#' @return A PostgreS connection to a database called "con"
+#' @return A PostgreSQL connection to a database called "con"
 #' @export
 #'
 #' @examples
@@ -35,7 +35,7 @@
 #'
 
 
-connect_to_insect_db <- function(host = "ninradardata01.nina.no",
+connect_to_insect_db <- function(host = "T2lippgsql04.nina.no",
                                  dbname = "insect_monitoring",
                                 ...){
 

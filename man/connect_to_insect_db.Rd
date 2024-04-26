@@ -5,7 +5,7 @@
 \title{connect_to_insect_db}
 \usage{
 connect_to_insect_db(
-  host = "ninradardata01.nina.no",
+  host = "T2lippgsql04.nina.no",
   dbname = "insect_monitoring",
   ...
 )
@@ -18,7 +18,7 @@ connect_to_insect_db(
 \item{...}{additional parameter to DBI:dbConnect, such as username and password, if not provided in ~/.pgpass}
 }
 \value{
-A PostgreS connection to a database called "con"
+A PostgreSQL connection to a database called "con"
 }
 \description{
 Best practice is to not store your username and password in any scripts. See example for a way to script retrieval of credentials
