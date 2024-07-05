@@ -10,6 +10,7 @@
 #' @param y_low_limit The y-axix lower limit of the plot
 #' @param language Figure text in "Norwegian" or "English"
 #' @param main_title Print plot title? Boolean.
+#' @param annotate_plot Add explanation and no of extreme values. Boolean
 #' @param rolling_mean Plot rolling mean of 5 days? Suitable for precipitation
 #' @return A ggplot
 #' @export
@@ -38,6 +39,7 @@ plot_climate_comparison <- function(climate_data = NULL,
                                     language = c("Norwegian",
                                                  "English"),
                                     main_title = TRUE,
+                                    annotate_plot = TRUE,
                                     rolling_mean = FALSE){
 
 
@@ -328,6 +330,7 @@ plot_climate_comparison <- function(climate_data = NULL,
 
   no_high_days <- nrow(present_highs)
 
+  if(annotate_plot){
 
   if(no_high_days > 0){
 
@@ -424,6 +427,8 @@ plot_climate_comparison <- function(climate_data = NULL,
 
   }
 
+  }
+
   if(main_title){
     p <- p +
       ggtitle(paste(placename, text_table[[language]][1], focus_year, sep = "")) +
@@ -437,6 +442,7 @@ plot_climate_comparison <- function(climate_data = NULL,
                hjust = 0)
   }
 
+  if(annotate_plot){
 
   if(rolling_mean){
 
@@ -473,7 +479,7 @@ plot_climate_comparison <- function(climate_data = NULL,
 
   }
 
-
+}
 
 
 
