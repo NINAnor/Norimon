@@ -4,7 +4,7 @@
 #'
 #' @param climate_data A tibble of climate data (typically from get_climate_data())
 #' @param variable Which variable to choose. "temperature"(default), "precipitation", or "snow_depth"
-#' @param focus_year Focus on "latest" year (default) or optional year as numerical value (e.g. 2021)
+#' @param focal_year Focus on "latest" year (default) or optional year as numerical value (e.g. 2021)
 #' @param clip_to_1990 Logical, should historical records be clipped to >1990.
 #' @param y_high_limit The y-axis higher limit of the plot.
 #' @param y_low_limit The y-axix lower limit of the plot
@@ -32,6 +32,7 @@ plot_climate_comparison <- function(climate_data = NULL,
                                     variable = c("temperature",
                                                  "precipitation",
                                                  "snow_depth"),
+                                    focal_year = "latest",
                                     focus_year = "latest",
                                     clip_to_1990 = TRUE,
                                     y_high_limit = 60,
@@ -55,7 +56,13 @@ plot_climate_comparison <- function(climate_data = NULL,
   #Preliminaries
   ##define some functions to avoid no non-missing errors
 
-  if(focus_year <= 1990 & clip_to_1990){ stop("Can't clip to 1990 if focus_year < 1990")}
+  if (!missing("focus_year")){
+    warning("focus_year deprecated, use focal_year instead.
+             The parameter focal_year is set equal the parameter focus_year")
+    focal_year <- focus_year
+  }
+
+  if(focal_year <= 1990 & clip_to_1990){ stop("Can't clip to 1990 if focal_year < 1990")}
 
 
   my_min <- function(x, ...) {if (length(x)>0) min(x, ...) else Inf}
@@ -180,14 +187,14 @@ plot_climate_comparison <- function(climate_data = NULL,
     dplyr::summarise(max(year)) %>%
     dplyr::pull()
 
-  if(focus_year == "latest"){
-    focus_year <- latest_year
+  if(focal_year == "latest"){
+    focal_year <- latest_year
   }
 
 
   #Set up average and present data
   past <- climate_data %>%
-    dplyr::filter(year != focus_year) %>%
+    dplyr::filter(year != focal_year) %>%
     dplyr::group_by(new_day) %>%
     dplyr:: mutate(upper = my_max(!!variable, na.rm = TRUE), # identify max value for each day
                    lower = min(!!variable, na.rm = TRUE), # identify min value for each day
@@ -203,7 +210,7 @@ plot_climate_comparison <- function(climate_data = NULL,
     dplyr::pull()
 
   present <- climate_data %>%
-    dplyr::filter(year == focus_year)
+    dplyr::filter(year == focal_year)
 
   past_lows <- past %>%
     dplyr::group_by(new_day) %>%
@@ -366,6 +373,7 @@ plot_climate_comparison <- function(climate_data = NULL,
 
   }
 
+  }
   low_annot_coord <- present_lows %>%
     #filter(!!variable == suppressWarnings(min(!!variable, na.rm = TRUE))) %>%
     dplyr::slice(1) %>%
@@ -376,7 +384,7 @@ plot_climate_comparison <- function(climate_data = NULL,
 
   no_low_days <- nrow(present_lows)
 
-
+  if(annotate_plot){
   #Displace low annot cord if the first coldest day is to late to fit the text
   if(no_low_days > 0){
 
@@ -431,7 +439,7 @@ plot_climate_comparison <- function(climate_data = NULL,
 
   if(main_title){
     p <- p +
-      ggtitle(paste(placename, text_table[[language]][1], focus_year, sep = "")) +
+      ggtitle(paste(placename, text_table[[language]][1], focal_year, sep = "")) +
       theme(plot.title = element_text(face = "bold", hjust = .012, vjust = .8, colour = "#3C3C3C", size = 20)) +
       annotate("text",
                x = 14,
@@ -537,7 +545,7 @@ plot_climate_comparison <- function(climate_data = NULL,
     annotate("text",
              x = legend_pos$x - 10,
              y = legend_pos$y + 9.75,
-             label = paste0(focus_year, stringr::str_to_sentence(legend_table[[language]][[legend_variable]])),
+             label = paste0(focal_year, stringr::str_to_sentence(legend_table[[language]][[legend_variable]])),
              size = 2,
              colour = "gray30",
              hjust = 1,
@@ -558,6 +566,9 @@ plot_climate_comparison <- function(climate_data = NULL,
              colour = "gray30",
              hjust = 0,
              vjust = 0)
+
+  attr(p, "no_low_days") <- no_low_days
+  attr(p, "no_high_days") <- no_high_days
 
   suppressWarnings(return(p))
 

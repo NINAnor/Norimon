@@ -7,6 +7,7 @@
 plot_climate_comparison(
   climate_data = NULL,
   variable = c("temperature", "precipitation", "snow_depth"),
+  focal_year = "latest",
   focus_year = "latest",
   clip_to_1990 = TRUE,
   y_high_limit = 60,
@@ -22,7 +23,7 @@ plot_climate_comparison(
 
 \item{variable}{Which variable to choose. "temperature"(default), "precipitation", or "snow_depth"}
 
-\item{focus_year}{Focus on "latest" year (default) or optional year as numerical value (e.g. 2021)}
+\item{focal_year}{Focus on "latest" year (default) or optional year as numerical value (e.g. 2021)}
 
 \item{clip_to_1990}{Logical, should historical records be clipped to >1990.}
 
