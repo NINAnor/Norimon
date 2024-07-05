@@ -432,7 +432,7 @@ plot_climate_comparison <- function(climate_data = NULL,
   if(main_title){
     p <- p +
       ggtitle(paste(placename, text_table[[language]][1], focus_year, sep = "")) +
-      theme(plot.title=element_text(face = "bold", hjust = .012, vjust = .8, colour = "#3C3C3C", size = 20)) +
+      theme(plot.title = element_text(face = "bold", hjust = .012, vjust = .8, colour = "#3C3C3C", size = 20)) +
       annotate("text",
                x = 14,
                y = y_high_limit,
@@ -496,14 +496,14 @@ plot_climate_comparison <- function(climate_data = NULL,
              yend = legend_pos$y +
                20,
              colour = "wheat2",
-             size = 3) +
+             linewidth = 3) +
     annotate("segment",
              x = legend_pos$x,
              xend = legend_pos$x,
              y = legend_pos$y + 7,
              yend = legend_pos$y + 13,
              colour = "wheat4",
-             size = 3) +
+             linewidth = 3) +
     geom_line(data = legend_data, aes(x = x, y = y)) +
     annotate("segment",
              x = legend_pos$x + 2,
@@ -511,21 +511,21 @@ plot_climate_comparison <- function(climate_data = NULL,
              y = legend_pos$y + 12.3,
              yend = legend_pos$y + 12.3,
              colour = "wheat4",
-             size = .5) +
+             linewidth = .5) +
     annotate("segment",
              x = legend_pos$x + 2,
              xend = legend_pos$x + 4,
              y = legend_pos$y + 7.7,
              yend = legend_pos$y + 7.7,
              colour = "wheat4",
-             size = .5) +
+             linewidth = .5) +
     annotate("segment",
              x = legend_pos$x + 4,
              xend = legend_pos$x + 4,
              y = legend_pos$y + 7.7,
              yend = legend_pos$y + 12.3,
              colour = "wheat4",
-             size = .5) +
+             linewidth = .5) +
     annotate("text",
              x = legend_pos$x + 7,
              y = legend_pos$y + 9.75,
@@ -559,7 +559,7 @@ plot_climate_comparison <- function(climate_data = NULL,
              hjust = 0,
              vjust = 0)
 
-  suppressWarnings(print(p))
+  suppressWarnings(return(p))
 
   invisible(Sys.setlocale(category = "LC_TIME", old_LC_TIME))
 
