@@ -7,12 +7,14 @@
 plot_climate_comparison(
   climate_data = NULL,
   variable = c("temperature", "precipitation", "snow_depth"),
+  focal_year = "latest",
   focus_year = "latest",
   clip_to_1990 = TRUE,
   y_high_limit = 60,
   y_low_limit = -30,
   language = c("Norwegian", "English"),
   main_title = TRUE,
+  annotate_plot = TRUE,
   rolling_mean = FALSE
 )
 }
@@ -21,7 +23,7 @@ plot_climate_comparison(
 
 \item{variable}{Which variable to choose. "temperature"(default), "precipitation", or "snow_depth"}
 
-\item{focus_year}{Focus on "latest" year (default) or optional year as numerical value (e.g. 2021)}
+\item{focal_year}{Focus on "latest" year (default) or optional year as numerical value (e.g. 2021)}
 
 \item{clip_to_1990}{Logical, should historical records be clipped to >1990.}
 
@@ -32,6 +34,8 @@ plot_climate_comparison(
 \item{language}{Figure text in "Norwegian" or "English"}
 
 \item{main_title}{Print plot title? Boolean.}
+
+\item{annotate_plot}{Add explanation and no of extreme values. Boolean}
 
 \item{rolling_mean}{Plot rolling mean of 5 days? Suitable for precipitation}
 }
