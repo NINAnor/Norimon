@@ -35,7 +35,7 @@
 #'
 
 
-connect_to_insect_db <- function(host = "T2lippgsql04.nina.no",
+connect_to_insect_db <- function(host = "t2lippgsql02.nina.no",
                                  dbname = "insect_monitoring",
                                 ...){
 
