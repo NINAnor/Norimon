@@ -4,6 +4,7 @@
 #'
 #' @param climate_data A tibble of climate data (typically from get_climate_data())
 #' @param variable Which variable to choose. "temperature"(default), "precipitation", or "snow_depth"
+#' @param focus_year Will be depreciated.
 #' @param focal_year Focus on "latest" year (default) or optional year as numerical value (e.g. 2021)
 #' @param clip_to_1990 Logical, should historical records be clipped to >1990.
 #' @param y_high_limit The y-axis higher limit of the plot.
