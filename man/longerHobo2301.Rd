@@ -20,12 +20,9 @@ A tibble of well formatted logger data from the MX2301A type logger
 Convenience function to read in a raw file of hobo logger MX2301A data and rearrange the columns to make is usable
 }
 \examples{
-
 \dontrun{
 
 mx2301A_data <- longerHobo2301(inputFile = "../rawData/temp_logger/NasIns_2021_all_MX2301A_2021_11_15_11_00_05_CET_1.csv")
-
 }
-
 
 }

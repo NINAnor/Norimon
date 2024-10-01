@@ -14,87 +14,99 @@
 #' connect_to_insect_db()
 #' loc <- get_localities()
 #' ggplot(loc) +
-#' geom_sf(aes(fill = habitat_type))
-#'
+#'   geom_sf(aes(fill = habitat_type))
 #' }
 #'
-
-
-get_localities <- function(dataset = c("NasIns",
-                                       "OkoTrond",
-                                       "TidVar",
-                                       "Nerlands\u00f8ya",
-                                       "All"),
+get_localities <- function(dataset = c(
+                             "NasIns",
+                             "OkoTrond",
+                             "TidVar",
+                             "Nerlands\u00f8ya",
+                             "All"
+                           ),
                            as_sf = TRUE,
-                           habitat_type = c("All",
-                                            "Semi-nat",
-                                            "Forest",
-                                            "Tid_man",
-                                            "Tid_aut",
-                                            "Wetland")
-                           ){
-
-
-
+                           habitat_type = c(
+                             "All",
+                             "Semi-nat",
+                             "Forest",
+                             "Tid_man",
+                             "Tid_aut",
+                             "Wetland"
+                           )) {
   Norimon::checkCon()
 
-  dataset <- match.arg(dataset, choices = c("NasIns",
-                                            "OkoTrond",
-                                            "TidVar",
-                                            "Nerlands\u00f8ya",
-                                            "All"))
+  dataset <- match.arg(dataset, choices = c(
+    "NasIns",
+    "OkoTrond",
+    "TidVar",
+    "Nerlands\u00f8ya",
+    "All"
+  ))
 
   habitat_type_subset <- match.arg(habitat_type,
-                                   choices = c("All",
-                                            "Semi-nat",
-                                            "Forest",
-                                            "Tid_man",
-                                            "Tid_aut",
-                                            "Wetland"))
+    choices = c(
+      "All",
+      "Semi-nat",
+      "Forest",
+      "Tid_man",
+      "Tid_aut",
+      "Wetland"
+    )
+  )
 
 
-  localities <- sf::read_sf(con,
-                        DBI::Id(schema = "locations",
-                                table = "localities"
-                                ))
+  localities <- sf::read_sf(
+    con,
+    DBI::Id(
+      schema = "locations",
+      table = "localities"
+    )
+  )
 
-  year_locality <- dplyr::tbl(con,
-                              DBI::Id(schema = "events",
-                                      table = "year_locality"
-                              ))
+  year_locality <- dplyr::tbl(
+    con,
+    DBI::Id(
+      schema = "events",
+      table = "year_locality"
+    )
+  )
 
 
   temp <- localities %>%
     right_join(year_locality,
-                     by = c("id" = "locality_id",
-                            "ano_flate_id" = "ano_flate_id",
-                            "ssbid" = "ssbid"),
-                     copy = TRUE)
+      by = c(
+        "id" = "locality_id",
+        "ano_flate_id" = "ano_flate_id",
+        "ssbid" = "ssbid"
+      ),
+      copy = TRUE
+    )
 
-  if(dataset != "All"){
+  if (dataset != "All") {
     temp <- temp %>%
       filter(project_short_name == dataset)
   }
 
-  if(habitat_type_subset != "All"){
+  if (habitat_type_subset != "All") {
     temp <- temp %>%
       filter(habitat_type == habitat_type_subset)
   }
 
   out <- temp %>%
-    select(locality,
-           ssbid,
-           ano_flate_id,
-           year,
-           project_short_name,
-           region_name,
-           habitat_type) %>%
+    select(
+      locality,
+      ssbid,
+      ano_flate_id,
+      year,
+      project_short_name,
+      region_name,
+      habitat_type
+    ) %>%
     arrange(locality)
 
-  if(!as_sf){
+  if (!as_sf) {
     out <- st_drop_geometry(out)
   }
 
   return(out)
-
 }

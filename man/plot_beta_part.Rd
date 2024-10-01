@@ -16,24 +16,25 @@ Returns a plot of the beta diversity partition of the overall diversity
 plot_beta_part
 }
 \examples{
-
 \dontrun{
 connect_to_insect_db()
 
-seminat_trond_comm_mat <- get_community_matrix(trap_type = "MF",
-                                          dataset = "NasIns",
-                                          subset_habitat = "Semi-nat",
-                                          subset_region = "Trøndelag",
-                                          as_tibble = T,
-                                          transposed_matrix = F
+seminat_trond_comm_mat <- get_community_matrix(
+  trap_type = "MF",
+  dataset = "NasIns",
+  subset_habitat = "Semi-nat",
+  subset_region = "Trøndelag",
+  as_tibble = T,
+  transposed_matrix = F
 )
 
-seminat_trond_dist_beta <- combine_dist_to_comm_mat(comm_mat = seminat_trond_comm_mat,
-                                               region_name = "('Trøndelag')",
-                                               habitat_type = "Semi-nat")
+seminat_trond_dist_beta <- combine_dist_to_comm_mat(
+  comm_mat = seminat_trond_comm_mat,
+  region_name = "('Trøndelag')",
+  habitat_type = "Semi-nat"
+)
 
 plot_beta_part(seminat_trond_dist_beta)
-
 }
 
 }

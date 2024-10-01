@@ -24,7 +24,6 @@ A plot of a the AR5 layer of a locality
 locality_ar5_plot Plots a locality's AR5 map.
 }
 \examples{
-
 \dontrun{
 
 locality_ar5_plot(locality = "Semi-nat_01")

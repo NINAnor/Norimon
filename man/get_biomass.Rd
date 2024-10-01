@@ -52,13 +52,13 @@ A tibble of sample weights
 get_biomass Get biomass data from the database
 }
 \examples{
-
 \dontrun{
 
 connect_to_insect_db()
-biomass <- get_biomass(agg_level = "year_locality",
-trap_type = "MF")
-
+biomass <- get_biomass(
+  agg_level = "year_locality",
+  trap_type = "MF"
+)
 }
 
 }

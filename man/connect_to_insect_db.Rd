@@ -15,36 +15,31 @@ connect_to_insect_db(
 
 \item{dbname}{Database name}
 
-\item{...}{additional parameter to DBI:dbConnect, such as username and password, if not provided in ~/.pgpass}
+\item{...}{additional parameter to DBI:dbConnect, such as username and password, if not provided in ~/.pgpass.}
 }
 \value{
 A PostgreSQL connection to a database called "con"
 }
 \description{
-Best practice is to not store your username and password in any scripts. See example for a way to script retrieval of credentials
+Best practice is to not store your username and password in any scripts. Google postgresql .pgpass to learn more.
 }
 \examples{
 
 
-#Connect to insect monitoring database while storing your credentials in a password file (~/.pgpass)
+# Connect to insect monitoring database while storing your credentials in a password file (~/.pgpass)
 
 \dontrun{
 
+connect_to_insect_db()
 
-  connect_to_insect_db()
-
-
-
-Connect to another database
+# Connect to another database
 
 connect_to_insect_db(
   username = "postgjest",
-  password = "gjestpost",,
+  password = "gjestpost", ,
   host = "gisdata-db.nina.no",
   dbname = "gisdata"
 )
-
 }
-
 
 }

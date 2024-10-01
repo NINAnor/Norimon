@@ -37,11 +37,9 @@ Bootstraps alien species frequencies (number of localities with presences) for e
 }
 \examples{
 
-#'\dontrun{
-
+#'
+\dontrun{
 
 }
-
-
 
 }

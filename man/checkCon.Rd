@@ -13,10 +13,8 @@ An error message if a connection called con is missing
 Of internal use
 }
 \examples{
-
 \dontrun{
 checkCon()
-
 }
 
 }

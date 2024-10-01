@@ -50,5 +50,4 @@ connect_to_insect_db()
 ```{r beetles}
 beetles <- get_observations(subset_orders = "Coleoptera")
 beetles
-
 ```

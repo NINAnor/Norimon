@@ -2,16 +2,16 @@
 % Please edit documentation in R/calc_GDE.R
 \name{calc_GDE}
 \alias{calc_GDE}
-\title{Calculate Genedic diversity evenness on a community.}
+\title{Calculate Genetic diversity evenness on a community.}
 \usage{
 calc_GDE(GD, Hill = TRUE, richn_corr = TRUE)
 }
 \arguments{
+\item{GD}{A GDM calculation. (doi: https://doi.org/10.1101/2022.02.09.479762)}
+
 \item{Hill}{Return as first order Hill number. Boolean}
 
 \item{richn_corr}{Correct for species richness, dividing by number of species. Boolean}
-
-\item{gdm}{A GDM calculation. (doi: https://doi.org/10.1101/2022.02.09.479762)}
 }
 \value{
 Shannon diversity.
@@ -20,21 +20,21 @@ Shannon diversity.
 Experimental!
 }
 \examples{
-
-
 \dontrun{
-   beetles_2021 <- get_observations(subset_orders = "Coleoptera",
-   subset_year = 2021,
-   agg_level = "none")
+beetles_2021 <- get_observations(
+  subset_orders = "Coleoptera",
+  subset_year = 2021,
+  agg_level = "none"
+)
 
 
-  shannon_beetles_2021 <- beetles_2021 \%>\%
+shannon_beetles_2021 <- beetles_2021 \%>\%
   collect() \%>\%
   group_by(locality) \%>\%
-  select(locality,
-        no_asv_per_species) \%>\%
+  select(
+    locality,
+    no_asv_per_species
+  ) \%>\%
   summarise(shannon_div = calc_GDE(species_latin))
-
-
 }
 }

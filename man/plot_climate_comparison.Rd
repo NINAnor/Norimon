@@ -25,6 +25,8 @@ plot_climate_comparison(
 
 \item{focal_year}{Focus on "latest" year (default) or optional year as numerical value (e.g. 2021)}
 
+\item{focus_year}{Will be depreciated.}
+
 \item{clip_to_1990}{Logical, should historical records be clipped to >1990.}
 
 \item{y_high_limit}{The y-axis higher limit of the plot.}
@@ -46,13 +48,11 @@ A ggplot
 Plot the normal climate range and a chosen year as a comparison. Code adapted from Brad Boehmke and Scott Ogletree.
 }
 \examples{
-
 \dontrun{
 
 connect_to_insect_db()
 get_climate_data("Semi-nat_01") \%>\%
-plot_climate_comparison()
-
+  plot_climate_comparison()
 }
 
 }

@@ -10,26 +10,29 @@
 #' @return A ggplot
 #'
 #' @examples
-#'
-#'
 #' \dontrun{
 #'
 #'
 #' connect_to_insect_db()
 #'
-#' beetles <- get_observations(subset_orders = "Coleoptera",
-#'                       agg_level = "year_locality")
+#' beetles <- get_observations(
+#'   subset_orders = "Coleoptera",
+#'   agg_level = "year_locality"
+#' )
 #'
 #'
 #' beetle_asv_div_boot <- bootstrap_value(beetles,
-#'                                       value = mean_no_asv_per_species,
-#'                                       groups = c("year",
-#'                                                  "region_name"))
+#'   value = mean_no_asv_per_species,
+#'   groups = c(
+#'     "year",
+#'     "region_name"
+#'   )
+#' )
 #'
 #'
 #' map_plot(beetle_asv_div_boot,
-#'          palette = "blue-orange")
-#'
+#'   palette = "blue-orange"
+#' )
 #' }
 #' @export
 map_plot <- function(x,
@@ -37,7 +40,7 @@ map_plot <- function(x,
                      alpha_from_sd = FALSE,
                      alpha_range = c(0.3, 0.9),
                      palette = "blue-orange",
-                     ...){
+                     ...) {
   UseMethod("map_plot", x)
 }
 
@@ -48,8 +51,7 @@ map_plot.boot_stat <- function(x,
                                alpha_from_sd = FALSE,
                                alpha_range = c(0.3, 0.9),
                                palette = "blue-orange",
-                               ...){
-
+                               ...) {
   checkCon()
 
 
@@ -60,12 +62,12 @@ map_plot.boot_stat <- function(x,
   y_value_name <- stringr::str_replace(stringr::str_to_sentence(attr(x, "value_name")), "_", " ")
 
 
-  if(!whole_country){
-
+  if (!whole_country) {
     values_fylke <- df %>%
       left_join(region_fylke(),
-                by = c("region_name" = "region_name"),
-                relationship = "many-to-many")
+        by = c("region_name" = "region_name"),
+        relationship = "many-to-many"
+      )
 
     map_to_get <- df %>%
       select(region_name) %>%
@@ -76,9 +78,9 @@ map_plot.boot_stat <- function(x,
 
     map <- map %>%
       left_join(values_fylke,
-                by = c("fylke" = "fylke"))
+        by = c("fylke" = "fylke")
+      )
   } else {
-
     possible_years <- df %>%
       select(-c(region_name, boot_value, boot_sd, boot_lower2.5, boot_upper97.5))
 
@@ -88,47 +90,53 @@ map_plot.boot_stat <- function(x,
     all_fylke_years <- crossing(possible_years, all_fylkes)
 
     suppressMessages({
-
       values_fylke <- df %>%
-      right_join(all_fylke_years) %>%
-      left_join(region_fylke(),
-                by = c("region_name" = "region_name"),
-                relationship = "many-to-many")
+        right_join(all_fylke_years) %>%
+        left_join(region_fylke(),
+          by = c("region_name" = "region_name"),
+          relationship = "many-to-many"
+        )
     })
 
     map <- get_map()
 
     map <- map %>%
       left_join(values_fylke,
-                by = c("fylke" = "fylke"))
-
+        by = c("fylke" = "fylke")
+      )
   }
 
 
-  if(alpha_from_sd){
+  if (alpha_from_sd) {
     p <- map %>%
       ggplot(.) +
-      geom_sf(aes(fill = boot_value,
-                  alpha = 1/boot_sd)) +
-      NinaR::scale_fill_nina(name = y_value_name,
-                             discrete = FALSE,
-                             palette = palette,
-                             ...) +
-      scale_alpha(range = alpha_range,
-                  guide = "none")
-
+      geom_sf(aes(
+        fill = boot_value,
+        alpha = 1 / boot_sd
+      )) +
+      NinaR::scale_fill_nina(
+        name = y_value_name,
+        discrete = FALSE,
+        palette = palette,
+        ...
+      ) +
+      scale_alpha(
+        range = alpha_range,
+        guide = "none"
+      )
   } else {
-
-  p <- map %>%
-    ggplot(.) +
-    geom_sf(aes(fill = boot_value)) +
-    NinaR::scale_fill_nina(name = y_value_name,
-                           discrete = FALSE,
-                           palette = palette,
-                           ...)
+    p <- map %>%
+      ggplot(.) +
+      geom_sf(aes(fill = boot_value)) +
+      NinaR::scale_fill_nina(
+        name = y_value_name,
+        discrete = FALSE,
+        palette = palette,
+        ...
+      )
   }
 
-  if("year" %in% colnames(map)){
+  if ("year" %in% colnames(map)) {
     p <- p +
       facet_wrap("year")
   }

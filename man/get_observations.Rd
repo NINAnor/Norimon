@@ -63,12 +63,9 @@ A tibble of insect observations from the database
 get_observations Get insect observation data from the database
 }
 \examples{
-
 \dontrun{
 
-
   connect_to_insect_db()
-
 
   beetles <- get_observations(subset_orders = "Coleoptera",
                               agg_level = "year_locality")

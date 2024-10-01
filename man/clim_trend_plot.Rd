@@ -34,19 +34,15 @@ A plot (a grob containing two ggplots)
 Summarises mean values of the weather (temperature and precipitation) during chosen months for the localities within a chosen region.
 }
 \examples{
-
 \dontrun{
 
-clim_trend_plot(region = "Trøndelag",
-                from_year = 2010,
-                to_year = 2022,
-                from_month = 6,
-                to_month = 7
+clim_trend_plot(
+  region = "Trøndelag",
+  from_year = 2010,
+  to_year = 2022,
+  from_month = 6,
+  to_month = 7
 )
-
-
 }
-
-
 
 }

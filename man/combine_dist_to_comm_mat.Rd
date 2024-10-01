@@ -20,25 +20,26 @@ A tibble of beta diversities and distances between localities
 combine_dist_to_comm_mat Partitions diversity components and merges it with distance matrix of localities. This is not pretty, but does the job for a report analysis
 }
 \examples{
-
 \dontrun{
 
 connect_to_insect_db()
 
-skog_ost_comm_mat <- get_community_matrix(trap_type = "MF",
-                                          dataset = "NasIns",
-                                          subset_habitat = "Forest",
-                                          subset_region = "Østlandet",
-                                          as_tibble = T,
-                                          transposed_matrix = F
+skog_ost_comm_mat <- get_community_matrix(
+  trap_type = "MF",
+  dataset = "NasIns",
+  subset_habitat = "Forest",
+  subset_region = "Østlandet",
+  as_tibble = T,
+  transposed_matrix = F
 )
 
-skog_ost_dist_beta <- combine_dist_to_comm_mat(comm_mat = skog_ost_comm_mat,
-                                               region_name = "('Østlandet')",
-                                               habitat_type = "Forest")
+skog_ost_dist_beta <- combine_dist_to_comm_mat(
+  comm_mat = skog_ost_comm_mat,
+  region_name = "('Østlandet')",
+  habitat_type = "Forest"
+)
 
 plot_beta_part(skog_ost_dist_beta)
-
 }
 
 }

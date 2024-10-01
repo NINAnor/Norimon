@@ -16,12 +16,8 @@ A tibble of daily climate data from 1957.
 Fetch climatic records for a particular locality. Data includes daily mean temperature, total precipitation, and total snow depth. Data stretches from 1957 up until the latest import to the database.
 }
 \examples{
-
 \dontrun{
 climate_data <- get_climate_data("Semi-nat_01")
-
 }
-
-
 
 }

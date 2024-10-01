@@ -30,14 +30,10 @@ a ggplot of the phenology
 Plot a phenology object
 }
 \examples{
-
 \dontrun{
 
 order_phen <- get_phenology(taxonomic_level = "Order")
 plot(order_phen)
-
 }
-
-
 
 }

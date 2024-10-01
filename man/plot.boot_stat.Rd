@@ -20,19 +20,23 @@ A ggridges plot of the bootrapped values in a boot_stat object.
 Plot a boot_stat object
 }
 \examples{
-
 \dontrun{
 
 
- beetles <- get_observations(subset_orders = "Coleoptera",
-                      agg_level = "year_locality")
+beetles <- get_observations(
+  subset_orders = "Coleoptera",
+  agg_level = "year_locality"
+)
 
 
 
 beetle_shannon_boot <- bootstrap_value(beetles,
-                                       value = shannon_div,
-                                       groups = c("year",
-                                                  "region_name"))
+  value = shannon_div,
+  groups = c(
+    "year",
+    "region_name"
+  )
+)
 
 plot(beetle_shannon_boot)
 }

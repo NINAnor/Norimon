@@ -27,11 +27,11 @@ Tibble or dataframe of logger data.
 get_logger_data Get temperature and light logger data from the database
 }
 \examples{
-
 \dontrun{
-locality_sampling_loggerdata <- get_logger_data(dataset = "NasIns",
-                                                  agg_level = "locality_sampling")
-
+locality_sampling_loggerdata <- get_logger_data(
+  dataset = "NasIns",
+  agg_level = "locality_sampling"
+)
 }
 
 }

@@ -30,28 +30,26 @@ Bootstrap functions for calculating mean and lower and upper bounds. Not usually
 Bootstrap functions for calculating mean and lower and upper bounds. Not usually used.
 }
 \examples{
+\dontrun{
+
+shannon_beetles \%>\%
+  group_by(year) \%>\%
+  summarise(
+    boot_mean = boot_mean(shannon_div),
+    boot_lower25 = boot_lower(shannon_div),
+    boot_upper975 = boot_upper(shannon_div)
+  )
+}
 
 \dontrun{
 
 shannon_beetles \%>\%
-group_by(year) \%>\%
-  summarise(boot_mean = boot_mean(shannon_div),
-            boot_lower25 = boot_lower(shannon_div),
-            boot_upper975 = boot_upper(shannon_div))
-
+  group_by(year) \%>\%
+  summarise(
+    boot_mean = boot_mean(shannon_div),
+    boot_lower25 = boot_lower(shannon_div),
+    boot_upper975 = boot_upper(shannon_div)
+  )
 }
-
-
-
-\dontrun{
-
-shannon_beetles \%>\%
-group_by(year) \%>\%
-  summarise(boot_mean = boot_mean(shannon_div),
-            boot_lower25 = boot_lower(shannon_div),
-            boot_upper975 = boot_upper(shannon_div))
-
-}
-
 
 }
