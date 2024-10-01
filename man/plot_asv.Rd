@@ -39,12 +39,9 @@ a ggplot object
 plot_asv
 }
 \examples{
-
 \dontrun{
 
-plot_asv("Erebia ligea")#'
-
+plot_asv("Erebia ligea") #'
 }
-
 
 }

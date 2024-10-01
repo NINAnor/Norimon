@@ -8,36 +8,34 @@
 #' @export
 #'
 #' @examples
-#'
 #' \dontrun{
 #' climate_data <- get_climate_data("Semi-nat_01")
-#'
 #' }
 #'
-#'
-#'
+get_climate_data <- function(locality = NULL) {
+  if (is.null(locality)) stop("Need a locality name as character")
 
-get_climate_data <- function(locality = NULL){
-
-  if(is.null(locality)) stop("Need a locality name as character")
-
-  clim_tbl <- dplyr::tbl(con,
-                         DBI::Id(schema = "climate_data",
-                                 table = "se_norge"
-                         ))
+  clim_tbl <- dplyr::tbl(
+    con,
+    DBI::Id(
+      schema = "climate_data",
+      table = "se_norge"
+    )
+  )
 
   loc <- dplyr::enquo(locality)
 
   out <- clim_tbl %>%
     dplyr::filter(locality %in% loc) %>%
     dplyr::select(locality,
-                  date,
-                  daily_sum_precip = locality_rr,
-                  daily_mean_temp = locality_tg,
-                  daily_mean_snow_depth = locality_sd) %>%
-    arrange(locality,
-            date) %>%
+      date,
+      daily_sum_precip = locality_rr,
+      daily_mean_temp = locality_tg,
+      daily_mean_snow_depth = locality_sd
+    ) %>%
+    arrange(
+      locality,
+      date
+    ) %>%
     dplyr::collect()
-
 }
-

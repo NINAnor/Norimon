@@ -6,16 +6,19 @@
 #' @export
 #'
 #' @examples
-#'
 #' \dontrun{
 #' checkCon()
-#'
 #' }
 #'
-
-
-checkCon <- function() {if(!exists("con")){ stop("No connection!")} else{
-  if(!inherits(con, "PqConnection")){ stop("\"con\" is not of class \"PqConnection\". Have you connected to the database?")}
-  if(!DBI::dbIsValid(con)) { stop("No connection")}
-}
+checkCon <- function() {
+  if (!exists("con")) {
+    stop("No connection!")
+  } else {
+    if (!inherits(con, "PqConnection")) {
+      stop("\"con\" is not of class \"PqConnection\". Have you connected to the database?")
+    }
+    if (!DBI::dbIsValid(con)) {
+      stop("No connection")
+    }
+  }
 }

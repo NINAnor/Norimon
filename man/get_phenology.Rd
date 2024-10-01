@@ -45,9 +45,7 @@ A tibble of insect observations from the database
 This provides a summary of insect catches, divided into taxa of a chosen level over the season, typically to be plotted by plot_phenology().
 }
 \examples{
-
 \dontrun{
-
 
   connect_to_insect_db()
 

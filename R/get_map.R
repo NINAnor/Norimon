@@ -8,83 +8,86 @@
 #'
 #'
 #' @examples
-#'
-#'
 #' \dontrun{
-#'    connect_to_insect_db()
-#'    beetles <- get_observations(subset_orders = "Coleoptera",
-#'                               agg_level = "year_locality")
+#' connect_to_insect_db()
+#' beetles <- get_observations(
+#'   subset_orders = "Coleoptera",
+#'   agg_level = "year_locality"
+#' )
 #'
-#'    beetle_shannon_boot <- bootstrap_value(beetles,
-#'                                           value = shannon_div,
-#'                                           groups = c("year",
-#'                                                      "region_name"))
+#' beetle_shannon_boot <- bootstrap_value(beetles,
+#'   value = shannon_div,
+#'   groups = c(
+#'     "year",
+#'     "region_name"
+#'   )
+#' )
 #'
-#'    norway <- get_map()
+#' norway <- get_map()
 #'
-#'    norway <- norway %>%
-#'    left_join(beetle_shannon_boot[[1]],
-#'            by = c("region" = "region_name"),
-#'            copy = TRUE) %>%
-#'    replace_na(list(year =  2021))
-#'
-#'
-#'   norway %>%
-#'    filter(year == 2021) %>%
-#'    ggplot() +
-#'    geom_sf(aes(fill = boot_value)) +
-#'    NinaR::scale_fill_nina(name = "Beetle Shannon diversity",
-#'                  discrete = FALSE)
+#' norway <- norway %>%
+#'   left_join(beetle_shannon_boot[[1]],
+#'     by = c("region" = "region_name"),
+#'     copy = TRUE
+#'   ) %>%
+#'   replace_na(list(year = 2021))
 #'
 #'
+#' norway %>%
+#'   filter(year == 2021) %>%
+#'   ggplot() +
+#'   geom_sf(aes(fill = boot_value)) +
+#'   NinaR::scale_fill_nina(
+#'     name = "Beetle Shannon diversity",
+#'     discrete = FALSE
+#'   )
 #' }
 #'
-#'
-#'
-
-get_map <- function(region_subset = NULL){
-
+get_map <- function(region_subset = NULL) {
   norway_terr <- sf::read_sf(con,
-                             layer = DBI::Id(schema = "backgrounds", table = "norway_terrestrial")) %>%
+    layer = DBI::Id(schema = "backgrounds", table = "norway_terrestrial")
+  ) %>%
     select(fylke = navn)
 
 
-    region_def <- tibble(region = c("Tr\u00f8ndelag",
-                                         "\u00d8stlandet",
-                                         "\u00d8stlandet",
-                                         "\u00d8stlandet",
-                                         "\u00d8stlandet",
-                                         "S\u00f8rlandet",
-                                         "S\u00f8rlandet",
-                                         "Vestlandet",
-                                         "Vestlandet",
-                                         "Nord-Norge",
-                                         "Nord-Norge"),
-                         fylke = c("Tr\u00f8ndelag",
-                                        "Innlandet",
-                                        "Oslo",
-                                        "Vestfold og Telemark",
-                                        "Viken",
-                                        "Rogaland",
-                                        "Agder",
-                                        "Vestland",
-                                        "M\u00f8re og Romsdal",
-                                        "Troms og Finnmark",
-                                        "Nordland"))
+  region_def <- tibble(
+    region = c(
+      "Tr\u00f8ndelag",
+      "\u00d8stlandet",
+      "\u00d8stlandet",
+      "\u00d8stlandet",
+      "\u00d8stlandet",
+      "S\u00f8rlandet",
+      "S\u00f8rlandet",
+      "Vestlandet",
+      "Vestlandet",
+      "Nord-Norge",
+      "Nord-Norge"
+    ),
+    fylke = c(
+      "Tr\u00f8ndelag",
+      "Innlandet",
+      "Oslo",
+      "Vestfold og Telemark",
+      "Viken",
+      "Rogaland",
+      "Agder",
+      "Vestland",
+      "M\u00f8re og Romsdal",
+      "Troms og Finnmark",
+      "Nordland"
+    )
+  )
 
+  norway_terr <- norway_terr %>%
+    left_join(region_def,
+      by = c("fylke" = "fylke")
+    )
+
+  if (!is.null(region_subset)) {
     norway_terr <- norway_terr %>%
-      left_join(region_def,
-           by = c("fylke" = "fylke"))
-
-    if(!is.null(region_subset)){
-
-      norway_terr <- norway_terr %>%
       filter(region %in% region_subset)
-
   }
 
   return(norway_terr)
-
 }
-
-

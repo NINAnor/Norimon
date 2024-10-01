@@ -16,37 +16,39 @@ An sf-object of the terrestrial landmass of Norway, contingent on region subset.
 Get map of terrestrial norway
 }
 \examples{
-
-
 \dontrun{
-   connect_to_insect_db()
-   beetles <- get_observations(subset_orders = "Coleoptera",
-                              agg_level = "year_locality")
+connect_to_insect_db()
+beetles <- get_observations(
+  subset_orders = "Coleoptera",
+  agg_level = "year_locality"
+)
 
-   beetle_shannon_boot <- bootstrap_value(beetles,
-                                          value = shannon_div,
-                                          groups = c("year",
-                                                     "region_name"))
+beetle_shannon_boot <- bootstrap_value(beetles,
+  value = shannon_div,
+  groups = c(
+    "year",
+    "region_name"
+  )
+)
 
-   norway <- get_map()
+norway <- get_map()
 
-   norway <- norway \%>\%
-   left_join(beetle_shannon_boot[[1]],
-           by = c("region" = "region_name"),
-           copy = TRUE) \%>\%
-   replace_na(list(year =  2021))
-
-
-  norway \%>\%
-   filter(year == 2021) \%>\%
-   ggplot() +
-   geom_sf(aes(fill = boot_value)) +
-   NinaR::scale_fill_nina(name = "Beetle Shannon diversity",
-                 discrete = FALSE)
+norway <- norway \%>\%
+  left_join(beetle_shannon_boot[[1]],
+    by = c("region" = "region_name"),
+    copy = TRUE
+  ) \%>\%
+  replace_na(list(year = 2021))
 
 
+norway \%>\%
+  filter(year == 2021) \%>\%
+  ggplot() +
+  geom_sf(aes(fill = boot_value)) +
+  NinaR::scale_fill_nina(
+    name = "Beetle Shannon diversity",
+    discrete = FALSE
+  )
 }
-
-
 
 }

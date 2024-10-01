@@ -9,16 +9,15 @@
 #' @export
 ts_plot <- function(x,
                     palette = "blue-orange",
-                    ...){
+                    ...) {
   UseMethod("ts_plot", x)
 }
 
-#'@export
+#' @export
 ts_plot.boot_stat <- function(x,
-                               palette = "blue-orange",
-                               ...){
-
-  if(!any(class(x) == "boot_stat")) stop("Input must be of class 'boot_stat'")
+                              palette = "blue-orange",
+                              ...) {
+  if (!any(class(x) == "boot_stat")) stop("Input must be of class 'boot_stat'")
 
 
   df <- x[[1]] %>%
@@ -30,24 +29,31 @@ ts_plot.boot_stat <- function(x,
 
 
   ggplot(df) +
-    geom_ribbon(aes(x = year,
-                    ymin = boot_lower2.5,
-                    ymax = boot_upper97.5,
-                    group = region_name,
-                    fill = region_name),
-                    alpha = 0.5) +
-    geom_point(aes(x = year,
-                   y = boot_value,
-                   color = region_name,
-                   group = region_name)) +
-    geom_line(aes(x = year,
-                  y = boot_value,
-                  color = region_name,
-                  group = region_name)) +
+    geom_ribbon(
+      aes(
+        x = year,
+        ymin = boot_lower2.5,
+        ymax = boot_upper97.5,
+        group = region_name,
+        fill = region_name
+      ),
+      alpha = 0.5
+    ) +
+    geom_point(aes(
+      x = year,
+      y = boot_value,
+      color = region_name,
+      group = region_name
+    )) +
+    geom_line(aes(
+      x = year,
+      y = boot_value,
+      color = region_name,
+      group = region_name
+    )) +
     NinaR::scale_color_nina() +
     NinaR::scale_fill_nina(name = "Region name") +
     ylab(y_value_name) +
     xlab(x_value_name) +
     guides(color = FALSE)
-
 }

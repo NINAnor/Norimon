@@ -54,16 +54,14 @@ A tibble or dataframe of a community matrix
 get_community_matrix
 }
 \examples{
-
 \dontrun{
 
-  connect_to_insect_db()
+connect_to_insect_db()
 
-  beetles_comm_2022 <- get_community_matrix(subset_orders = "Coleoptera",
-                                                subset_years = 2021)
-
+beetles_comm_2022 <- get_community_matrix(
+  subset_orders = "Coleoptera",
+  subset_years = 2021
+)
 }
-
-
 
 }

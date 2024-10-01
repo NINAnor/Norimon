@@ -8,9 +8,9 @@ Convenience function to read in a raw file of hobo logger MX2202 data and rearra
 longerHobo2202(inputFile, guess_max = 10000, ...)
 }
 \arguments{
-\item{inputFile}{export file of raw logger data from HoboLink.com}
+\item{inputFile}{export file of raw logger data from HoboLink.com.}
 
-\item{guess_max}{optional number of rows to guess the data format from. May have to increase a lot}
+\item{guess_max}{optional number of rows to guess the data format from. May have to increase a lot.}
 
 \item{...}{additional parameters passed to read_csv}
 }
@@ -22,12 +22,9 @@ longerHobo2202
 Convenience function to read in a raw file of hobo logger MX2202 data and rearrange the columns to make is usable
 }
 \examples{
-
 \dontrun{
 
-mx2202_data <- longerHobo2202(inputFile = "../rawData/temp_logger/NasIns_2021_all_MX2202_2021_11_15_10_58_26_CET/NasIns_2021_all_MX2202_2021_11_15_10_58_26_CET_1.csv"
-
+mx2202_data <- longerHobo2202(inputFile = "../rawData/temp_logger/NasIns_2021_all_MX2202_2021_11_15_10_58_26_CET/NasIns_2021_all_MX2202_2021_11_15_10_58_26_CET_1.csv")
 }
-
 
 }

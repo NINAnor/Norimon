@@ -28,8 +28,7 @@ Get the localities from the database, either as an sf object or as a tibble
 connect_to_insect_db()
 loc <- get_localities()
 ggplot(loc) +
-geom_sf(aes(fill = habitat_type))
-
+  geom_sf(aes(fill = habitat_type))
 }
 
 }

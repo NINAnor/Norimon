@@ -30,24 +30,26 @@ A correlation plot.
 chart_correlation Modified from PerformanceAnalytics::chart.Correlation
 }
 \examples{
-
 \dontrun{
 
-locality_sampling_loggerdata <- get_logger_data(dataset = "NasIns",
-agg_level = "locality_sampling")
+locality_sampling_loggerdata <- get_logger_data(
+  dataset = "NasIns",
+  agg_level = "locality_sampling"
+)
 
 locality_sampling_loggerdata \%>\%
-select(Temp_MX2301A = avg_values_MX2301A_temperature,
-       Temp_MX2202 = avg_values_MX2202_temperature,
-       RL = avg_values_MX2301A_rh,
-       Lys = avg_values_MX2202_light
- ) \%>\%
- filter(Lys >= 100) \%>\%
-   chart_correlation(.,
- histogram = TRUE,
- method = "pearson",
- color = ninaColors()[1])
-
+  select(
+    Temp_MX2301A = avg_values_MX2301A_temperature,
+    Temp_MX2202 = avg_values_MX2202_temperature,
+    RL = avg_values_MX2301A_rh,
+    Lys = avg_values_MX2202_light
+  ) \%>\%
+  filter(Lys >= 100) \%>\%
+  chart_correlation(.,
+    histogram = TRUE,
+    method = "pearson",
+    color = ninaColors()[1]
+  )
 }
 
 }

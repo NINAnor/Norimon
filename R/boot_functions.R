@@ -8,51 +8,52 @@
 #' @export
 #'
 #' @examples
-#'
 #' \dontrun{
 #'
 #' shannon_beetles %>%
-#' group_by(year) %>%
-#'   summarise(boot_mean = boot_mean(shannon_div),
-#'             boot_lower25 = boot_lower(shannon_div),
-#'             boot_upper975 = boot_upper(shannon_div))
-#'
+#'   group_by(year) %>%
+#'   summarise(
+#'     boot_mean = boot_mean(shannon_div),
+#'     boot_lower25 = boot_lower(shannon_div),
+#'     boot_upper975 = boot_upper(shannon_div)
+#'   )
 #' }
 #'
-#'
 #' @export
 #' @rdname boot_mean
 
 
-  boot_lower <- function(x,
-                         limit = 0.025,
-                         R = 999){
-    temp <- replicate(R,
-                      mean(sample(x,
-                                  size = length(x),
-                                  replace = TRUE)
-                           )
-                      )
+boot_lower <- function(x,
+                       limit = 0.025,
+                       R = 999) {
+  temp <- replicate(
+    R,
+    mean(sample(x,
+      size = length(x),
+      replace = TRUE
+    ))
+  )
 
-    lower = nth(temp, floor(R * limit), order_by = temp)
+  lower <- nth(temp, floor(R * limit), order_by = temp)
 
-    return(lower)
-  }
+  return(lower)
+}
 
 #' @export
 #' @rdname boot_mean
 
-  boot_upper <- function(x,
-                         limit = 0.975,
-                         R = 999){
-    temp <- replicate(R,
-                      mean(sample(x,
-                                  size = length(x),
-                                  replace = TRUE)
-                           )
-                      )
+boot_upper <- function(x,
+                       limit = 0.975,
+                       R = 999) {
+  temp <- replicate(
+    R,
+    mean(sample(x,
+      size = length(x),
+      replace = TRUE
+    ))
+  )
 
-    upper = nth(temp, ceiling(R * limit), order_by = temp)
+  upper <- nth(temp, ceiling(R * limit), order_by = temp)
 
-    return(upper)
-  }
+  return(upper)
+}

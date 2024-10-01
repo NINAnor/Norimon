@@ -37,23 +37,23 @@ Returns an object of class boot_stat.
 Bootstrap value
 }
 \examples{
-
-
 \dontrun{
 
 
-beetles <- get_observations(subset_order = "Coleoptera",
-                      agg_level = "year_locality")
+beetles <- get_observations(
+  subset_order = "Coleoptera",
+  agg_level = "year_locality"
+)
 
 
 beetle_shannon_boot <- bootstrap_value(beetles,
-                                       value = shannon_div,
-                                       groups = c("year",
-                                                  "region_name"))
+  value = shannon_div,
+  groups = c(
+    "year",
+    "region_name"
+  )
+)
 beetle_shannon_boot
-
 }
-
-
 
 }

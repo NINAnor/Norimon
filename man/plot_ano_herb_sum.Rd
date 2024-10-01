@@ -13,12 +13,9 @@ A ggplot
 Convenience function to clear up some code in reports
 }
 \examples{
-
 \dontrun{
 
 plot_ano_herb_sum()
-
-
 }
 
 }

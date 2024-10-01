@@ -20,21 +20,21 @@ Shannon diversity.
 Experimental!
 }
 \examples{
-
-
 \dontrun{
-   beetles_2021 <- get_observations(subset_orders = "Coleoptera",
-   subset_year = 2021,
-   agg_level = "none")
+beetles_2021 <- get_observations(
+  subset_orders = "Coleoptera",
+  subset_year = 2021,
+  agg_level = "none"
+)
 
 
-  shannon_beetles_2021 <- beetles_2021 \%>\%
+shannon_beetles_2021 <- beetles_2021 \%>\%
   collect() \%>\%
   group_by(locality) \%>\%
-  select(locality,
-        no_asv_per_species) \%>\%
+  select(
+    locality,
+    no_asv_per_species
+  ) \%>\%
   summarise(shannon_div = calc_GDE(species_latin))
-
-
 }
 }

@@ -33,25 +33,28 @@ A ggplot
 map_plot Plots bootstrap values from boot_stat object on map
 }
 \examples{
-
-
 \dontrun{
 
 
 connect_to_insect_db()
 
-beetles <- get_observations(subset_orders = "Coleoptera",
-                      agg_level = "year_locality")
+beetles <- get_observations(
+  subset_orders = "Coleoptera",
+  agg_level = "year_locality"
+)
 
 
 beetle_asv_div_boot <- bootstrap_value(beetles,
-                                      value = mean_no_asv_per_species,
-                                      groups = c("year",
-                                                 "region_name"))
+  value = mean_no_asv_per_species,
+  groups = c(
+    "year",
+    "region_name"
+  )
+)
 
 
 map_plot(beetle_asv_div_boot,
-         palette = "blue-orange")
-
+  palette = "blue-orange"
+)
 }
 }

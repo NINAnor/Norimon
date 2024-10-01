@@ -8,22 +8,22 @@
 #'
 #' @return Shannon diversity.
 #' @examples
-#'
-#'
 #' \dontrun{
-#'    beetles_2021 <- get_observations(subset_orders = "Coleoptera",
-#'    subset_year = 2021,
-#'    agg_level = "none")
+#' beetles_2021 <- get_observations(
+#'   subset_orders = "Coleoptera",
+#'   subset_year = 2021,
+#'   agg_level = "none"
+#' )
 #'
 #'
-#'   shannon_beetles_2021 <- beetles_2021 %>%
+#' shannon_beetles_2021 <- beetles_2021 %>%
 #'   collect() %>%
 #'   group_by(locality) %>%
-#'   select(locality,
-#'         species_latin) %>%
+#'   select(
+#'     locality,
+#'     species_latin
+#'   ) %>%
 #'   summarise(shannon_div = calc_shannon(species_latin))
-#'
-#'
 #' }
 #' @import dplyr
 #'
@@ -37,25 +37,23 @@ calc_shannon <- function(community,
                          augment_community = TRUE,
                          only_sum_freq = FALSE,
                          Hill = TRUE) {
-    if(augment_community){
+  if (augment_community) {
     community_aug <- rep(community, no_asv_per_species)
-    p <- table(community_aug)/length(community_aug) # Find proportions
-    } else{
-      p <- community
-    }
+    p <- table(community_aug) / length(community_aug) # Find proportions
+  } else {
+    p <- community
+  }
 
-    p <- p[p > 0] # Get rid of zero proportions (log zero is undefined)
-    if(only_sum_freq){
-      out <- sum(p)
-    } else {
+  p <- p[p > 0] # Get rid of zero proportions (log zero is undefined)
+  if (only_sum_freq) {
+    out <- sum(p)
+  } else {
     out <- -sum(p * log(p)) # Calculate index
-    }
+  }
 
-    if(Hill){
-      out <- exp(out)
-    }
+  if (Hill) {
+    out <- exp(out)
+  }
 
-    return(out)
-
+  return(out)
 }
-
