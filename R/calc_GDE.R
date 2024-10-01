@@ -1,8 +1,8 @@
-#' Calculate Genedic diversity evenness on a community.
+#' Calculate Genetic diversity evenness on a community.
 #'
 #' Experimental!
 #'
-#' @param gdm A GDM calculation. (doi: https://doi.org/10.1101/2022.02.09.479762)
+#' @param GD A GDM calculation. (doi: https://doi.org/10.1101/2022.02.09.479762)
 #' @param Hill Return as first order Hill number. Boolean
 #' @param richn_corr Correct for species richness, dividing by number of species. Boolean
 #'

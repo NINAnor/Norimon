@@ -2,16 +2,16 @@
 % Please edit documentation in R/calc_GDE.R
 \name{calc_GDE}
 \alias{calc_GDE}
-\title{Calculate Genedic diversity evenness on a community.}
+\title{Calculate Genetic diversity evenness on a community.}
 \usage{
 calc_GDE(GD, Hill = TRUE, richn_corr = TRUE)
 }
 \arguments{
+\item{GD}{A GDM calculation. (doi: https://doi.org/10.1101/2022.02.09.479762)}
+
 \item{Hill}{Return as first order Hill number. Boolean}
 
 \item{richn_corr}{Correct for species richness, dividing by number of species. Boolean}
-
-\item{gdm}{A GDM calculation. (doi: https://doi.org/10.1101/2022.02.09.479762)}
 }
 \value{
 Shannon diversity.

@@ -41,7 +41,9 @@ Imports:
     lubridate,
     readr,
     stringr,
-    zoo
+    zoo,
+    png,
+    terra
 Depends:
   ggplot2,
   rlang
