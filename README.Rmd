@@ -19,8 +19,8 @@ knitr::opts_chunk$set(
 ```{r, echo = F}
 library(badger)
 ```
-`r badge_lifecycle("experimental")` 
-`r badge_github_version("NINAnor/Norimon", "blue")`
+`r badge_lifecycle("stable")` 
+`r badge_devel("NINAnor/Norimon", "blue")`
 `r badge_cran_release("Norimon")`
 `r badge_github_actions("NINAnor/Norimon")` 
 `r badge_code_size("NINAnor/Norimon")`
