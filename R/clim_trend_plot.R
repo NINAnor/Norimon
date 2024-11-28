@@ -2,12 +2,13 @@
 #'
 #' Summarises mean values of the weather (temperature and precipitation) during chosen months for the localities within a chosen region.
 #' @encoding UTF-8
-#' @param region Which region to plot? Currently available: c("Trøndelag", "Østlandet", "Sørlandet", "Nord-Norge").
+#' @param region Which region to plot? Currently available: c("Trøndelag", "Østlandet", "Sørlandet", "Nord-Norge", "Vestlandet").
 #' @param dataset Which dataset to use? Is used to select the localities within regions.
 #' @param from_year Plot data from what year= Integer.
 #' @param to_year Plot data to what year? Integer.
 #' @param from_month Summarise data from what month?. Integer
 #' @param to_month Summarise data to what month? Integer
+#' @param subset_loc_in_last_year Should we only plot data for the localities visited in the last year? Boolean.
 #'
 #' @return A plot (a grob containing two ggplots)
 #' @export
@@ -24,38 +25,59 @@
 #' )
 #' }
 #'
-clim_trend_plot <- function(region = c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u00f8rlandet", "Nord-Norge"),
+clim_trend_plot <- function(region = c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u00f8rlandet", "Nord-Norge", "Vestlandet"),
                             dataset = c("NasIns", "TidVar", "\u00d8koTrond", "HulEik"),
                             from_year = 2010,
                             to_year = 2023,
                             from_month = 6,
-                            to_month = 7) {
+                            to_month = 7,
+                            subset_loc_in_last_year = TRUE) {
   from_year <- from_year
   focus_year <- to_year
 
   from_month <- from_month
   to_month <- to_month
 
-  region <- match.arg(region, c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u00f8rlandet", "Nord-Norge"))
+  region <- match.arg(region, c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u00f8rlandet", "Nord-Norge", "Vestlandet"))
   dataset <- match.arg(dataset, c("NasIns", "TidVar", "\u00d8koTrond", "HulEik"))
 
-  loc_in_region_q <- "
-  SELECT l.locality
-  FROM events.year_locality yl,
-  locations.localities l
-  WHERE yl.year = ?id1
-  AND yl.locality_id = l.id
-  AND l.region_name = ?id2
-  AND yl.project_short_name = ?id3
+  if(subset_loc_in_last_year){
 
-  "
+    loc_in_region_q <- "
+    SELECT l.locality
+    FROM events.year_locality yl,
+    locations.localities l
+    WHERE yl.year = ?id1
+    AND yl.locality_id = l.id
+    AND l.region_name = ?id2
+    AND yl.project_short_name = ?id3
+    "
 
-  loc_in_region_san <- DBI::sqlInterpolate(con,
-    loc_in_region_q,
-    id1 = focus_year,
-    id2 = region,
-    id3 = dataset
-  )
+    loc_in_region_san <- DBI::sqlInterpolate(con,
+      loc_in_region_q,
+      id1 = focus_year,
+      id2 = region,
+      id3 = dataset
+    )
+
+  } else {
+    loc_in_region_q <- "
+    SELECT l.locality
+    FROM events.year_locality yl,
+    locations.localities l
+    WHERE yl.locality_id = l.id
+    AND l.region_name = ?id2
+    AND yl.project_short_name = ?id3
+
+    "
+
+    loc_in_region_san <- DBI::sqlInterpolate(con,
+                                             loc_in_region_q,
+                                             id2 = region,
+                                             id3 = dataset
+    )
+
+  }
 
   loc_in_region <- DBI::dbGetQuery(
     con,
@@ -63,10 +85,7 @@ clim_trend_plot <- function(region = c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u0
   ) %>%
     pull()
 
-
   clim_data <- get_climate_data(locality = loc_in_region)
-
-
 
   clim_data_agg <- clim_data %>%
     mutate(
@@ -117,7 +136,6 @@ clim_trend_plot <- function(region = c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u0
     ylab("Temperatursum") +
     xlab("\u00C5r")
 
-
   p2 <- ggplot(clim_data_agg) +
     geom_pointrange(
       aes(
@@ -141,7 +159,6 @@ clim_trend_plot <- function(region = c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u0
     scale_x_continuous(breaks = from_year:to_year) +
     ylab("Nedb\u00f8rsum") +
     xlab("\u00C5r")
-
 
   gridExtra::marrangeGrob(
     list(

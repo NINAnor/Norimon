@@ -6,16 +6,17 @@
 \title{clim_trend_plot}
 \usage{
 clim_trend_plot(
-  region = c("Trøndelag", "Østlandet", "Sørlandet", "Nord-Norge"),
+  region = c("Trøndelag", "Østlandet", "Sørlandet", "Nord-Norge", "Vestlandet"),
   dataset = c("NasIns", "TidVar", "ØkoTrond", "HulEik"),
   from_year = 2010,
   to_year = 2023,
   from_month = 6,
-  to_month = 7
+  to_month = 7,
+  subset_loc_in_last_year = TRUE
 )
 }
 \arguments{
-\item{region}{Which region to plot? Currently available: c("Trøndelag", "Østlandet", "Sørlandet", "Nord-Norge").}
+\item{region}{Which region to plot? Currently available: c("Trøndelag", "Østlandet", "Sørlandet", "Nord-Norge", "Vestlandet").}
 
 \item{dataset}{Which dataset to use? Is used to select the localities within regions.}
 
@@ -26,6 +27,8 @@ clim_trend_plot(
 \item{from_month}{Summarise data from what month?. Integer}
 
 \item{to_month}{Summarise data to what month? Integer}
+
+\item{subset_loc_in_last_year}{Should we only plot data for the localities visited in the last year? Boolean.}
 }
 \value{
 A plot (a grob containing two ggplots)
