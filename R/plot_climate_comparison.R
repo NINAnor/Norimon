@@ -414,36 +414,19 @@ plot_climate_comparison <- function(climate_data = NULL,
 
   high_annot_coord <- present_highs %>%
     dplyr::filter(!!variable == my_max(!!variable,
-      na.rm = TRUE
-    )) %>%
-    dplyr::select(
-      new_day,
-      !!variable
-    ) %>%
+                                       na.rm = TRUE
+                                       )
+                  ) %>%
+    dplyr::select(new_day,
+                  !!variable
+                  ) %>%
     dplyr::slice(1) %>%
     as.vector()
 
 
   no_high_days <- nrow(present_highs)
   if (annotate_plot) {
-    if (no_high_days > 0) {
-      if (high_annot_coord[[1]] > 250) {
-        p <- p + annotate("segment",
-          x = high_annot_coord[[1]],
-          xend = high_annot_coord[[1]] - 40,
-          y = high_annot_coord[[2]],
-          yend = high_annot_coord[[2]] + 5,
-          colour = "firebrick3"
-        ) +
-          annotate("text",
-            x = high_annot_coord[[1]] -
-              140, y = high_annot_coord[[2]] + 4, label = paste0(
-              no_high_days,
-              text_table[[language]][4], text_table[[language]][5]
-            ),
-            size = 3, colour = "firebrick3", hjust = 0,
-            vjust = 0
-          )
+
       } else {
         p <- p + annotate("segment",
           x = high_annot_coord[[1]],
@@ -522,23 +505,24 @@ plot_climate_comparison <- function(climate_data = NULL,
             )
         } else {
           p <- p + annotate("segment",
-                            x = low_annot_coord[[1]],
-                            xend = low_annot_coord[[1]] + 10,
-                            y = low_annot_coord[[2]],
-                            yend = low_annot_coord[[2]] - 5,
-                            colour = "blue3"
+            x = low_annot_coord[[1]],
+            xend = low_annot_coord[[1]] + 10,
+            y = low_annot_coord[[2]],
+            yend = low_annot_coord[[2]] - 5,
+            colour = "blue3"
           ) +
             annotate("text",
-                     x = low_annot_coord[[1]] + 12,
-                     y = low_annot_coord[[2]] - 10,
-                     label = paste0(no_low_days,
-                                    text_table[[language]][6],
-                                    text_table[[language]][7]
-                                    ),
-                     size = 3,
-                     colour = "blue3",
-                     hjust = 0,
-                     vjust = 0
+              x = low_annot_coord[[1]] + 12,
+              y = low_annot_coord[[2]] - 10,
+              label = paste0(
+                no_low_days,
+                text_table[[language]][6],
+                text_table[[language]][7]
+              ),
+              size = 3,
+              colour = "blue3",
+              hjust = 0,
+              vjust = 0
             )
         }
       }
@@ -549,24 +533,25 @@ plot_climate_comparison <- function(climate_data = NULL,
   if (main_title) {
     p <- p +
       ggtitle(paste(placename,
-                    text_table[[language]][1],
-                    focal_year,
-                    sep = ""
-                    )) +
-      theme(plot.title = element_text(face = "bold",
-                                      hjust = 0.012,
-                                      vjust = 0.8,
-                                      colour = "#3C3C3C",
-                                      size = 20
-                                      )) +
+        text_table[[language]][1],
+        focal_year,
+        sep = ""
+      )) +
+      theme(plot.title = element_text(
+        face = "bold",
+        hjust = 0.012,
+        vjust = 0.8,
+        colour = "#3C3C3C",
+        size = 20
+      )) +
       annotate("text",
-               x = 14,
-               y = y_high_limit,
-               label = stringr::str_to_sentence(legend_table[[language]][[legend_variable]]),
-               size = 4,
-               fontface = "bold",
-               hjust = 0
-               )
+        x = 14,
+        y = y_high_limit,
+        label = stringr::str_to_sentence(legend_table[[language]][[legend_variable]]),
+        size = 4,
+        fontface = "bold",
+        hjust = 0
+      )
   }
 
 
@@ -574,132 +559,146 @@ plot_climate_comparison <- function(climate_data = NULL,
     if (rolling_mean) {
       p <- p +
         annotate("text",
-                  x = 14,
-                  y = y_high_limit * 0.75,
-                  label = paste0(text_table[[language]][12],
-                                 text_table[[language]][2],
-                                 legend_table[[language]][[legend_variable]],
-                                 text_table[[language]][3],
-                                 first_date,
-                                 "."
-                                 ),
-                  size = 3,
-                  colour = "gray30",
-                  hjust = 0,
-                  vjust = 0
-                  )
+          x = 14,
+          y = y_high_limit * 0.75,
+          label = paste0(
+            text_table[[language]][12],
+            text_table[[language]][2],
+            legend_table[[language]][[legend_variable]],
+            text_table[[language]][3],
+            first_date,
+            "."
+          ),
+          size = 3,
+          colour = "gray30",
+          hjust = 0,
+          vjust = 0
+        )
     } else {
       p <- p +
         annotate("text",
-                 x = 14,
-                 y = y_high_limit * 0.75,
-                 label = paste0(text_table[[language]][11],
-                                text_table[[language]][2],
-                                legend_table[[language]][[legend_variable]],
-                                text_table[[language]][3],
-                                first_date,
-                                "."
-                                ),
-                 size = 3,
-                 colour = "gray30",
-                 hjust = 0,
-                 vjust = 0
-                 )
+          x = 14,
+          y = y_high_limit * 0.75,
+          label = paste0(
+            text_table[[language]][11],
+            text_table[[language]][2],
+            legend_table[[language]][[legend_variable]],
+            text_table[[language]][3],
+            first_date,
+            "."
+          ),
+          size = 3,
+          colour = "gray30",
+          hjust = 0,
+          vjust = 0
+        )
     }
   }
 
+  legend_pos <- tibble::tibble(
+    x = 300,
+    y = y_high_limit - 30
+  )
 
-  legend_pos <- tibble::tibble(x = 300,
-                               y = y_high_limit - 30)
-
-  legend_data <- data.frame(x = seq(legend_pos$x - 6,
-                                    legend_pos$x + 1),
-                            y = rnorm(8,
-                                      legend_pos$y + 10,
-                                      2)
-                            )
-
+  legend_data <- data.frame(
+    x = seq(
+      legend_pos$x - 6,
+      legend_pos$x + 1
+    ),
+    y = rnorm(
+      8,
+      legend_pos$y + 10,
+      2
+    )
+  )
 
   p <- p +
-    annotate("segment",x = legend_pos$x,
-             xend = legend_pos$x,
-             y = legend_pos$y,
-             yend = legend_pos$y + 20,
-             colour = "wheat2",
-             linewidth = 3
-             ) +
     annotate("segment",
-             x = legend_pos$x,
-             xend = legend_pos$x,
-             y = legend_pos$y + 7,
-             yend = legend_pos$y + 13,
-             colour = "wheat4",
-             linewidth = 3
-             ) +
-    geom_line(data = legend_data,
-              aes(x = x,
-                  y = y)
-              ) +
+      x = legend_pos$x,
+      xend = legend_pos$x,
+      y = legend_pos$y,
+      yend = legend_pos$y + 20,
+      colour = "wheat2",
+      linewidth = 3
+    ) +
     annotate("segment",
-             x = legend_pos$x + 2,
-             xend = legend_pos$x + 4,
-             y = legend_pos$y + 12.3,
-             yend = legend_pos$y + 12.3,
-             colour = "wheat4",
-             linewidth = 0.5
-             ) +
+      x = legend_pos$x,
+      xend = legend_pos$x,
+      y = legend_pos$y + 7,
+      yend = legend_pos$y + 13,
+      colour = "wheat4",
+      linewidth = 3
+    ) +
+    geom_line(
+      data = legend_data,
+      aes(
+        x = x,
+        y = y
+      )
+    ) +
     annotate("segment",
-             x = legend_pos$x + 2,
-             xend = legend_pos$x + 4,
-             y = legend_pos$y + 7.7,
-             yend = legend_pos$y + 7.7,
-             colour = "wheat4",
-             linewidth = 0.5) +
+      x = legend_pos$x + 2,
+      xend = legend_pos$x + 4,
+      y = legend_pos$y + 12.3,
+      yend = legend_pos$y + 12.3,
+      colour = "wheat4",
+      linewidth = 0.5
+    ) +
     annotate("segment",
-             x = legend_pos$x + 4,
-             xend = legend_pos$x + 4,
-             y = legend_pos$y + 7.7,
-             yend = legend_pos$y + 12.3,
-             colour = "wheat4",
-             linewidth = 0.5
-             ) +
+      x = legend_pos$x + 2,
+      xend = legend_pos$x + 4,
+      y = legend_pos$y + 7.7,
+      yend = legend_pos$y + 7.7,
+      colour = "wheat4",
+      linewidth = 0.5
+    ) +
+    annotate("segment",
+      x = legend_pos$x + 4,
+      xend = legend_pos$x + 4,
+      y = legend_pos$y + 7.7,
+      yend = legend_pos$y + 12.3,
+      colour = "wheat4",
+      linewidth = 0.5
+    ) +
     annotate("text",
-             x = legend_pos$x + 7,
-             y = legend_pos$y + 9.75,
-             label = text_table[[language]][10],
-             size = 2,
-             colour = "gray30",
-             hjust = 0,
-             vjust = 0
-             ) +
+      x = legend_pos$x + 7,
+      y = legend_pos$y + 9.75,
+      label = text_table[[language]][10],
+      size = 2,
+      colour = "gray30",
+      hjust = 0,
+      vjust = 0
+    ) +
     annotate("text",
-             x = legend_pos$x - 10,
-             y = legend_pos$y + 9.75,
-             label = paste0(focal_year,
-                            stringr::str_to_sentence(legend_table[[language]][[legend_variable]])),
-             size = 2,
-             colour = "gray30",
-             hjust = 1,
-             vjust = 0
-             ) +
+      x = legend_pos$x - 10,
+      y = legend_pos$y + 9.75,
+      label = paste0(
+        focal_year,
+        stringr::str_to_sentence(legend_table[[language]][[legend_variable]])
+      ),
+      size = 2,
+      colour = "gray30",
+      hjust = 1,
+      vjust = 0
+    ) +
     annotate("text",
-             x = legend_pos$x + 7,
-             y = legend_pos$y + 19,
-             label = text_table[[language]][8],
-             size = 2,
-             colour = "gray30",
-             hjust = 0,
-             vjust = 0
-             ) +
+      x = legend_pos$x + 7,
+      y = legend_pos$y + 19,
+      label = text_table[[language]][8],
+      size = 2,
+      colour = "gray30",
+      hjust = 0,
+      vjust = 0
+    ) +
     annotate("text",
-             x = legend_pos$x + 7,
-             y = legend_pos$y,
-             label = text_table[[language]][9],
-             size = 2,
-             colour = "gray30",
-             hjust = 0,
-             vjust = 0
-             )
+      x = legend_pos$x + 7,
+      y = legend_pos$y,
+      label = text_table[[language]][9],
+      size = 2,
+      colour = "gray30",
+      hjust = 0,
+      vjust = 0
+    )
 
   attr(p, "no_low_days") <- no_low_days
   attr(p, "no_high_days") <- no_high_days
