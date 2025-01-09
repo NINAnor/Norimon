@@ -147,13 +147,13 @@ plot_climate_comparison <- function(climate_data = NULL,
 
   # Remove leap days
   climate_data <- climate_data %>%
-    filter(!(month == 2 & day == 29))
+    dplyr::filter(!(month == 2 & day == 29))
 
   climate_data <- climate_data %>%
-    arrange(year, month, day) %>%
-    group_by(year) %>%
-    mutate(new_day = row_number()) %>%
-    ungroup()
+    dplyr::arrange(year, month, day) %>%
+    dplyr::group_by(year) %>%
+    dplyr::mutate(new_day = dplyr::row_number()) %>%
+    dplyr::ungroup()
 
   if (rolling_mean) {
     climate_data <- climate_data %>%
@@ -199,8 +199,8 @@ plot_climate_comparison <- function(climate_data = NULL,
       (qt(1 - 0.05 / 2, nrow(.)) * se), avg_lower = avg - (qt(1 -
       0.05 / 2, nrow(.)) * se)) %>%
     dplyr::ungroup() %>%
-    mutate(across(everything(), ~ replace(., . == -Inf, NA))) %>%
-    mutate(across(everything(), ~ replace(., . == Inf, NA)))
+    dplyr::mutate(across(everything(), ~ replace(., . == -Inf, NA))) %>%
+    dplyr::mutate(across(everything(), ~ replace(., . == Inf, NA)))
 
   # Aggregate to 365 days
   past_to_plot <- past %>%
@@ -414,19 +414,36 @@ plot_climate_comparison <- function(climate_data = NULL,
 
   high_annot_coord <- present_highs %>%
     dplyr::filter(!!variable == my_max(!!variable,
-                                       na.rm = TRUE
-                                       )
-                  ) %>%
-    dplyr::select(new_day,
-                  !!variable
-                  ) %>%
+      na.rm = TRUE
+    )) %>%
+    dplyr::select(
+      new_day,
+      !!variable
+    ) %>%
     dplyr::slice(1) %>%
     as.vector()
 
 
   no_high_days <- nrow(present_highs)
   if (annotate_plot) {
-
+    if (no_high_days > 0) {
+      if (high_annot_coord[[1]] > 250) {
+        p <- p + annotate("segment",
+          x = high_annot_coord[[1]],
+          xend = high_annot_coord[[1]] - 40,
+          y = high_annot_coord[[2]],
+          yend = high_annot_coord[[2]] + 5,
+          colour = "firebrick3"
+        ) +
+          annotate("text",
+            x = high_annot_coord[[1]] -
+              140, y = high_annot_coord[[2]] + 4, label = paste0(
+              no_high_days,
+              text_table[[language]][4], text_table[[language]][5]
+            ),
+            size = 3, colour = "firebrick3", hjust = 0,
+            vjust = 0
+          )
       } else {
         p <- p + annotate("segment",
           x = high_annot_coord[[1]],
@@ -707,3 +724,4 @@ plot_climate_comparison <- function(climate_data = NULL,
 
   invisible(Sys.setlocale(category = "LC_TIME", old_LC_TIME))
 }
+
