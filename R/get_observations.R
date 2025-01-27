@@ -1,6 +1,6 @@
 #' get_observations Get insect observation data from the database
 #'
-#' @param id_type Type of identification type. Defaults to metabarcoding data
+#' @param id_type Type of identification type ("metabarcoding" or "manual"). Defaults to metabarcoding data
 #' @param subset_orders Optional subset of order
 #' @param subset_families Optional subset of families
 #' @param subset_genus Optional subset of genus
@@ -37,7 +37,7 @@
 
 
 
-get_observations <- function(id_type = c("metabarcoding"),
+get_observations <- function(id_type = NULL,
                              subset_orders = NULL,
                              subset_families = NULL,
                              subset_genus = NULL,
@@ -68,12 +68,17 @@ get_observations <- function(id_type = c("metabarcoding"),
     subset_habitat <- match.arg(subset_habitat, choices = c("Forest", "Semi-nat"))
   }
 
-  id_type <- match.arg(id_type, choices = c("metabarcoding"))
+  id_type <- match.arg(id_type, choices = c(
+    "metabarcoding",
+    "manual")
+    )
+
   dataset <- match.arg(dataset, choices = c(
     "NasIns",
     "OkoTrond",
     "TidVar",
-    "Nerlands\u00f8ya"
+    "Nerlands\u00f8ya",
+    "HulEik"
   ))
 
   agg_level <- match.arg(agg_level, choices = c(
@@ -149,9 +154,9 @@ get_observations <- function(id_type = c("metabarcoding"),
     dplyr::filter(weeks_sampled == 2)
 
 
-  if (id_type == "metabarcoding") {
+  if (!is.null(id_type)) {
     joined <- joined %>%
-      dplyr::filter(identification_type == "metabarcoding")
+      dplyr::filter(identification_type %in% id_type)
   }
 
   # Filter on region name
