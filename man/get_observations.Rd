@@ -5,7 +5,7 @@
 \title{get_observations Get insect observation data from the database}
 \usage{
 get_observations(
-  id_type = c("metabarcoding"),
+  id_type = NULL,
   subset_orders = NULL,
   subset_families = NULL,
   subset_genus = NULL,
@@ -24,7 +24,7 @@ get_observations(
 )
 }
 \arguments{
-\item{id_type}{Type of identification type. Defaults to metabarcoding data}
+\item{id_type}{Type of identification type ("metabarcoding" or "manual"). Defaults to metabarcoding data}
 
 \item{subset_orders}{Optional subset of order}
 
