@@ -10,7 +10,7 @@
 #' @param subset_habitat Optional subset of habitat type ("Forest" or "Semi-nat")
 #' @param trap_type Optional subset of trap type
 #' @param limit Optional limit the output to number of rows (for testing)
-#' @param dataset Choose the dataset to fetch data from. Default "NasIns" for national insect monitoring data
+#' @param dataset Choose the dataset to fetch data from. Default "NorIns" for national insect monitoring data
 #' @param agg_level Aggregation level of data. "year_locality", "region_habitat", "region_habitat_year", "locality_sampling", "total". Default to year_locality
 #' @param Hill Calculate shannon diversity as Hill number (exp(Shann_div)). Boolean
 #' @param richn_corr Correct GDE calculation by number of species (doi: https://doi.org/10.1101/2022.02.09.479762). Boolean.
@@ -47,7 +47,7 @@ get_observations <- function(id_type = NULL,
                              subset_habitat = NULL,
                              trap_type = "All",
                              limit = NULL,
-                             dataset = "NasIns",
+                             dataset = "NorIns",
                              agg_level = "year_locality",
                              Hill = TRUE,
                              richn_corr = TRUE,
@@ -74,7 +74,7 @@ get_observations <- function(id_type = NULL,
     )
 
   dataset <- match.arg(dataset, choices = c(
-    "NasIns",
+    "NorIns",
     "OkoTrond",
     "TidVar",
     "Nerlands\u00f8ya",

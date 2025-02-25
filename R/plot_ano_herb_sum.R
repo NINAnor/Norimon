@@ -21,10 +21,10 @@ plot_ano_herb_sum <- function() {
       table = "ano_herb_agg"
     )
   ) %>%
-    dplyr::filter(project_short_name == "NasIns")
+    dplyr::filter(project_short_name == "NorIns")
 
 
-  loc_reg <- get_localities(dataset = "NasIns") %>%
+  loc_reg <- get_localities(dataset = "NorIns") %>%
     dplyr::mutate(habitat_type = ifelse(habitat_type == "Forest", "Skog", habitat_type)) %>%
     sf::st_drop_geometry() %>%
     dplyr::select(

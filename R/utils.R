@@ -291,7 +291,7 @@ toiNEXT <- function(input) {
 #' get_asv_loc
 #' @noRd
 get_asv_loc <- function(species = NULL,
-                        dataset = c("NasIns"),
+                        dataset = c("NorIns"),
                         subset_year = NULL) {
   asv_perc_reads <- tbl(
     con,

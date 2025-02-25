@@ -4,7 +4,7 @@
 #' @param limit Optional row limit on output (for testing).
 #' @param id_type Type of identification data. Currently only default "metabarcoding" available.
 #' @param trap_type Optional subset of trap types. "MF" (default), "VF", "All".
-#' @param dataset Optional selection of dataset. Default to "NasIns" for national insect monitoring scheme.
+#' @param dataset Optional selection of dataset. Default to "NorIns" for national insect monitoring scheme.
 #' @param subset_years Optional subset of years. Numerical vector.
 #' @param subset_orders Optional subset of orders. Character vector.
 #' @param subset_families Optional subset of families Character vector.
@@ -32,7 +32,7 @@
 get_community_matrix <- function(limit = NULL,
                                  id_type = c("metabarcoding"),
                                  trap_type = "MF",
-                                 dataset = "NasIns",
+                                 dataset = "NorIns",
                                  subset_years = NULL,
                                  subset_orders = NULL,
                                  subset_families = NULL,
@@ -46,9 +46,10 @@ get_community_matrix <- function(limit = NULL,
 
   dataset <- match.arg(dataset,
     choices = c(
-      "NasIns",
+      "NorIns",
       "OkoTrond",
       "TidVar",
+      "HulEik",
       "Nerlands\u00f8ya"
     )
   )

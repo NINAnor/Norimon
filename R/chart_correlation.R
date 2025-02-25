@@ -13,7 +13,7 @@
 #' \dontrun{
 #'
 #' locality_sampling_loggerdata <- get_logger_data(
-#'   dataset = "NasIns",
+#'   dataset = "NorIns",
 #'   agg_level = "locality_sampling"
 #' )
 #'

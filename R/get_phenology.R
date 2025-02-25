@@ -9,7 +9,7 @@
 #' @param subset_habitat Optional subset of habitat type ("Forest" or "Semi-nat")
 #' @param trap_type Optional subset of trap type
 #' @param limit Optional limit the output to number of rows (for testing)
-#' @param dataset Choose the dataset to fetch data from. Default "NasIns" for national insect monitoring data
+#' @param dataset Choose the dataset to fetch data from. Default "NorIns" for national insect monitoring data
 #' @param digits Number of digits to round shannon diversity and mean ASV counts to. (defaults to 2)
 #' @param as_tibble Coerce output to class tibble
 #'
@@ -41,7 +41,7 @@ get_phenology <- function(taxonomic_level = NULL,
                           subset_habitat = NULL,
                           trap_type = "All",
                           limit = NULL,
-                          dataset = "NasIns",
+                          dataset = "NorIns",
                           digits = 2,
                           as_tibble = F) {
   # Bind these variables to stop R CMD check complaints
@@ -69,7 +69,7 @@ get_phenology <- function(taxonomic_level = NULL,
 
   dataset <- match.arg(dataset,
     choices = c(
-      "NasIns",
+      "NorIns",
       "TidVar"
     )
   )
