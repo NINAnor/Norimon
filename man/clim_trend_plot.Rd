@@ -7,7 +7,7 @@
 \usage{
 clim_trend_plot(
   region = c("Trøndelag", "Østlandet", "Sørlandet", "Nord-Norge", "Vestlandet"),
-  dataset = c("NasIns", "TidVar", "ØkoTrond", "HulEik"),
+  dataset = c("NorIns", "TidVar", "ØkoTrond", "HulEik"),
   from_year = 2010,
   to_year = 2023,
   from_month = 6,

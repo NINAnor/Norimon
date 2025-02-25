@@ -6,7 +6,7 @@
 \usage{
 get_forest_type(
   limit = NULL,
-  dataset = c("NasIns"),
+  dataset = c("NorIns"),
   stat_grouping = c("treslag", "bonitet"),
   as_tibble = F
 )
@@ -14,7 +14,7 @@ get_forest_type(
 \arguments{
 \item{limit}{Optional row limit of returned data (for testing )}
 
-\item{dataset}{Dataset to get data from. Defaults to "NasIns"}
+\item{dataset}{Dataset to get data from. Defaults to "NorIns"}
 
 \item{stat_grouping}{Group data into either "treslag" or "bonitet"}
 
