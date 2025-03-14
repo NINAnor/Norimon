@@ -14,7 +14,7 @@
 #'
 #' skog_ost_comm_mat <- get_community_matrix(
 #'   trap_type = "MF",
-#'   dataset = "NasIns",
+#'   dataset = "NorIns",
 #'   subset_habitat = "Forest",
 #'   subset_region = "Østlandet",
 #'   as_tibble = T,
@@ -52,7 +52,7 @@ combine_dist_to_comm_mat <- function(comm_mat,
   AND region_name IN ", region_name, "
   AND habitat_type = '", habitat_type, "'
   AND locality IN (", paste0("'", paste(loc_in_comm_mat, collapse = "', '"), "'"), ")
-  AND yl.project_short_name = 'NasIns') a
+  AND yl.project_short_name = 'NorIns') a
   CROSS JOIN (SELECT l.*
   FROM locations.localities l,
   events.year_locality yl
@@ -60,7 +60,7 @@ combine_dist_to_comm_mat <- function(comm_mat,
   AND region_name IN ", region_name, "
   AND habitat_type = '", habitat_type, "'
   AND locality IN (", paste0("'", paste(loc_in_comm_mat, collapse = "', '"), "'"), ")
-  AND yl.project_short_name = 'NasIns') as b
+  AND yl.project_short_name = 'NorIns') as b
   ORDER BY loc_a, loc_b
   ")
 

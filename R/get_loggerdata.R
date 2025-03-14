@@ -1,7 +1,7 @@
 #' get_logger_data Get temperature and light logger data from the database
 #'
 #' @param limit Optional row number limit (for testing)
-#' @param dataset Which dataset to retreive data from? Default to "NasIns".,
+#' @param dataset Which dataset to retreive data from? Default to "NorIns".,
 #' @param agg_level Aggregation level of data. Character, either "year_locality" (default) or "locality_sampling"
 #' @param as_tibble Return results as tibble? Boolean.
 #'
@@ -11,7 +11,7 @@
 #' @examples
 #' \dontrun{
 #' locality_sampling_loggerdata <- get_logger_data(
-#'   dataset = "NasIns",
+#'   dataset = "NorIns",
 #'   agg_level = "locality_sampling"
 #' )
 #' }
@@ -19,7 +19,7 @@
 ## Currently the temperature data is in the long format, should be faster to rearrange it in the database and skip the pivot_wider here.
 ## Note that this splits up the temperature data from the different logger types (since they are not placed similarly in the field)
 get_logger_data <- function(limit = NULL,
-                            dataset = c("NasIns"),
+                            dataset = c("NorIns"),
                             agg_level = c(
                               "year_locality",
                               "locality_sampling"
@@ -29,9 +29,10 @@ get_logger_data <- function(limit = NULL,
 
 
   dataset <- match.arg(dataset, choices = c(
-    "NasIns",
+    "NorIns",
     "OkoTrond",
     "TidVar",
+    "HulEik",
     "Nerlands\u00f8ya"
   ))
   agg_level <- match.arg(agg_level, choices = c(

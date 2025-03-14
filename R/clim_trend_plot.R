@@ -26,7 +26,7 @@
 #' }
 #'
 clim_trend_plot <- function(region = c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u00f8rlandet", "Nord-Norge", "Vestlandet"),
-                            dataset = c("NasIns", "TidVar", "\u00d8koTrond", "HulEik"),
+                            dataset = c("NorIns", "TidVar", "\u00d8koTrond", "HulEik"),
                             from_year = 2010,
                             to_year = 2023,
                             from_month = 6,
@@ -39,7 +39,7 @@ clim_trend_plot <- function(region = c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u0
   to_month <- to_month
 
   region <- match.arg(region, c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u00f8rlandet", "Nord-Norge", "Vestlandet"))
-  dataset <- match.arg(dataset, c("NasIns", "TidVar", "\u00d8koTrond", "HulEik"))
+  dataset <- match.arg(dataset, c("NorIns", "TidVar", "\u00d8koTrond", "HulEik"))
 
   if(subset_loc_in_last_year){
 

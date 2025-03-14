@@ -10,7 +10,7 @@
 #' @param subset_year Optional subset of year
 #' @param subset_habitat Optional subset of habitat type ("Forest" or "Semi-nat")
 #' @param subset_region Optional subset of region. Currently allowing "Trøndelag", "Østlandet", "Sørlandet"
-#' @param dataset Which dataset to fetch data for. Default "NasIns".
+#' @param dataset Which dataset to fetch data for. Default "NorIns".
 #' @param agg_level Aggregate level of data. "year_locality" (default), "locality_sampling", "total".
 #' @param as_tibble Return as tibble? Boolean
 #'
@@ -38,7 +38,7 @@ get_biomass <- function(limit = NULL,
                         subset_habitat = NULL,
                         trap_type = "MF",
                         subset_region = NULL,
-                        dataset = "NasIns",
+                        dataset = "NorIns",
                         agg_level = "year_locality",
                         as_tibble = F) {
   if (!exists("con")) {
@@ -56,9 +56,10 @@ get_biomass <- function(limit = NULL,
   }
 
   dataset <- match.arg(dataset, choices = c(
-    "NasIns",
+    "NorIns",
     "OkoTrond",
     "TidVar",
+    "HulEik",
     "Nerlands\u00f8ya"
   ))
 

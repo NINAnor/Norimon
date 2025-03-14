@@ -5,13 +5,13 @@
 \title{get_localities}
 \usage{
 get_localities(
-  dataset = c("NasIns", "OkoTrond", "TidVar", "Nerlandsøya", "All"),
+  dataset = c("NorIns", "OkoTrond", "TidVar", "Nerlandsøya", "All"),
   as_sf = TRUE,
   habitat_type = c("All", "Semi-nat", "Forest", "Tid_man", "Tid_aut", "Wetland")
 )
 }
 \arguments{
-\item{dataset}{Which dataset to fetch ("NasIns", "OkoTrond", "TidVar", "Nerlandsøya", "All") . Default to "NasIns" for the national insect monitoring data}
+\item{dataset}{Which dataset to fetch ("NorIns", "OkoTrond", "TidVar", "Nerlandsøya", "HulEik", "All") . Default to "NorIns" for the national insect monitoring data}
 
 \item{as_sf}{Return an sf object? Boolean.}
 

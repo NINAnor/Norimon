@@ -26,7 +26,7 @@ connect_to_insect_db()
 
 skog_ost_comm_mat <- get_community_matrix(
   trap_type = "MF",
-  dataset = "NasIns",
+  dataset = "NorIns",
   subset_habitat = "Forest",
   subset_region = "Østlandet",
   as_tibble = T,

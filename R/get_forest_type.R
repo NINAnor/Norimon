@@ -1,7 +1,7 @@
 #' get_forest_type Get the forest types from a buffer around the sampling localities
 #'
 #' @param limit Optional row limit of returned data (for testing )
-#' @param dataset Dataset to get data from. Defaults to "NasIns"
+#' @param dataset Dataset to get data from. Defaults to "NorIns"
 #' @param stat_grouping Group data into either "treslag" or "bonitet"
 #' @param as_tibble Return as tibble? Boolean
 #'
@@ -16,13 +16,14 @@
 #' }
 #'
 get_forest_type <- function(limit = NULL,
-                            dataset = c("NasIns"),
+                            dataset = c("NorIns"),
                             stat_grouping = c("treslag", "bonitet"),
                             as_tibble = F) {
   dataset <- match.arg(dataset, choices = c(
-    "NasIns",
+    "NorIns",
     "OkoTrond",
     "TidVar",
+    "HulEik",
     "Nerlands\u00f8ya"
   ))
 
