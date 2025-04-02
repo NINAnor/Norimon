@@ -10,11 +10,12 @@ get_phenology(
   subset_year = NULL,
   subset_region = NULL,
   subset_habitat = NULL,
+  subset_order = NULL,
   trap_type = "All",
   limit = NULL,
-  dataset = "NasIns",
+  dataset = "NorIns",
   digits = 2,
-  as_tibble = F
+  return_tibble = F
 )
 }
 \arguments{
