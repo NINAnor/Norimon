@@ -62,7 +62,7 @@ get_community_matrix <- function(limit = NULL,
   }
 
   if (!is.null(subset_region)) {
-    subset_region <- match.arg(subset_region, c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u00f8rlandet", "Nord-Norge"))
+    subset_region <- match.arg(subset_region, c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u00f8rlandet", "Nord-Norge", "Vestlandet"))
   }
 
   ## Set up table sources

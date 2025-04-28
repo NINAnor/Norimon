@@ -6,12 +6,13 @@
 \usage{
 plot_asv(
   species = NULL,
-  background = "ortofoto/hele_norge.png",
+  background = NULL,
   pie_scale = 0.5,
   size = 0.1,
   caption = TRUE,
   title = NULL,
   scale_to_sum_reads = TRUE,
+  subset_years = NULL,
   ...
 )
 }
@@ -30,6 +31,8 @@ plot_asv(
 
 \item{scale_to_sum_reads}{Should slices be scaled to the sum of the reads? Boolean}
 
+\item{subset_years}{Optional subset on years (e.g. 2020:2024 or character vector of years)}
+
 \item{...}{}
 }
 \value{
@@ -43,5 +46,4 @@ plot_asv
 
 plot_asv("Erebia ligea") #'
 }
-
 }
