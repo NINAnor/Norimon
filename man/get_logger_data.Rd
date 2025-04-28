@@ -6,7 +6,7 @@
 \usage{
 get_logger_data(
   limit = NULL,
-  dataset = c("NasIns"),
+  dataset = c("NorIns"),
   agg_level = c("year_locality", "locality_sampling"),
   as_tibble = F
 )
@@ -14,7 +14,7 @@ get_logger_data(
 \arguments{
 \item{limit}{Optional row number limit (for testing)}
 
-\item{dataset}{Which dataset to retreive data from? Default to "NasIns".,}
+\item{dataset}{Which dataset to retreive data from? Default to "NorIns".,}
 
 \item{agg_level}{Aggregation level of data. Character, either "year_locality" (default) or "locality_sampling"}
 
@@ -29,7 +29,7 @@ get_logger_data Get temperature and light logger data from the database
 \examples{
 \dontrun{
 locality_sampling_loggerdata <- get_logger_data(
-  dataset = "NasIns",
+  dataset = "NorIns",
   agg_level = "locality_sampling"
 )
 }

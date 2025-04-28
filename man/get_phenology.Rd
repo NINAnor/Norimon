@@ -33,7 +33,7 @@ get_phenology(
 
 \item{limit}{Optional limit the output to number of rows (for testing)}
 
-\item{dataset}{Choose the dataset to fetch data from. Default "NasIns" for national insect monitoring data}
+\item{dataset}{Choose the dataset to fetch data from. Default "NorIns" for national insect monitoring data}
 
 \item{digits}{Number of digits to round shannon diversity and mean ASV counts to. (defaults to 2)}
 

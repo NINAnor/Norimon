@@ -14,7 +14,7 @@
 #'
 #' seminat_trond_comm_mat <- get_community_matrix(
 #'   trap_type = "MF",
-#'   dataset = "NasIns",
+#'   dataset = "NorIns",
 #'   subset_habitat = "Semi-nat",
 #'   subset_region = "Trøndelag",
 #'   as_tibble = T,

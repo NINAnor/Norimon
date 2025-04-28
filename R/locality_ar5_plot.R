@@ -26,11 +26,8 @@ locality_ar5_plot <- function(locality,
     "
   SELECT ar5.*, ar5_kode.egenskapsverdi as arealtype
   FROM backgrounds.locality_1000m_buffer_arealtype_agg ar5,
-  lookup.ar5_arealtype ar5_kode,
-  events.year_locality yl
-  WHERE ar5.locality_id = yl.locality_id
-  AND yl.project_short_name = 'NasIns'
-  AND ar5.\"arealressursArealtype\" = ar5_kode.kodeverdi",
+  lookup.ar5_arealtype ar5_kode
+  WHERE ar5.\"arealressursArealtype\" = ar5_kode.kodeverdi",
     "\nAND ar5.locality = '",
     locality,
     "';"

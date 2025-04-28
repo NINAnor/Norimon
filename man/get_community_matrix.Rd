@@ -8,7 +8,7 @@ get_community_matrix(
   limit = NULL,
   id_type = c("metabarcoding"),
   trap_type = "MF",
-  dataset = "NasIns",
+  dataset = "NorIns",
   subset_years = NULL,
   subset_orders = NULL,
   subset_families = NULL,
@@ -27,7 +27,7 @@ get_community_matrix(
 
 \item{trap_type}{Optional subset of trap types. "MF" (default), "VF", "All".}
 
-\item{dataset}{Optional selection of dataset. Default to "NasIns" for national insect monitoring scheme.}
+\item{dataset}{Optional selection of dataset. Default to "NorIns" for national insect monitoring scheme.}
 
 \item{subset_years}{Optional subset of years. Numerical vector.}
 

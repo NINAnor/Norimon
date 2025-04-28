@@ -15,7 +15,7 @@ get_biomass(
   subset_habitat = NULL,
   trap_type = "MF",
   subset_region = NULL,
-  dataset = "NasIns",
+  dataset = "NorIns",
   agg_level = "year_locality",
   as_tibble = F
 )
@@ -39,7 +39,7 @@ get_biomass(
 
 \item{subset_region}{Optional subset of region. Currently allowing "Trøndelag", "Østlandet", "Sørlandet"}
 
-\item{dataset}{Which dataset to fetch data for. Default "NasIns".}
+\item{dataset}{Which dataset to fetch data for. Default "NorIns".}
 
 \item{agg_level}{Aggregate level of data. "year_locality" (default), "locality_sampling", "total".}
 

@@ -15,7 +15,7 @@ get_observations(
   subset_habitat = NULL,
   trap_type = "All",
   limit = NULL,
-  dataset = "NasIns",
+  dataset = "NorIns",
   agg_level = "year_locality",
   Hill = TRUE,
   richn_corr = TRUE,
@@ -44,7 +44,7 @@ get_observations(
 
 \item{limit}{Optional limit the output to number of rows (for testing)}
 
-\item{dataset}{Choose the dataset to fetch data from. Default "NasIns" for national insect monitoring data}
+\item{dataset}{Choose the dataset to fetch data from. Default "NorIns" for national insect monitoring data}
 
 \item{agg_level}{Aggregation level of data. "year_locality", "region_habitat", "region_habitat_year", "locality_sampling", "total". Default to year_locality}
 
