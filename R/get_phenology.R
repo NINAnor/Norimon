@@ -74,7 +74,7 @@ get_phenology <- function(taxonomic_level = NULL,
                        choices = c("metabarcoding"))
 
   dataset <- match.arg(dataset,
-                       phenology_fnc
+                       phenology_fnc,
                        choices = c("NorIns",
                                    "TidVar"))
 
