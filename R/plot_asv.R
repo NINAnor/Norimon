@@ -7,6 +7,7 @@
 #' @param caption Use species name as caption? Boolean
 #' @param title Pptional title. Null or character.
 #' @param scale_to_sum_reads Should slices be scaled to the sum of the reads? Boolean
+#' @param subset_years Optional subset on years (e.g. 2020:2024 or character vector of years)
 #' @param ...
 #'
 #' @return a ggplot object
@@ -18,21 +19,30 @@
 #'
 #' plot_asv("Erebia ligea") #'
 #' }
-#'
+
+
 plot_asv <- function(species = NULL,
-                     background = "ortofoto/hele_norge.png",
+                     background = NULL,
                      pie_scale = 0.5,
                      size = 0.1,
                      caption = TRUE,
                      title = NULL,
                      scale_to_sum_reads = TRUE,
+                     subset_years = NULL,
                      ...) {
-  jon_asv <- get_asv_loc(species = species) %>%
-    mutate(scale_sum_reads = scale(sum_reads, center = min(sum_reads), scale = diff(range(sum_reads))))
+  jon_asv <- Norimon:::get_asv_loc(species = species) %>%
+    dplyr::mutate(scale_sum_reads = scale(sum_reads, center = min(sum_reads), scale = diff(range(sum_reads))))
   # %>%
   #  filter(locality %in% c("Skog_02", "Semi-nat_11"))
 
-  if (!file.exists(background)) stop("Background image file not found")
+  if(is.null(background)){
+    background <- system.file("figures", "hele_norge.png", package = "Norimon")
+  }
+  if(!file.exists(background)) stop("Background image file not found")
+
+  if (!is.null(subset_years)) {
+    subset_years <- as.numeric(subset_years)
+  }
 
   tt <- terra::rast(background)
   ext_background <- as.vector(terra::ext(tt))
@@ -46,8 +56,15 @@ plot_asv <- function(species = NULL,
   }
 
   jon_asv <- jon_asv %>%
-    mutate(locality = factor(locality, levels = unique(locality[order(desc(r))]))) %>%
-    arrange(desc(r))
+    dplyr::mutate(locality = factor(locality, levels = unique(locality[order(dplyr::desc(r))]))) %>%
+    dplyr::arrange(dplyr::desc(r))
+
+  if (!is.null(subset_years)) {
+    subset_years <- c(NA, subset_years) # To allow one-length subsets
+    jon_asv <- jon_asv %>%
+      dplyr::filter(year %in% subset_years)
+  }
+
 
   p1 <- ggplot() +
     annotation_custom(g,
@@ -59,7 +76,7 @@ plot_asv <- function(species = NULL,
     lapply(
       split(jon_asv, jon_asv$locality),
       function(d) {
-        geom_arc_bar(
+        ggforce::geom_arc_bar(
           aes(
             x0 = x_25833,
             y0 = y_25833,
@@ -101,7 +118,7 @@ plot_asv <- function(species = NULL,
     ) +
     xlab("") +
     ylab("") +
-    scale_fill_nina()
+    NinaR::scale_fill_nina()
 
   if (caption) {
     p1 <- p1 +

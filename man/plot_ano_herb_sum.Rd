@@ -4,7 +4,10 @@
 \alias{plot_ano_herb_sum}
 \title{Summary plot of ano herb records}
 \usage{
-plot_ano_herb_sum()
+plot_ano_herb_sum(subset_year = NULL)
+}
+\arguments{
+\item{subset_year}{Optional subset of year (e.g. 2020:2024 or character vector)}
 }
 \value{
 A ggplot

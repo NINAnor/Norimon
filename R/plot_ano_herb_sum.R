@@ -2,6 +2,10 @@
 #'
 #' Convenience function to clear up some code in reports
 #'
+#'
+#'
+#' @param subset_year Optional subset of year (e.g. 2020:2024 or character vector)
+#'
 #' @return A ggplot
 #' @export
 #'
@@ -11,7 +15,9 @@
 #' plot_ano_herb_sum()
 #' }
 #'
-plot_ano_herb_sum <- function() {
+
+
+plot_ano_herb_sum <- function(subset_year = NULL) {
   Norimon::checkCon()
 
   ano_herb_agg <- dplyr::tbl(
@@ -32,6 +38,7 @@ plot_ano_herb_sum <- function() {
       region_name
     )
 
+
   xlim <- ano_herb_agg %>%
     dplyr::summarise(
       min = min(year, na.rm = TRUE),
@@ -40,13 +47,21 @@ plot_ano_herb_sum <- function() {
     dplyr::collect() %>%
     as.vector()
 
-  ano_herb_agg %>%
+  joined <- ano_herb_agg %>%
     dplyr::left_join(loc_reg,
       by = c("locality" = "locality"),
       copy = TRUE
-    ) %>%
-    dplyr::group_by(region_name) %>%
-    ggplot2::ggplot(.) +
+    )
+
+  if (!is.null(subset_year)) {
+      joined <- joined %>% dplyr::filter(year %in% subset_year)
+  }
+
+
+  #plot
+  joined |>
+    dplyr::group_by(region_name) |>
+    ggplot2::ggplot() +
     ggplot2::geom_point(
       aes(
         x = year,

@@ -34,16 +34,19 @@
 
 
 
+
 get_phenology <- function(taxonomic_level = NULL,
                           id_type = c("metabarcoding"),
                           subset_year = NULL,
                           subset_region = NULL,
                           subset_habitat = NULL,
+                          subset_order = NULL,
                           trap_type = "All",
                           limit = NULL,
                           dataset = "NorIns",
                           digits = 2,
-                          as_tibble = F) {
+                          return_tibble = F) {
+
   # Bind these variables to stop R CMD check complaints
   if (!exists("con")) {
     con <- NULL
@@ -52,40 +55,41 @@ get_phenology <- function(taxonomic_level = NULL,
   Norimon::checkCon()
 
   if (!is.null(subset_region)) {
-    subset_region <- match.arg(subset_region,
-      choices = c("\u00d8stlandet", "Tr\u00f8ndelag", "S\u00f8rlandet", "Nord-Norge")
-    )
+    subset_region <- match.arg(subset_region, choices = c(
+      "Østlandet",
+      "Vestlandet",
+      "Trøndelag",
+      "Sørlandet",
+      "Nord-Norge"
+    ))
   }
-
   if (!is.null(subset_habitat)) {
-    subset_habitat <- match.arg(subset_habitat,
-      choices = c("Forest", "Semi-nat")
-    )
+    subset_habitat <- match.arg(subset_habitat, choices = c(
+      "Forest",
+      "Semi-nat"
+    ))
   }
 
   id_type <- match.arg(id_type,
-    choices = c("metabarcoding")
-  )
+                       choices = c("metabarcoding"))
 
   dataset <- match.arg(dataset,
-    choices = c(
-      "NorIns",
-      "TidVar"
-    )
-  )
+                       phenology_fnc
+                       choices = c("NorIns",
+                                   "TidVar"))
+
 
   taxonomic_level <- match.arg(taxonomic_level,
-    choices = c(
-      "Order",
-      "Family"
-    )
-  )
-
+                               choices = c("Order",
+                                           "Family")
+                               )
 
   trap_type <- match.arg(trap_type,
-    choices = c("All", "MF", "VF", NULL)
-  )
-
+                         choices = c("All",
+                                     "MF",
+                                     "VF",
+                                     NULL)
+                         )
 
   ## Set up table sources
   ## Probably needs updating after new batch of data. Also need to test filtering of different identification types
@@ -98,232 +102,223 @@ get_phenology <- function(taxonomic_level = NULL,
   identification_techniques <- dplyr::tbl(con, dbplyr::in_schema("lookup", "identification_techniques"))
   traps <- dplyr::tbl(con, dbplyr::in_schema("locations", "traps"))
 
-  ## Join the tables
-
   joined <- observations %>%
     left_join(identifications,
-      by = c("identification_id" = "id"),
-      suffix = c("_obs", "_ids")
+              by = c(identification_id = "id"),
+              suffix = c("_obs", "_ids")
     ) %>%
     left_join(identification_techniques,
-      by = c("identification_name", "identification_name"),
-      suffix = c("_obs", "_idtechn")
+              by = c("identification_name" = "identification_name"),
+              suffix = c("_obs", "_idtechn")
     ) %>%
     left_join(sampling_trap,
-      by = c("sampling_trap_id" = "id"),
-      suffix = c("_obs", "_st")
+              by = c(sampling_trap_id = "id"), suffix = c("_obs", "_st")
     ) %>%
     left_join(locality_sampling,
-      by = c("locality_sampling_id" = "id"),
-      suffix = c("_obs", "_ls")
+              by = c(locality_sampling_id = "id"),
+              suffix = c("_obs", "_ls")
     ) %>%
     left_join(year_locality,
-      by = c("year_locality_id" = "id"),
-      suffix = c("_obs", "_yl")
+              by = c(year_locality_id = "id"), suffix = c("_obs", "_yl")
     ) %>%
-    left_join(localities,
-      by = c("locality_id" = "id"),
-      suffix = c("_obs", "_loc")
-    ) %>%
-    left_join(traps,
-      by = c(
-        "trap_id" = "id",
-        "year" = "year",
-        "locality" = "locality"
-      )
-    ) %>%
+    left_join(localities, by = c(locality_id = "id"), suffix = c(
+      "_obs",
+      "_loc"
+    )) %>%
+    left_join(traps, by = c(
+      trap_id = "id",
+      year = "year", locality = "locality"
+    )) %>%
     mutate(year = as.character(year))
 
-
-
-  ## Exclude 2020 4 week samplings
-
+  #Remove 2020 extra samples
   joined <- joined %>%
-    mutate(weeks_sampled = ifelse(grepl("2020", year) & (grepl("1", .data$trap_short_name) | grepl("3", trap_short_name)), 2, 4)) %>%
-    mutate(weeks_sampled = ifelse(grepl("2020", year), .data$weeks_sampled, 2))
+    mutate(weeks_sampled = ifelse(grepl(
+      "2020",
+      year
+    ) & (grepl("1", .data$trap_short_name) | grepl(
+      "3",
+      trap_short_name
+    )), 2, 4)) %>%
+    mutate(weeks_sampled = ifelse(grepl(
+      "2020",
+      year
+    ), .data$weeks_sampled, 2))
 
-  joined <- joined %>%
-    filter(.data$weeks_sampled == 2)
+  joined <- joined %>% filter(.data$weeks_sampled == 2)
 
+  if (!is.null(subset_order)) {
+    joined <- joined %>% filter(.data$id_order == subset_order)
+  }
 
   if (id_type == "metabarcoding") {
-    joined <- joined %>%
-      filter(.data$identification_type == "metabarcoding")
+    joined <- joined %>% filter(.data$identification_type ==
+                                  "metabarcoding")
   }
 
-  # Filter on region name
   if (!is.null(subset_region)) {
     subset_region <- c("", subset_region)
-    joined <- joined %>%
-      filter(.data$region_name %in% subset_region)
+    joined <- joined %>% filter(.data$region_name %in% subset_region)
   }
 
-  # Filter on habitat
   if (!is.null(subset_habitat)) {
     subset_habitat <- c("", subset_habitat)
-    joined <- joined %>%
-      filter(.data$habitat_type %in% subset_habitat)
+    joined <- joined %>% filter(.data$habitat_type %in% subset_habitat)
   }
-
 
   if (!is.null(subset_year)) {
     subset_year <- c("", subset_year)
-    joined <- joined %>%
-      filter(.data$year %in% subset_year)
+    joined <- joined %>% filter(.data$year %in% subset_year)
   }
-
-
-  # filter on dataset
 
   if (!is.null(dataset)) {
-    joined <- joined %>%
-      filter(.data$project_short_name == dataset)
+    joined <- joined %>% filter(.data$project_short_name ==
+                                  dataset)
   }
 
-  # filter on trap type (recommended to only take MF)
   if (!is.null(trap_type) & trap_type != "All") {
-    joined <- joined %>%
-      filter(grepl((trap_type), .data$sample_name))
+    joined <- joined %>% filter(grepl((trap_type), .data$sample_name))
   }
-
-
-  ## Aggregate data to choosen level
-  ## Add more choices?
 
   res <- joined
 
   weights <- res %>%
-    select(
-      sampling_name,
-      trap_name,
-      wet_weight
-    ) %>%
+    select(sampling_name, trap_name, wet_weight) %>%
     distinct() %>%
     group_by(sampling_name) %>%
-    summarise(tot_wet_weight = sum(wet_weight, na.rm = TRUE)) %>%
+    summarise(tot_wet_weight = sum(wet_weight,
+                                   na.rm = TRUE
+    )) %>%
     collect()
-
-
-  ## Take relative DNA read amount times biomass of sample
-  ## Standardise taxa_biomass to 14 day period sums
-  ## return start and end time of sampling_name
-  # return sampling order
 
   if (taxonomic_level == "Order") {
     res <- res %>%
-      group_by(start_date_obs, end_date_obs, sampling_name, year_locality_id, locality_id, id_order, species_latin_fixed) %>%
+      group_by(
+        start_date_obs,
+        end_date_obs,
+        sampling_name,
+        year_locality_id,
+        locality_id,
+        id_order,
+        species_latin_fixed
+      ) %>%
       summarise(
         no_asv_per_species = as.integer(n_distinct(sequence_id)),
-        species_read_ab = sum(no_reads, na.rm = TRUE)
+        species_read_ab = sum(no_reads, na.rm = TRUE),
+        .groups = "keep"
       ) %>%
       collect() %>%
-      group_by(start_date_obs, end_date_obs, sampling_name, year_locality_id, locality_id, id_order) %>%
-      # summarize(order_read_ab = sum(species_read_ab, na.rm = TRUE)) %>%
-      # group_by(sampling_name, year_locality_id, locality_id, id_order) %>%
+      group_by(
+        start_date_obs, end_date_obs,
+        sampling_name, year_locality_id, locality_id, id_order
+      ) %>%
       summarise(
-        no_trap_days = mean(as.numeric(.data$end_date_obs - .data$start_date_obs)), ## to get the mean trap days from all traps within the sampling event (should be the same for all traps)
+        no_trap_days = mean(as.numeric(.data$end_date_obs - .data$start_date_obs)),
         no_species = n_distinct(.data$species_latin_fixed),
         shannon_div = round(calc_shannon(.data$species_latin_fixed), digits),
         mean_no_asv_per_species = round(mean(.data$no_asv_per_species), digits),
-        order_read_ab = sum(species_read_ab, na.rm = TRUE)
+        order_read_ab = sum(species_read_ab, na.rm = TRUE),
+        .groups = "keep"
       ) %>%
-      group_by(start_date_obs, end_date_obs, sampling_name, year_locality_id, locality_id) %>%
+      group_by(
+        start_date_obs,
+        end_date_obs,
+        sampling_name,
+        year_locality_id,
+        locality_id
+      ) %>%
       mutate(rel_read_ab = round(order_read_ab / sum(order_read_ab, na.rm = TRUE), digits = 10)) %>%
       ungroup() %>%
-      left_join(weights,
-        by = c("sampling_name" = "sampling_name")
-      ) %>%
+      left_join(weights, by = c(sampling_name = "sampling_name")) %>%
       mutate(taxa_biomass = rel_read_ab * tot_wet_weight) %>%
       left_join(localities,
-        by = c("locality_id" = "id"),
-        copy = T
+                by = c(locality_id = "id"),
+                copy = T
       ) %>%
       left_join(year_locality,
-        by = c("year_locality_id" = "id"),
-        copy = T
+                by = c(year_locality_id = "id"),
+                copy = T
       ) %>%
       mutate(
-        sampling_number = as.numeric(gsub("(.*)(sampling-)(.*)", "\\3", sampling_name)),
-        start_date_obs = as.Date(start_date_obs),
+        sampling_number = as.integer(gsub(
+          "(.*)(sampling-)(.*)",
+          "\\3", sampling_name
+        )), start_date_obs = as.Date(start_date_obs),
         end_date_obs = as.Date(end_date_obs)
       ) %>%
       select(
         year,
-        locality,
-        sampling_name,
-        sampling_number,
-        id_order,
-        habitat_type,
-        region_name,
-        start_date_obs,
-        end_date_obs,
-        no_trap_days,
-        no_species,
-        shannon_div,
-        mean_no_asv_per_species,
-        rel_read_ab,
-        taxa_biomass
+        locality, sampling_name, sampling_number, id_order,
+        habitat_type, region_name, start_date_obs, end_date_obs,
+        no_trap_days, no_species, shannon_div, mean_no_asv_per_species,
+        rel_read_ab, taxa_biomass
       ) %>%
       arrange(
-        year,
-        region_name,
-        habitat_type,
-        locality,
-        sampling_name
+        year, region_name,
+        habitat_type, locality, sampling_name
       )
 
-
     if (!is.null(limit)) {
-      res <- joined %>%
-        head(limit)
+      res <- joined %>% head(limit)
     }
 
-    if (as_tibble) {
-      res <- res %>%
-        as_tibble()
+    if (return_tibble) {
+      res <- res %>% as_tibble()
     }
-
 
     class(res) <- c("phenology", class(res))
-
     attr(res, "taxonomic_level") <- "id_order"
-  }
 
+  }
 
   if (taxonomic_level == "Family") {
     res <- res %>%
-      group_by(start_date_obs, end_date_obs, sampling_name, year_locality_id, locality_id, id_order, id_family, species_latin_fixed) %>%
+      group_by(
+        start_date_obs, end_date_obs,
+        sampling_name, year_locality_id, locality_id, id_order,
+        id_family, species_latin_fixed
+      ) %>%
       summarise(
         no_asv_per_species = as.integer(n_distinct(sequence_id)),
-        species_read_ab = sum(no_reads, na.rm = TRUE)
+        species_read_ab = sum(no_reads, na.rm = TRUE),
+        .groups = "keep"
       ) %>%
       collect() %>%
-      group_by(start_date_obs, end_date_obs, sampling_name, year_locality_id, locality_id, id_order, id_family) %>%
+      group_by(
+        start_date_obs, end_date_obs,
+        sampling_name, year_locality_id, locality_id, id_order,
+        id_family
+      ) %>%
       summarise(
-        no_trap_days = mean(as.numeric(.data$end_date_obs - .data$start_date_obs)), ## to get the mean trap days from all traps within the sampling event (should be the same for all traps)
+        no_trap_days = mean(as.numeric(.data$end_date_obs - .data$start_date_obs)),
         no_species = n_distinct(.data$species_latin_fixed),
         shannon_div = round(calc_shannon(.data$species_latin_fixed), digits),
         mean_no_asv_per_species = round(mean(.data$no_asv_per_species), digits),
-        family_read_ab = sum(species_read_ab, na.rm = TRUE)
+        family_read_ab = sum(species_read_ab, na.rm = TRUE),
+        .groups = "keep") %>%
+      group_by(
+        start_date_obs, end_date_obs,
+        sampling_name, year_locality_id, locality_id
       ) %>%
-      group_by(start_date_obs, end_date_obs, sampling_name, year_locality_id, locality_id) %>%
-      mutate(rel_read_ab = round(family_read_ab / sum(family_read_ab, na.rm = TRUE), digits = 10)) %>%
+      mutate(rel_read_ab = round(family_read_ab / sum(family_read_ab,
+                                                      na.rm = TRUE
+      ), digits = 10)) %>%
       ungroup() %>%
-      left_join(weights,
-        by = c("sampling_name" = "sampling_name")
-      ) %>%
+      left_join(weights, by = c(sampling_name = "sampling_name")) %>%
       mutate(taxa_biomass = rel_read_ab * tot_wet_weight) %>%
       left_join(localities,
-        by = c("locality_id" = "id"),
-        copy = T
+                by = c(locality_id = "id"),
+                copy = T
       ) %>%
       left_join(year_locality,
-        by = c("year_locality_id" = "id"),
-        copy = T
+                by = c(year_locality_id = "id"),
+                copy = T
       ) %>%
       mutate(
-        sampling_number = as.numeric(gsub("(.*)(sampling-)(.*)", "\\3", sampling_name)),
-        start_date_obs = as.Date(start_date_obs),
+        sampling_number = as.integer(gsub(
+          "(.*)(sampling-)(.*)",
+          "\\3", sampling_name
+        )), start_date_obs = as.Date(start_date_obs),
         end_date_obs = as.Date(end_date_obs)
       ) %>%
       select(
@@ -345,29 +340,22 @@ get_phenology <- function(taxonomic_level = NULL,
         taxa_biomass
       ) %>%
       arrange(
-        year,
-        region_name,
-        habitat_type,
-        locality,
+        year, region_name, habitat_type, locality,
         sampling_name
       )
 
-
     if (!is.null(limit)) {
-      res <- joined %>%
-        head(limit)
+      res <- joined %>% head(limit)
     }
 
-    if (as_tibble) {
-      res <- res %>%
-        as_tibble()
+    if (return_tibble) {
+      res <- res %>% as_tibble()
     }
-
 
     class(res) <- c("phenology", class(res))
-
     attr(res, "taxonomic_level") <- "id_family"
-  }
 
+  }
   return(res)
 }
+

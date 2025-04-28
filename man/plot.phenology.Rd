@@ -7,8 +7,10 @@
 \method{plot}{phenology}(
   x,
   y_value = "taxa_biomass",
-  x_axis_type = "Date",
+  x_axis_type = "sampling_number",
   aggregation = "Smooth",
+  scale_to_max = TRUE,
+  hide_legend = FALSE,
   ...
 )
 }
@@ -19,7 +21,9 @@
 
 \item{x_axis_type}{What x type to use (date, sampling number)}
 
-\item{aggregation}{type of line aggregation (geom_smooth, etc)}
+\item{scale_to_max}{Scale each taxa within hear btw 1-100. Boolean. Default = TRUE}
+
+\item{hide_legend}{Boolean. Default = FALSE}
 
 \item{...}{additional parameters, not currently implemented}
 }
