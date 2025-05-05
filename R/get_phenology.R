@@ -32,9 +32,6 @@
 #'
 #'
 
-
-
-
 get_phenology <- function(taxonomic_level = NULL,
                           id_type = c("metabarcoding"),
                           subset_year = NULL,
@@ -46,8 +43,6 @@ get_phenology <- function(taxonomic_level = NULL,
                           dataset = "NorIns",
                           digits = 2,
                           return_tibble = F) {
-
-  # Bind these variables to stop R CMD check complaints
   if (!exists("con")) {
     con <- NULL
   }
@@ -70,29 +65,11 @@ get_phenology <- function(taxonomic_level = NULL,
     ))
   }
 
-  id_type <- match.arg(id_type,
-                       choices = c("metabarcoding"))
+  id_type <- match.arg(id_type, choices = c("metabarcoding"))
+  dataset <- match.arg(dataset, choices = c("NorIns", "TidVar"))
 
-  dataset <- match.arg(dataset,
-                       phenology_fnc,
-                       choices = c("NorIns",
-                                   "TidVar"))
-
-
-  taxonomic_level <- match.arg(taxonomic_level,
-                               choices = c("Order",
-                                           "Family")
-                               )
-
-  trap_type <- match.arg(trap_type,
-                         choices = c("All",
-                                     "MF",
-                                     "VF",
-                                     NULL)
-                         )
-
-  ## Set up table sources
-  ## Probably needs updating after new batch of data. Also need to test filtering of different identification types
+  taxonomic_level <- match.arg(taxonomic_level, choices = c("Order", "Family"))
+  trap_type <- match.arg(trap_type, choices = c("All", "MF", "VF", NULL))
   observations <- dplyr::tbl(con, dbplyr::in_schema("occurrences", "observations"))
   identifications <- dplyr::tbl(con, dbplyr::in_schema("events", "identifications"))
   sampling_trap <- dplyr::tbl(con, dbplyr::in_schema("events", "sampling_trap"))
@@ -209,15 +186,19 @@ get_phenology <- function(taxonomic_level = NULL,
       ) %>%
       collect() %>%
       group_by(
-        start_date_obs, end_date_obs,
-        sampling_name, year_locality_id, locality_id, id_order
+        start_date_obs,
+        end_date_obs,
+        sampling_name,
+        year_locality_id,
+        locality_id,
+        id_order
       ) %>%
       summarise(
         no_trap_days = mean(as.numeric(.data$end_date_obs - .data$start_date_obs)),
         no_species = n_distinct(.data$species_latin_fixed),
         shannon_div = round(calc_shannon(.data$species_latin_fixed), digits),
         mean_no_asv_per_species = round(mean(.data$no_asv_per_species), digits),
-        order_read_ab = sum(species_read_ab, na.rm = TRUE),
+        order_read_ab = sum(species_read_ab, na.rm = TRUE), #Get total read number per order and sample
         .groups = "keep"
       ) %>%
       group_by(
@@ -227,7 +208,7 @@ get_phenology <- function(taxonomic_level = NULL,
         year_locality_id,
         locality_id
       ) %>%
-      mutate(rel_read_ab = round(order_read_ab / sum(order_read_ab, na.rm = TRUE), digits = 10)) %>%
+      mutate(rel_read_ab = round(order_read_ab / sum(order_read_ab, na.rm = TRUE), digits = 10)) %>% #Normalize read number per order to total sample read number
       ungroup() %>%
       left_join(weights, by = c(sampling_name = "sampling_name")) %>%
       mutate(taxa_biomass = rel_read_ab * tot_wet_weight) %>%
@@ -248,14 +229,27 @@ get_phenology <- function(taxonomic_level = NULL,
       ) %>%
       select(
         year,
-        locality, sampling_name, sampling_number, id_order,
-        habitat_type, region_name, start_date_obs, end_date_obs,
-        no_trap_days, no_species, shannon_div, mean_no_asv_per_species,
-        rel_read_ab, taxa_biomass
+        locality,
+        sampling_name,
+        sampling_number,
+        id_order,
+        habitat_type,
+        region_name,
+        start_date_obs,
+        end_date_obs,
+        no_trap_days,
+        no_species,
+        shannon_div,
+        mean_no_asv_per_species,
+        rel_read_ab,
+        taxa_biomass
       ) %>%
       arrange(
-        year, region_name,
-        habitat_type, locality, sampling_name
+        year,
+        region_name,
+        habitat_type,
+        locality,
+        sampling_name
       )
 
     if (!is.null(limit)) {
@@ -274,9 +268,14 @@ get_phenology <- function(taxonomic_level = NULL,
   if (taxonomic_level == "Family") {
     res <- res %>%
       group_by(
-        start_date_obs, end_date_obs,
-        sampling_name, year_locality_id, locality_id, id_order,
-        id_family, species_latin_fixed
+        start_date_obs,
+        end_date_obs,
+        sampling_name,
+        year_locality_id,
+        locality_id,
+        id_order,
+        id_family,
+        species_latin_fixed
       ) %>%
       summarise(
         no_asv_per_species = as.integer(n_distinct(sequence_id)),
@@ -285,8 +284,11 @@ get_phenology <- function(taxonomic_level = NULL,
       ) %>%
       collect() %>%
       group_by(
-        start_date_obs, end_date_obs,
-        sampling_name, year_locality_id, locality_id, id_order,
+        start_date_obs,
+        end_date_obs,
+        sampling_name,
+        year_locality_id,
+        locality_id, id_order,
         id_family
       ) %>%
       summarise(
@@ -297,12 +299,13 @@ get_phenology <- function(taxonomic_level = NULL,
         family_read_ab = sum(species_read_ab, na.rm = TRUE),
         .groups = "keep") %>%
       group_by(
-        start_date_obs, end_date_obs,
-        sampling_name, year_locality_id, locality_id
+        start_date_obs,
+        end_date_obs,
+        sampling_name,
+        year_locality_id,
+        locality_id
       ) %>%
-      mutate(rel_read_ab = round(family_read_ab / sum(family_read_ab,
-                                                      na.rm = TRUE
-      ), digits = 10)) %>%
+      mutate(rel_read_ab = round(family_read_ab / sum(family_read_ab, na.rm = TRUE), digits = 10)) %>% #
       ungroup() %>%
       left_join(weights, by = c(sampling_name = "sampling_name")) %>%
       mutate(taxa_biomass = rel_read_ab * tot_wet_weight) %>%

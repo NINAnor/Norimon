@@ -65,13 +65,13 @@ plot.phenology <- function(x,
           color = id_order
         ), lwd = 2) +
         facet_grid(
-          cols = vars(year),
+          rows = vars(year),
           cols = NULL,
           scales = "fixed"
         ) +
         scale_x_continuous(breaks = function(x) seq(ceiling(x[1]), floor(x[2]), by = 1)) +
         scale_color_nina(name = "Orden") +
-        ylab("Biomasse (g.)") +
+        ylab("Relative biomasse (g.)") +
         xlab("Samplenummer")
 
     }
@@ -111,8 +111,46 @@ plot.phenology <- function(x,
         ylab("Biomasse (g.)") +
         xlab("Samplingdato")
 
+    }
+
+    if(x_axis_type == "temperature_sum"){
+
+      if(scale_to_max){
+
+        x <- x |>
+          group_by(year, locality, id_order) |>
+          mutate(taxa_biomass = scales::rescale(taxa_biomass,
+                                                to = c(0, 100))
+          )
+      }
+
+      x <- x %>%
+        group_by(year, end_date_obs, id_order)
+      #%>%
+      # summarise(taxa_biomass = mean(taxa_biomass, na.rm = TRUE),
+      #          .groups = "keep")
+
+      p <- ggplot(x) +
+        geom_smooth(aes(
+          x = csum,
+          y = taxa_biomass,
+          color = id_order
+        ),
+        lwd = 2) +
+        facet_grid(
+          rows = vars(year),
+          cols = NULL,
+          scales = "fixed"
+        ) +
+        # scale_x_continuous(breaks = function(x) seq(ceiling(x[1]), floor(x[2]), by = 1)) +
+        ylim(c(0, max(x$taxa_biomass))) +
+        scale_color_nina(name = "Orden") +
+        ylab("Biomasse (g.)") +
+        xlab("Temperatursum")
+
 
     }
+
 
   }
 
