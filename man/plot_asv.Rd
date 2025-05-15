@@ -25,9 +25,9 @@ plot_asv(
 
 \item{size}{another (?) sizing}
 
-\item{caption}{Use species name as caption? Boolean}
+\item{caption}{Character for caption, or TRUE/FALSE for no or default species as caption.}
 
-\item{title}{Pptional title. Null or character.}
+\item{title}{Optional title. Null or character.}
 
 \item{scale_to_sum_reads}{Should slices be scaled to the sum of the reads? Boolean}
 

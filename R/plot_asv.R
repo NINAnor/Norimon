@@ -4,8 +4,8 @@
 #' @param background relative path to a background image.
 #' @param pie_scale scaling factor relative to map size (how large should the pies be) 0-1
 #' @param size another (?) sizing
-#' @param caption Use species name as caption? Boolean
-#' @param title Pptional title. Null or character.
+#' @param caption Character for caption, or TRUE/FALSE for no or default species as caption.
+#' @param title Optional title. Null or character.
 #' @param scale_to_sum_reads Should slices be scaled to the sum of the reads? Boolean
 #' @param subset_years Optional subset on years (e.g. 2020:2024 or character vector of years)
 #' @param ...
@@ -30,10 +30,12 @@ plot_asv <- function(species = NULL,
                      scale_to_sum_reads = TRUE,
                      subset_years = NULL,
                      ...) {
-  jon_asv <- Norimon:::get_asv_loc(species = species) %>%
+
+  jon_asv <- get_asv_loc(species = species) %>%
     dplyr::mutate(scale_sum_reads = scale(sum_reads, center = min(sum_reads), scale = diff(range(sum_reads))))
   # %>%
   #  filter(locality %in% c("Skog_02", "Semi-nat_11"))
+
 
   if(is.null(background)){
     background <- system.file("figures", "hele_norge.png", package = "Norimon")
@@ -120,9 +122,14 @@ plot_asv <- function(species = NULL,
     ylab("") +
     NinaR::scale_fill_nina()
 
-  if (caption) {
+  if (caption != FALSE) {
+    if(caption == TRUE){
     p1 <- p1 +
       labs(caption = species)
+    } else {
+      p1 <- p1 +
+        labs(caption = caption)
+    }
   }
 
   if (!is.null(title)) {
