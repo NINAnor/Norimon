@@ -6,11 +6,12 @@
 <!-- badges: start -->
 
 [![](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
-[![](https://img.shields.io/badge/devel%20version-1.0.0.0-blue.svg)](https://github.com/NINAnor/Norimon)
+[![](https://img.shields.io/badge/devel%20version-1.0.0.8-blue.svg)](https://github.com/NINAnor/Norimon)
 [![](https://www.r-pkg.org/badges/version/Norimon)](https://cran.r-project.org/package=Norimon)
 [![R build
 status](https://github.com/NINAnor/Norimon/workflows/R-CMD-check/badge.svg)](https://github.com/NINAnor/Norimon/actions)
 [![](https://img.shields.io/github/languages/code-size/NINAnor/Norimon.svg)](https://github.com/NINAnor/Norimon)
+[![DOI](https://zenodo.org/badge/508228048.svg)](https://doi.org/10.5281/zenodo.16947368)
 <!-- badges: end -->
 
 Code for working with data from the Norwegian Insect Monitoring program.
@@ -41,19 +42,19 @@ connect_to_insect_db()
 ``` r
 beetles <- get_observations(subset_orders = "Coleoptera")
 beetles
-#> # A tibble: 140 × 8
+#> # A tibble: 200 × 8
 #>     year locality habitat_type region_name no_species shannon_div
 #>    <int> <chr>    <chr>        <chr>            <int>       <dbl>
-#>  1  2020 Skog_01  Forest       Østlandet           77        48.7
-#>  2  2020 Skog_02  Forest       Østlandet          117        88.1
-#>  3  2020 Skog_03  Forest       Østlandet           80        50.8
-#>  4  2020 Skog_04  Forest       Østlandet           24        19.5
-#>  5  2020 Skog_05  Forest       Østlandet           32        25.1
-#>  6  2020 Skog_06  Forest       Østlandet           32        23.2
-#>  7  2020 Skog_07  Forest       Østlandet           93        47  
-#>  8  2020 Skog_08  Forest       Østlandet           27        24.2
-#>  9  2020 Skog_09  Forest       Østlandet           91        46.8
-#> 10  2020 Skog_10  Forest       Østlandet           70        49.4
-#> # ℹ 130 more rows
+#>  1  2020 Skog_01  Forest       Østlandet           84        55.1
+#>  2  2020 Skog_02  Forest       Østlandet          119        90.7
+#>  3  2020 Skog_03  Forest       Østlandet           87        59.4
+#>  4  2020 Skog_04  Forest       Østlandet           27        22.6
+#>  5  2020 Skog_05  Forest       Østlandet           36        28.4
+#>  6  2020 Skog_06  Forest       Østlandet           34        25.3
+#>  7  2020 Skog_07  Forest       Østlandet          106        56.2
+#>  8  2020 Skog_08  Forest       Østlandet           32        28.8
+#>  9  2020 Skog_09  Forest       Østlandet           98        54.2
+#> 10  2020 Skog_10  Forest       Østlandet           76        54.4
+#> # ℹ 190 more rows
 #> # ℹ 2 more variables: mean_no_asv_per_species <dbl>, GDE_by_asv <dbl>
 ```
