@@ -13,7 +13,7 @@ plot_asv(
   title = NULL,
   scale_to_sum_reads = TRUE,
   subset_years = NULL,
-  ...
+  dataset = NULL
 )
 }
 \arguments{
@@ -33,7 +33,7 @@ plot_asv(
 
 \item{subset_years}{Optional subset on years (e.g. 2020:2024 or character vector of years)}
 
-\item{...}{}
+\item{dataset}{Optional character vector for subsetting on specific datasets. Default to NULL, for all.}
 }
 \value{
 a ggplot object
