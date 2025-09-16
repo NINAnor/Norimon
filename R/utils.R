@@ -288,24 +288,3 @@ toiNEXT <- function(input) {
 }
 
 
-#' get_asv_loc
-#' @noRd
-get_asv_loc <- function(species = NULL,
-                        dataset = c("NorIns"),
-                        subset_year = NULL) {
-  asv_perc_reads <- tbl(
-    con,
-    DBI::Id(
-      schema = "views",
-      table = "asv_perc_reads"
-    )
-  )
-
-  asv_wider <- asv_perc_reads %>%
-    dplyr::filter(species_latin_fixed %in% species) %>%
-    # mutate(value = round(perc_reads * 100, 4)) %>%
-    dplyr::collect() %>%
-    as.data.frame()
-
-  return(asv_wider)
-}

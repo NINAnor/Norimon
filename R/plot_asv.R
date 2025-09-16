@@ -8,7 +8,7 @@
 #' @param title Optional title. Null or character.
 #' @param scale_to_sum_reads Should slices be scaled to the sum of the reads? Boolean
 #' @param subset_years Optional subset on years (e.g. 2020:2024 or character vector of years)
-#' @param ...
+#' @param dataset Optional character vector for subsetting on specific datasets. Default to NULL, for all.
 #'
 #' @return a ggplot object
 #'
@@ -29,12 +29,11 @@ plot_asv <- function(species = NULL,
                      title = NULL,
                      scale_to_sum_reads = TRUE,
                      subset_years = NULL,
-                     ...) {
+                     dataset = NULL) {
 
-  jon_asv <- get_asv_loc(species = species) %>%
-    dplyr::mutate(scale_sum_reads = scale(sum_reads, center = min(sum_reads), scale = diff(range(sum_reads))))
-  # %>%
-  #  filter(locality %in% c("Skog_02", "Semi-nat_11"))
+  jon_asv <- get_asv_loc(species = species,
+                         subset_years = subset_years,
+                         dataset = dataset)
 
 
   if(is.null(background)){
@@ -42,9 +41,6 @@ plot_asv <- function(species = NULL,
   }
   if(!file.exists(background)) stop("Background image file not found")
 
-  if (!is.null(subset_years)) {
-    subset_years <- as.numeric(subset_years)
-  }
 
   tt <- terra::rast(background)
   ext_background <- as.vector(terra::ext(tt))
@@ -52,18 +48,18 @@ plot_asv <- function(species = NULL,
   g <- grid::rasterGrob(img, interpolate = TRUE)
 
   if (scale_to_sum_reads) {
-    jon_asv$r <- log(jon_asv$sum_reads) * diff(ext_background[1:2]) / 100 * pie_scale
+    jon_asv$r <- log(jon_asv$sum_reads_all_asv) * diff(ext_background[1:2]) / 100 * pie_scale
   } else {
     jon_asv$r <- diff(ext_background[1:2]) / 100 * pie_scale
   }
 
-  jon_asv <- jon_asv %>%
-    dplyr::mutate(locality = factor(locality, levels = unique(locality[order(dplyr::desc(r))]))) %>%
+  jon_asv <- jon_asv |>
+    dplyr::mutate(locality = factor(locality, levels = unique(locality[order(dplyr::desc(r))]))) |>
     dplyr::arrange(dplyr::desc(r))
 
   if (!is.null(subset_years)) {
     subset_years <- c(NA, subset_years) # To allow one-length subsets
-    jon_asv <- jon_asv %>%
+    jon_asv <- jon_asv |>
       dplyr::filter(year %in% subset_years)
   }
 
@@ -87,7 +83,7 @@ plot_asv <- function(species = NULL,
             amount = perc_reads,
             fill = sequence_id
           ),
-          size = size,
+          linewidth = size,
           data = d,
           stat = "pie",
           inherit.aes = TRUE
@@ -100,7 +96,6 @@ plot_asv <- function(species = NULL,
     theme(
       legend.position = "none",
       panel.border = element_blank(),
-      # axis.line=element_line(color = "black"),
       axis.text.x = element_blank(), # remove x axis labels
       axis.ticks.x = element_blank(), # remove x axis ticks
       axis.text.y = element_blank(), # remove y axis labels
