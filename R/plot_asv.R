@@ -48,7 +48,7 @@ plot_asv <- function(species = NULL,
   g <- grid::rasterGrob(img, interpolate = TRUE)
 
   if (scale_to_sum_reads) {
-    jon_asv$r <- log(jon_asv$sum_reads_all_asv) * diff(ext_background[1:2]) / 100 * pie_scale
+    jon_asv$r <- log(jon_asv$sum_reads) * diff(ext_background[1:2]) / 100 * pie_scale
   } else {
     jon_asv$r <- diff(ext_background[1:2]) / 100 * pie_scale
   }
