@@ -7,6 +7,8 @@
 #' @param level Level to use as reference
 #' @param ... additional parameters
 #'
+#' @importFrom stats sd
+#'
 #' @rdname boot_contrast.boot_stat
 #' @export
 #'

@@ -9,7 +9,7 @@
 #' @param upper_limit Upper limit to confidence intervals, e.g. 0.975 for upper 97.5%
 #' @param only_no_spec Calculate only sum of species (number of alien species) and not sum frequencies. Boolean
 #' @param R Number of bootstrap samples
-#'
+#' @importFrom stats sd
 #' @return Returns an object of class boot_stat.
 #' @export
 #'

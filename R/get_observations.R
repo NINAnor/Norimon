@@ -1,6 +1,6 @@
 #' get_observations Get insect observation data from the database
 #'
-#' @param id_type Type of identification type ("metabarcoding" or "manual"). Defaults to metabarcoding data
+#' @param id_type Type of identification type ("metabarcoding", "manual", "crushed_metabarcoding" or "crushed_lysed_metabarcoding"). Defaults to NULL with no filtering
 #' @param subset_orders Optional subset of order
 #' @param subset_families Optional subset of families
 #' @param subset_genus Optional subset of genus
@@ -36,7 +36,6 @@
 #'
 
 
-
 get_observations <- function(id_type = NULL,
                              subset_orders = NULL,
                              subset_families = NULL,
@@ -68,10 +67,14 @@ get_observations <- function(id_type = NULL,
     subset_habitat <- match.arg(subset_habitat, choices = c("Forest", "Semi-nat"))
   }
 
-  id_type <- match.arg(id_type, choices = c(
-    "metabarcoding",
-    "manual")
+  if(!is.null(id_type)){
+    id_type <- match.arg(id_type, choices = c(
+      "metabarcoding",
+      "manual",
+      "crushed_metabarcoding",
+      "crushed_lysed_metabarcoding")
     )
+  }
 
   dataset <- match.arg(dataset, choices = c(
     "NorIns",

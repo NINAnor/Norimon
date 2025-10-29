@@ -2,7 +2,7 @@
 #'
 #' This provides a summary of insect catches, divided into taxa of a chosen level over the season, typically to be plotted by plot_phenology().
 #'
-#' @param id_type Type of identification. Defaults to metabarcoding data
+#' @param id_type Type of identification. Defaults to NULL for no filtering (all data)
 #' @param taxonomic_level taxonomic level for the comparison
 #' @param subset_year Optional subset of year
 #' @param subset_region Optional subset of region
@@ -33,7 +33,7 @@
 #'
 
 get_phenology <- function(taxonomic_level = NULL,
-                          id_type = c("metabarcoding"),
+                          id_type = NULL,
                           subset_year = NULL,
                           subset_region = NULL,
                           subset_habitat = NULL,
@@ -65,7 +65,16 @@ get_phenology <- function(taxonomic_level = NULL,
     ))
   }
 
-  id_type <- match.arg(id_type, choices = c("metabarcoding"))
+  if(!is.null(id_type)){
+    id_type <- match.arg(id_type, choices = c(
+      "metabarcoding",
+      "manual",
+      "crushed_metabarcoding",
+      "crushed_lysed_metabarcoding")
+    )
+  }
+
+
   dataset <- match.arg(dataset, choices = c("NorIns", "TidVar"))
 
   taxonomic_level <- match.arg(taxonomic_level, choices = c("Order", "Family"))
@@ -128,9 +137,9 @@ get_phenology <- function(taxonomic_level = NULL,
     joined <- joined %>% filter(.data$id_order == subset_order)
   }
 
-  if (id_type == "metabarcoding") {
-    joined <- joined %>% filter(.data$identification_type ==
-                                  "metabarcoding")
+  if (!is.null(id_type)) {
+    joined <- joined %>%
+      dplyr::filter(identification_type %in% id_type)
   }
 
   if (!is.null(subset_region)) {

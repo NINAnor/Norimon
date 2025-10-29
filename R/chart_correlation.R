@@ -32,13 +32,15 @@
 #'   )
 #' }
 #'
+
+#density, hist, lines, par, rug
+
 chart_correlation <- function(R,
                               histogram = TRUE,
-                              method = c(
-                                "pearson",
-                                "kendall",
-                                "spearman"
-                              ),
+                              method = c("pearson",
+                                         "kendall",
+                                         "spearman"
+                                         ),
                               color = "red",
                               ...) {
   x <- PerformanceAnalytics::checkData(R, method = "matrix")
@@ -48,9 +50,9 @@ chart_correlation <- function(R,
   cormeth <- method
   panel.cor <- function(x, y, digits = 2, prefix = "", use = "pairwise.complete.obs",
                         method = cormeth, cex.cor, ...) {
-    usr <- par("usr")
-    on.exit(par(usr))
-    par(usr = c(0, 1, 0, 1))
+    usr <- graphics::par("usr")
+    on.exit(graphics::par(usr))
+    graphics::par(usr = c(0, 1, 0, 1))
     r <- cor(x, y, use = use, method = method)
     txt <- format(c(r, 0.123456789), digits = digits)[1]
     txt <- paste(prefix, txt, sep = "")
@@ -68,27 +70,28 @@ chart_correlation <- function(R,
     text(0.5, 0.5, txt, cex = cex * (abs(r) + 0.3) / 1.3)
     text(0.8, 0.8, Signif, cex = cex, ..., col = color)
   }
-  f <- function(t) {
-    dnorm(t, mean = mean(x), sd = sd.xts(x))
-  }
+  # f <- function(t) {
+  #   stats::dnorm(t, mean = mean(x), sd = sd.xts(x))
+  # }
+
   dotargs <- list(...)
   dotargs$method <- NULL
   rm(method)
   hist.panel <- function(x, ... = NULL) {
-    par(new = TRUE)
-    hist(x,
+    graphics::par(new = TRUE)
+    graphics::hist(x,
       col = "light gray", probability = TRUE, axes = FALSE,
       main = "", breaks = "FD"
     )
-    lines(density(x, na.rm = TRUE), lwd = 1, col = color)
-    rug(x)
+    stats::lines(stats::density(x, na.rm = TRUE), lwd = 1, col = color)
+    stats::rug(x)
   }
   if (histogram) {
-    suppressWarnings(pairs(x,
+    suppressWarnings(graphics::pairs(x,
       gap = 0, lower.panel = panel.smooth, upper.panel = panel.cor,
       diag.panel = hist.panel, col.smooth = color
     ))
   } else {
-    pairs(x, gap = 0, lower.panel = panel.smooth, upper.panel = panel.cor)
+    graphics::pairs(x, gap = 0, lower.panel = panel.smooth, upper.panel = panel.cor)
   }
 }

@@ -1,7 +1,3 @@
-
-
-
-
 #' get_asv_loc
 #'
 #' @param species What species to fetch records for. Character string.

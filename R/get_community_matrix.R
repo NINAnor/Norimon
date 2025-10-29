@@ -2,7 +2,7 @@
 #'
 #'
 #' @param limit Optional row limit on output (for testing).
-#' @param id_type Type of identification data. Currently only default "metabarcoding" available.
+#' @param id_type Type of identification data. Defaults to NULL for all identification types.
 #' @param trap_type Optional subset of trap types. "MF" (default), "VF", "All".
 #' @param dataset Optional selection of dataset. Default to "NorIns" for national insect monitoring scheme.
 #' @param subset_years Optional subset of years. Numerical vector.
@@ -30,7 +30,7 @@
 #' }
 #'
 get_community_matrix <- function(limit = NULL,
-                                 id_type = c("metabarcoding"),
+                                 id_type = NULL,
                                  trap_type = "MF",
                                  dataset = "NorIns",
                                  subset_years = NULL,
@@ -64,6 +64,15 @@ get_community_matrix <- function(limit = NULL,
 
   if (!is.null(subset_region)) {
     subset_region <- match.arg(subset_region, c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u00f8rlandet", "Nord-Norge", "Vestlandet"))
+  }
+
+  if(!is.null(id_type)){
+    id_type <- match.arg(id_type, choices = c(
+      "metabarcoding",
+      "manual",
+      "crushed_metabarcoding",
+      "crushed_lysed_metabarcoding")
+    )
   }
 
   ## Set up table sources
@@ -112,9 +121,9 @@ get_community_matrix <- function(limit = NULL,
       )
     )
 
-  if (id_type == "metabarcoding") {
+  if (!is.null(id_type)) {
     joined <- joined %>%
-      filter(identification_type == "metabarcoding")
+      dplyr::filter(identification_type %in% id_type)
   }
 
   if (!is.null(subset_years)) {
