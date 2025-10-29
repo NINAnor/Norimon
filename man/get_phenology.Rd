@@ -6,7 +6,7 @@
 \usage{
 get_phenology(
   taxonomic_level = NULL,
-  id_type = c("metabarcoding"),
+  id_type = NULL,
   subset_year = NULL,
   subset_region = NULL,
   subset_habitat = NULL,
@@ -21,7 +21,7 @@ get_phenology(
 \arguments{
 \item{taxonomic_level}{taxonomic level for the comparison}
 
-\item{id_type}{Type of identification. Defaults to metabarcoding data}
+\item{id_type}{Type of identification. Defaults to NULL for no filtering (all data)}
 
 \item{subset_year}{Optional subset of year}
 

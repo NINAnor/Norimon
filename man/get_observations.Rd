@@ -24,7 +24,7 @@ get_observations(
 )
 }
 \arguments{
-\item{id_type}{Type of identification type ("metabarcoding" or "manual"). Defaults to metabarcoding data}
+\item{id_type}{Type of identification type ("metabarcoding", "manual", "crushed_metabarcoding" or "crushed_lysed_metabarcoding"). Defaults to NULL with no filtering}
 
 \item{subset_orders}{Optional subset of order}
 

@@ -6,7 +6,7 @@
 \usage{
 get_community_matrix(
   limit = NULL,
-  id_type = c("metabarcoding"),
+  id_type = NULL,
   trap_type = "MF",
   dataset = "NorIns",
   subset_years = NULL,
@@ -23,7 +23,7 @@ get_community_matrix(
 \arguments{
 \item{limit}{Optional row limit on output (for testing).}
 
-\item{id_type}{Type of identification data. Currently only default "metabarcoding" available.}
+\item{id_type}{Type of identification data. Defaults to NULL for all identification types.}
 
 \item{trap_type}{Optional subset of trap types. "MF" (default), "VF", "All".}
 
