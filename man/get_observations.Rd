@@ -5,7 +5,9 @@
 \title{get_observations Get insect observation data from the database}
 \usage{
 get_observations(
+  dataset = "NorIns",
   id_type = NULL,
+  trap_type = "All",
   subset_orders = NULL,
   subset_families = NULL,
   subset_genus = NULL,
@@ -13,9 +15,7 @@ get_observations(
   subset_year = NULL,
   subset_region = NULL,
   subset_habitat = NULL,
-  trap_type = "All",
   limit = NULL,
-  dataset = "NorIns",
   agg_level = "year_locality",
   Hill = TRUE,
   richn_corr = TRUE,
@@ -24,7 +24,11 @@ get_observations(
 )
 }
 \arguments{
-\item{id_type}{Type of identification type ("metabarcoding", "manual", "crushed_metabarcoding" or "crushed_lysed_metabarcoding"). Defaults to NULL with no filtering}
+\item{dataset}{Choose the dataset to fetch data from. Default "NorIns" for national insect monitoring data}
+
+\item{id_type}{Optional filtering on identification/sampling technique, check get_id_types() for available options. Defaults to NULL with no filtering.}
+
+\item{trap_type}{Optional subset of trap type}
 
 \item{subset_orders}{Optional subset of order}
 
@@ -40,11 +44,7 @@ get_observations(
 
 \item{subset_habitat}{Optional subset of habitat type ("Forest" or "Semi-nat")}
 
-\item{trap_type}{Optional subset of trap type}
-
 \item{limit}{Optional limit the output to number of rows (for testing)}
-
-\item{dataset}{Choose the dataset to fetch data from. Default "NorIns" for national insect monitoring data}
 
 \item{agg_level}{Aggregation level of data. "year_locality", "region_habitat", "region_habitat_year", "locality_sampling", "total". Default to year_locality}
 

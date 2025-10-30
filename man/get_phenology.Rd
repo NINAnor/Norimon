@@ -5,23 +5,25 @@
 \title{get_phenology Get insect phenology data from the database}
 \usage{
 get_phenology(
-  taxonomic_level = NULL,
+  dataset = "NorIns",
   id_type = NULL,
+  taxonomic_level = NULL,
   subset_year = NULL,
   subset_region = NULL,
   subset_habitat = NULL,
   subset_order = NULL,
   trap_type = "All",
   limit = NULL,
-  dataset = "NorIns",
   digits = 2,
   return_tibble = F
 )
 }
 \arguments{
-\item{taxonomic_level}{taxonomic level for the comparison}
+\item{dataset}{Choose the dataset to fetch data from. Default "NorIns" for national insect monitoring data}
 
-\item{id_type}{Type of identification. Defaults to NULL for no filtering (all data)}
+\item{id_type}{Optional filtering on identification/sampling technique, check get_id_types() for available options. Defaults to NULL with no filtering.}
+
+\item{taxonomic_level}{taxonomic level for the comparison}
 
 \item{subset_year}{Optional subset of year}
 
@@ -32,8 +34,6 @@ get_phenology(
 \item{trap_type}{Optional subset of trap type}
 
 \item{limit}{Optional limit the output to number of rows (for testing)}
-
-\item{dataset}{Choose the dataset to fetch data from. Default "NorIns" for national insect monitoring data}
 
 \item{digits}{Number of digits to round shannon diversity and mean ASV counts to. (defaults to 2)}
 

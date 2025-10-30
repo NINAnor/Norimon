@@ -24,7 +24,7 @@ library(badger)
 `r badge_cran_release("Norimon")`
 `r badge_github_actions("NINAnor/Norimon")` 
 `r badge_code_size("NINAnor/Norimon")`
-[![DOI](https://zenodo.org/badge/508228048.svg)](https://doi.org/10.5281/zenodo.16947368)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16947369.svg)](https://doi.org/10.5281/zenodo.16947369)
 <!-- badges: end -->
 
 Code for working with data from the Norwegian Insect Monitoring program. This is experimental and currently only for internal use. By Jens Åström, the Norwegian Institute for Nature Research.

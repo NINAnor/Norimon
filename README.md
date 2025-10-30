@@ -6,12 +6,12 @@
 <!-- badges: start -->
 
 [![](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
-[![](https://img.shields.io/badge/devel%20version-1.0.1.0-blue.svg)](https://github.com/NINAnor/Norimon)
+[![](https://img.shields.io/badge/devel%20version-1.0.1.1-blue.svg)](https://github.com/NINAnor/Norimon)
 [![](https://www.r-pkg.org/badges/version/Norimon)](https://cran.r-project.org/package=Norimon)
 [![R build
 status](https://github.com/NINAnor/Norimon/workflows/R-CMD-check/badge.svg)](https://github.com/NINAnor/Norimon/actions)
 [![](https://img.shields.io/github/languages/code-size/NINAnor/Norimon.svg)](https://github.com/NINAnor/Norimon)
-[![DOI](https://zenodo.org/badge/508228048.svg)](https://doi.org/10.5281/zenodo.16947368)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16947369.svg)](https://doi.org/10.5281/zenodo.16947369)
 <!-- badges: end -->
 
 Code for working with data from the Norwegian Insect Monitoring program.

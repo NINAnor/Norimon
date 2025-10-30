@@ -1,8 +1,7 @@
 #' get_community_matrix
 #'
 #'
-#' @param limit Optional row limit on output (for testing).
-#' @param id_type Type of identification data. Defaults to NULL for all identification types.
+#' @param id_type Optional filtering on identification/sampling technique, check get_id_types() for available options. Defaults to NULL with no filtering.
 #' @param trap_type Optional subset of trap types. "MF" (default), "VF", "All".
 #' @param dataset Optional selection of dataset. Default to "NorIns" for national insect monitoring scheme.
 #' @param subset_years Optional subset of years. Numerical vector.
@@ -13,6 +12,7 @@
 #' @param subset_region Optional subset of region. Character vector.
 #' @param exclude_singletons Should we exclude singletons (species only found once). Boolean.
 #' @param transposed_matrix Transpose matrix? Boolean.
+#' @param limit Optional row limit on output (for testing).
 #' @param as_tibble Output as tibble? Boolean.
 #'
 #' @return A tibble or dataframe of a community matrix
@@ -29,10 +29,9 @@
 #' )
 #' }
 #'
-get_community_matrix <- function(limit = NULL,
+get_community_matrix <- function(dataset = "NorIns",
                                  id_type = NULL,
                                  trap_type = "MF",
-                                 dataset = "NorIns",
                                  subset_years = NULL,
                                  subset_orders = NULL,
                                  subset_families = NULL,
@@ -41,7 +40,8 @@ get_community_matrix <- function(limit = NULL,
                                  subset_region = NULL,
                                  exclude_singletons = F,
                                  transposed_matrix = F,
-                                 as_tibble = F) {
+                                 as_tibble = F,
+                                 limit = NULL) {
   Norimon::checkCon()
 
   dataset <- match.arg(dataset,
@@ -67,12 +67,7 @@ get_community_matrix <- function(limit = NULL,
   }
 
   if(!is.null(id_type)){
-    id_type <- match.arg(id_type, choices = c(
-      "metabarcoding",
-      "manual",
-      "crushed_metabarcoding",
-      "crushed_lysed_metabarcoding")
-    )
+    id_type <- match.arg(id_type, choices = unique(get_id_types(include_project_years = F)$identification_type))
   }
 
   ## Set up table sources

@@ -2,7 +2,7 @@
 #'
 #' This provides a summary of insect catches, divided into taxa of a chosen level over the season, typically to be plotted by plot_phenology().
 #'
-#' @param id_type Type of identification. Defaults to NULL for no filtering (all data)
+#' @param id_type Optional filtering on identification/sampling technique, check get_id_types() for available options. Defaults to NULL with no filtering.
 #' @param taxonomic_level taxonomic level for the comparison
 #' @param subset_year Optional subset of year
 #' @param subset_region Optional subset of region
@@ -32,15 +32,15 @@
 #'
 #'
 
-get_phenology <- function(taxonomic_level = NULL,
+get_phenology <- function(dataset = "NorIns",
                           id_type = NULL,
+                          taxonomic_level = NULL,
                           subset_year = NULL,
                           subset_region = NULL,
                           subset_habitat = NULL,
                           subset_order = NULL,
                           trap_type = "All",
                           limit = NULL,
-                          dataset = "NorIns",
                           digits = 2,
                           return_tibble = F) {
   if (!exists("con")) {
@@ -66,12 +66,7 @@ get_phenology <- function(taxonomic_level = NULL,
   }
 
   if(!is.null(id_type)){
-    id_type <- match.arg(id_type, choices = c(
-      "metabarcoding",
-      "manual",
-      "crushed_metabarcoding",
-      "crushed_lysed_metabarcoding")
-    )
+    id_type <- match.arg(id_type, choices = unique(get_id_types(include_project_years = F)$identification_type))
   }
 
 

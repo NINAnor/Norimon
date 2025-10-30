@@ -5,10 +5,9 @@
 \title{get_community_matrix}
 \usage{
 get_community_matrix(
-  limit = NULL,
+  dataset = "NorIns",
   id_type = NULL,
   trap_type = "MF",
-  dataset = "NorIns",
   subset_years = NULL,
   subset_orders = NULL,
   subset_families = NULL,
@@ -17,17 +16,16 @@ get_community_matrix(
   subset_region = NULL,
   exclude_singletons = F,
   transposed_matrix = F,
-  as_tibble = F
+  as_tibble = F,
+  limit = NULL
 )
 }
 \arguments{
-\item{limit}{Optional row limit on output (for testing).}
+\item{dataset}{Optional selection of dataset. Default to "NorIns" for national insect monitoring scheme.}
 
-\item{id_type}{Type of identification data. Defaults to NULL for all identification types.}
+\item{id_type}{Optional filtering on identification/sampling technique, check get_id_types() for available options. Defaults to NULL with no filtering.}
 
 \item{trap_type}{Optional subset of trap types. "MF" (default), "VF", "All".}
-
-\item{dataset}{Optional selection of dataset. Default to "NorIns" for national insect monitoring scheme.}
 
 \item{subset_years}{Optional subset of years. Numerical vector.}
 
@@ -46,6 +44,8 @@ get_community_matrix(
 \item{transposed_matrix}{Transpose matrix? Boolean.}
 
 \item{as_tibble}{Output as tibble? Boolean.}
+
+\item{limit}{Optional row limit on output (for testing).}
 }
 \value{
 A tibble or dataframe of a community matrix
