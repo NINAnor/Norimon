@@ -56,7 +56,7 @@ locality_ar5_plot <- function(locality,
     ),
     geometry_column = "geom"
   ) %>%
-    filter(locality == !!loc_filter)
+    filter(locality_id == lok$id)
 
 
 

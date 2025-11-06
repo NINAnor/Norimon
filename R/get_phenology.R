@@ -107,8 +107,9 @@ get_phenology <- function(dataset = "NorIns",
       "_loc"
     )) %>%
     left_join(traps, by = c(
-      trap_id = "id",
-      year = "year", locality = "locality"
+      "trap_id" = "id",
+      "year" = "year",
+      "locality_id" = "locality_id"
     )) %>%
     mutate(year = as.character(year))
 

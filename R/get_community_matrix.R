@@ -112,7 +112,7 @@ get_community_matrix <- function(dataset = "NorIns",
       by = c(
         "trap_id" = "id",
         "year" = "year",
-        "locality" = "locality"
+        "locality_id" = "locality_id"
       )
     )
 

@@ -134,7 +134,7 @@ get_observations <- function(dataset = "NorIns",
       by = c(
         "trap_id" = "id",
         "year" = "year",
-        "locality" = "locality"
+        "locality_id" = "locality_id"
       )
     ) %>%
     dplyr::mutate(year = as.character(year))
