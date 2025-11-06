@@ -72,6 +72,4 @@ get_observations Get insect observation data from the database
 
 }
 
-
-
 }

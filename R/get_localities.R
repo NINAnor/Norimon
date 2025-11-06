@@ -74,39 +74,38 @@ get_localities <- function(dataset = c(
 
 
   temp <- localities %>%
-    right_join(year_locality,
+    dplyr::right_join(year_locality,
       by = c(
-        "id" = "locality_id",
-        "ano_flate_id" = "ano_flate_id",
-        "ssbid" = "ssbid"
+        "id" = "locality_id"
       ),
       copy = TRUE
     )
 
   if (dataset != "All") {
     temp <- temp %>%
-      filter(project_short_name == dataset)
+      dplyr::filter(project_short_name == dataset)
   }
 
   if (habitat_type_subset != "All") {
     temp <- temp %>%
-      filter(habitat_type == habitat_type_subset)
+      dplyr::filter(habitat_type == habitat_type_subset)
   }
 
   out <- temp %>%
-    select(
+    dplyr::select(
       locality,
       ssbid,
       ano_flate_id,
+      flate_id_in_ano_data,
       year,
       project_short_name,
       region_name,
       habitat_type
     ) %>%
-    arrange(locality)
+    dplyr::arrange(locality)
 
   if (!as_sf) {
-    out <- st_drop_geometry(out)
+    out <- sf::st_drop_geometry(out)
   }
 
   return(out)
