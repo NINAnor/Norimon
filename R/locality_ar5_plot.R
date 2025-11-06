@@ -88,7 +88,7 @@ locality_ar5_plot <- function(locality,
   events.year_locality yl
   WHERE sp.ano_flate_id = ano_b.ano_id
   AND sp.ano_punkt_id = ano_b.ano_point_id
-  AND yl.ano_flate_id = sp.ano_flate_id
+  AND yl.flate_id_in_ano_data = sp.ano_flate_id
   AND yl.locality_id = l.id
   "
 
@@ -102,7 +102,7 @@ locality_ar5_plot <- function(locality,
       geom_sf(
         data = ano_geoms,
         fill = NA,
-        col = nina_colors["purple"]
+        col = NinaR::nina_colors["purple"]
       )
   }
 

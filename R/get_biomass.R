@@ -215,9 +215,7 @@ get_biomass <- function(limit = NULL,
       dplyr::left_join(year_locality,
         by = c(
           "year_locality_id" = "id",
-          "locality_id" = "locality_id",
-          "ano_flate_id" = "ano_flate_id",
-          "ssbid" = "ssbid"
+          "locality_id" = "locality_id"
         ),
         copy = T
       ) %>%
