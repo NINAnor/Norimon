@@ -7,6 +7,7 @@
 get_observations(
   dataset = "NorIns",
   id_type = NULL,
+  id_status = "Primary",
   trap_type = "All",
   subset_orders = NULL,
   subset_families = NULL,
@@ -28,6 +29,8 @@ get_observations(
 
 \item{id_type}{Optional filtering on identification/sampling technique, check get_id_types() for available options. Defaults to NULL with no filtering.}
 
+\item{id_status}{Optional filtering on identification status, check get_id_types() for available options. Defaults to "Primary" to only get one identification per sample. This exists because there might be multiple identifications with the same identification method on the same sample.}
+
 \item{trap_type}{Optional subset of trap type}
 
 \item{subset_orders}{Optional subset of order}
@@ -46,7 +49,7 @@ get_observations(
 
 \item{limit}{Optional limit the output to number of rows (for testing)}
 
-\item{agg_level}{Aggregation level of data. "year_locality", "region_habitat", "region_habitat_year", "locality_sampling", "total". Default to year_locality}
+\item{agg_level}{Aggregation level of data. "year_locality", "region_habitat", "region_habitat_year", "locality_sampling", "total" and "none" for raw data. Default to year_locality}
 
 \item{Hill}{Calculate shannon diversity as Hill number (exp(Shann_div)). Boolean}
 

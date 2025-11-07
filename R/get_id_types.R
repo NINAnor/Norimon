@@ -24,7 +24,7 @@ get_id_types <- function(include_project_years = TRUE){
   checkCon()
 
   id_techn <- dplyr::tbl(con,
-                         Id(schema = "lookup",
+                         DBI::Id(schema = "lookup",
                             table = "identification_techniques"))
 
   if(include_project_years){
@@ -35,7 +35,10 @@ get_id_types <- function(include_project_years = TRUE){
     it.identification_details
     FROM lookup.identification_techniques it,
     (
-      SELECT DISTINCT project_short_name, year, identification_name
+      SELECT DISTINCT project_short_name,
+      year,
+      identification_name,
+      identification_status
       FROM events.identifications i,
       events.sampling_trap st,
       events.locality_sampling ls,

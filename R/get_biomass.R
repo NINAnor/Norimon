@@ -103,7 +103,8 @@ get_biomass <- function(limit = NULL,
     dplyr::left_join(traps,
       by = c(
         "trap_id" = "id",
-        "year" = "year"
+        "year" = "year",
+        "locality_id" = "locality_id"
       )
     ) %>%
     dplyr::mutate(year = as.character(year))
@@ -180,18 +181,6 @@ get_biomass <- function(limit = NULL,
       dplyr::filter(.data$id_genus %in% subset_genus)
   }
 
-  # filter on dataset
-
-  if (!is.null(dataset)) {
-    joined <- joined %>%
-      dplyr::filter(.data$project_short_name == dataset)
-  }
-
-  # filter on trap type (recommended to only take MF)
-  if (!is.null(trap_type) & trap_type != "All") {
-    joined <- joined %>%
-      dplyr::filter(grepl((trap_type), .data$sample_name))
-  }
 
   res <- joined
 

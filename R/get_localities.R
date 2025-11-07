@@ -17,6 +17,7 @@
 #'   geom_sf(aes(fill = habitat_type))
 #' }
 #'
+
 get_localities <- function(dataset = c(
                              "NorIns",
                              "OkoTrond",

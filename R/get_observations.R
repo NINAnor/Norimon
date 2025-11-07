@@ -1,6 +1,7 @@
 #' get_observations Get insect observation data from the database
 #'
 #' @param id_type Optional filtering on identification/sampling technique, check get_id_types() for available options. Defaults to NULL with no filtering.
+#' @param id_status Optional filtering on identification status, check get_id_types() for available options. Defaults to "Primary" to only get one identification per sample. This exists because there might be multiple identifications with the same identification method on the same sample.
 #' @param subset_orders Optional subset of order
 #' @param subset_families Optional subset of families
 #' @param subset_genus Optional subset of genus
@@ -11,7 +12,7 @@
 #' @param trap_type Optional subset of trap type
 #' @param limit Optional limit the output to number of rows (for testing)
 #' @param dataset Choose the dataset to fetch data from. Default "NorIns" for national insect monitoring data
-#' @param agg_level Aggregation level of data. "year_locality", "region_habitat", "region_habitat_year", "locality_sampling", "total". Default to year_locality
+#' @param agg_level Aggregation level of data. "year_locality", "region_habitat", "region_habitat_year", "locality_sampling", "total" and "none" for raw data. Default to year_locality
 #' @param Hill Calculate shannon diversity as Hill number (exp(Shann_div)). Boolean
 #' @param richn_corr Correct GDE calculation by number of species (doi: https://doi.org/10.1101/2022.02.09.479762). Boolean.
 #' @param digits Number of digits to round shannon diversity and mean ASV counts to. (defaults to 2)
@@ -37,6 +38,7 @@
 
 get_observations <- function(dataset = "NorIns",
                              id_type = NULL,
+                             id_status = "Primary",
                              trap_type = "All",
                              subset_orders = NULL,
                              subset_families = NULL,
@@ -67,8 +69,13 @@ get_observations <- function(dataset = "NorIns",
   }
 
   if(!is.null(id_type)){
-    id_type <- match.arg(id_type, choices = unique(get_id_types(include_project_years = F)$identification_type))
+    id_type <- match.arg(id_type, choices = unique(get_id_types(include_project_years = FALSE)$identification_type))
   }
+
+  if(!is.null(id_status)){
+    id_status <- match.arg(id_status, choices = unique(get_id_types(include_project_years = TRUE)$identification_status))
+  }
+
 
   dataset <- match.arg(dataset, choices = c(
     "NorIns",
@@ -140,7 +147,6 @@ get_observations <- function(dataset = "NorIns",
     dplyr::mutate(year = as.character(year))
 
 
-
   ## Exclude 2020 4 week samplings
 
   joined <- joined %>%
@@ -154,6 +160,11 @@ get_observations <- function(dataset = "NorIns",
   if (!is.null(id_type)) {
     joined <- joined %>%
       dplyr::filter(identification_type %in% id_type)
+  }
+
+  if (!is.null(id_status)) {
+    joined <- joined %>%
+      dplyr::filter(identification_status %in% id_status)
   }
 
   # Filter on region name
@@ -223,7 +234,6 @@ get_observations <- function(dataset = "NorIns",
   ## Add more choices?
 
   res <- joined
-
 
   ## This is slow because we have to collect the data before we calculate Shannon index.
   ## Best would be to do the Shannon calc on the database side. Seems harder than I first thought.
@@ -425,8 +435,6 @@ get_observations <- function(dataset = "NorIns",
       )
   }
 
-
-
   if (!is.null(limit)) {
     res <- joined %>%
       head(limit)
@@ -436,8 +444,6 @@ get_observations <- function(dataset = "NorIns",
     res <- res %>%
       as_tibble()
   }
-
-
 
   return(res)
 }
