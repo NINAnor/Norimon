@@ -13,6 +13,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Additional_repositories: https://ninanor.github.io/drat/
 Suggests: 
+    ci,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
