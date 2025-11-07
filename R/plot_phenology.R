@@ -24,7 +24,6 @@
 plot.phenology <- function(x,
                            y_value = "taxa_biomass",
                            x_axis_type = "sampling_number",
-                           aggregation = "Smooth",
                            scale_to_max = TRUE,
                            hide_legend = FALSE,
                            ...) {

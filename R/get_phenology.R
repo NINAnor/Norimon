@@ -8,11 +8,12 @@
 #' @param subset_year Optional subset of year
 #' @param subset_region Optional subset of region
 #' @param subset_habitat Optional subset of habitat type ("Forest" or "Semi-nat")
+#' @param subset_order Optional subset of orders.
 #' @param trap_type Optional subset of trap type
 #' @param limit Optional limit the output to number of rows (for testing)
 #' @param dataset Choose the dataset to fetch data from. Default "NorIns" for national insect monitoring data
 #' @param digits Number of digits to round shannon diversity and mean ASV counts to. (defaults to 2)
-#' @param as_tibble Coerce output to class tibble
+#' @param return_tibble Coerce output to class tibble
 #'
 #' @return A tibble of insect observations from the database
 #' @export
@@ -53,11 +54,11 @@ get_phenology <- function(dataset = "NorIns",
 
   if (!is.null(subset_region)) {
     subset_region <- match.arg(subset_region, choices = c(
-      "Østlandet",
-      "Vestlandet",
-      "Trøndelag",
-      "Sørlandet",
-      "Nord-Norge"
+      "Tr\u00f8ndelag",
+      "\u00d8stlandet",
+      "S\u00f8rlandet",
+      "Nord-Norge",
+      "Vestlandet"
     ))
   }
   if (!is.null(subset_habitat)) {

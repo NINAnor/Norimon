@@ -25,8 +25,15 @@
 #' )
 #' }
 #'
-clim_trend_plot <- function(region = c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u00f8rlandet", "Nord-Norge", "Vestlandet"),
-                            dataset = c("NorIns", "TidVar", "\u00d8koTrond", "HulEik"),
+clim_trend_plot <- function(region = c("Tr\u00f8ndelag",
+                                       "\u00d8stlandet",
+                                       "S\u00f8rlandet",
+                                       "Nord-Norge",
+                                       "Vestlandet"),
+                            dataset = c("NorIns",
+                                        "TidVar",
+                                        "\u00d8koTrond",
+                                        "HulEik"),
                             from_year = 2010,
                             to_year = 2023,
                             from_month = 6,
@@ -93,42 +100,42 @@ clim_trend_plot <- function(region = c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u0
       year = lubridate::year(date)
     ) %>%
     filter(
-      month >= from_month,
-      month <= to_month,
-      year >= from_year,
-      year <= to_year
+      .data$month >= from_month,
+      .data$month <= to_month,
+      .data$year >= from_year,
+      .data$year <= to_year
     ) %>%
-    group_by(year, locality) %>%
+    group_by(.data$year, .data$locality) %>%
     summarise(
-      sum_temp = sum(daily_mean_temp),
-      sum_precip = sum(daily_sum_precip)
+      sum_temp = sum(.data$daily_mean_temp),
+      sum_precip = sum(.data$daily_sum_precip)
     ) %>%
-    group_by(year) %>%
+    group_by(.data$year) %>%
     summarise(
-      mean_sum_temp = mean(sum_temp),
-      sd_sum_temp = sd(sum_temp),
-      mean_sum_precip = mean(sum_precip),
-      sd_sum_precip = sd(sum_precip)
+      mean_sum_temp = mean(.data$sum_temp),
+      sd_sum_temp = sd(.data$sum_temp),
+      mean_sum_precip = mean(.data$sum_precip),
+      sd_sum_precip = sd(.data$sum_precip)
     ) %>%
     ungroup()
 
   p1 <- ggplot(clim_data_agg) +
     geom_pointrange(
       aes(
-        x = year,
-        y = mean_sum_temp,
-        ymin = mean_sum_temp - sd_sum_temp,
-        ymax = mean_sum_temp + sd_sum_temp
+        x = .data$year,
+        y = .data$mean_sum_temp,
+        ymin = .data$mean_sum_temp - .data$sd_sum_temp,
+        ymax = .data$mean_sum_temp + .data$sd_sum_temp
       ),
-      color = nina_colors[2],
+      color = NinaR::nina_colors[2],
       lwd = 1.2
     ) +
     geom_line(
       aes(
-        x = year,
-        y = mean_sum_temp
+        x = .data$year,
+        y = .data$mean_sum_temp
       ),
-      color = nina_colors[2],
+      color = NinaR::nina_colors[2],
       lwd = 1.2
     ) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
@@ -139,20 +146,20 @@ clim_trend_plot <- function(region = c("Tr\u00f8ndelag", "\u00d8stlandet", "S\u0
   p2 <- ggplot(clim_data_agg) +
     geom_pointrange(
       aes(
-        x = year,
-        y = mean_sum_precip,
-        ymin = mean_sum_precip - sd_sum_precip,
-        ymax = mean_sum_precip + sd_sum_precip
+        x = .data$year,
+        y = .data$mean_sum_precip,
+        ymin = .data$mean_sum_precip - .data$sd_sum_precip,
+        ymax = .data$mean_sum_precip + .data$sd_sum_precip
       ),
-      color = nina_colors[3],
+      color = NinaR::nina_colors[3],
       lwd = 1.2
     ) +
     geom_line(
       aes(
-        x = year,
-        y = mean_sum_precip
+        x = .data$year,
+        y = .data$mean_sum_precip
       ),
-      color = nina_colors[3],
+      color = NinaR::nina_colors[3],
       lwd = 1.2
     ) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +

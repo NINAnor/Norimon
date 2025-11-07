@@ -13,15 +13,11 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Additional_repositories: https://ninanor.github.io/drat/
 Suggests: 
+    ci,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-    ggridges,
-    DBI,
-    ggplot2,
-    latex2exp,
-    NinaR
 Imports:
     dplyr,
     magrittr,
@@ -43,7 +39,11 @@ Imports:
     stringr,
     zoo,
     png,
-    terra
+    terra,
+    ggforce,
+    httr,
+    jsonlite,
+    scales
 Depends:
   ggplot2,
   rlang

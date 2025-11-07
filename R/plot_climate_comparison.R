@@ -73,8 +73,8 @@ plot_climate_comparison <- function(climate_data = NULL,
   language <- match.arg(language, c("Norwegian", "English"))
   text_table <- list(
     Norwegian = c(
-      "s vær i ", "Fargete områder representer gjennomsnittlig ",
-      ".\nReferansedata strekker seg fra ", " dager med høyere\n",
+      "s v\u00e6r i ", "Fargete omr\u00e5der representer gjennomsnittlig ",
+      ".\nReferansedata strekker seg fra ", " dager med h\u00f8yere\n",
       "verdier enn referansedata", " dager med lavere\n", "verdier enn referansedata",
       "Historisk maksimum", "Historisk minimum", "95% konfidanse",
       "Denne figur viser daglige verdier.\n", "Denne figur viser glidende middelverdi over 5 dager.\n"
@@ -96,8 +96,8 @@ plot_climate_comparison <- function(climate_data = NULL,
   legend_table <- list(
     Norwegian = list(
       temperature = "temperatur",
-      precipitation = "nedbør",
-      snow_depth = "snødybde"
+      precipitation = "nedb\u00f8r",
+      snow_depth = "sn\u00f8dybde"
     ),
     English = list(
       temperature = "temperature",
