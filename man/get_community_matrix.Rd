@@ -7,6 +7,7 @@
 get_community_matrix(
   dataset = "NorIns",
   id_type = NULL,
+  id_status = "Primary",
   trap_type = "MF",
   subset_years = NULL,
   subset_orders = NULL,
@@ -24,6 +25,8 @@ get_community_matrix(
 \item{dataset}{Optional selection of dataset. Default to "NorIns" for national insect monitoring scheme.}
 
 \item{id_type}{Optional filtering on identification/sampling technique, check get_id_types() for available options. Defaults to NULL with no filtering.}
+
+\item{id_status}{Optional filtering on identification status, check get_id_types() for available options. Defaults to "Primary" to only get one identification per sample. This exists because there might be multiple identifications with the same identification method on the same sample.}
 
 \item{trap_type}{Optional subset of trap types. "MF" (default), "VF", "All".}
 

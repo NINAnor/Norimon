@@ -2,6 +2,7 @@
 #'
 #'
 #' @param id_type Optional filtering on identification/sampling technique, check get_id_types() for available options. Defaults to NULL with no filtering.
+#' @param id_status Optional filtering on identification status, check get_id_types() for available options. Defaults to "Primary" to only get one identification per sample. This exists because there might be multiple identifications with the same identification method on the same sample.
 #' @param trap_type Optional subset of trap types. "MF" (default), "VF", "All".
 #' @param dataset Optional selection of dataset. Default to "NorIns" for national insect monitoring scheme.
 #' @param subset_years Optional subset of years. Numerical vector.
@@ -29,8 +30,11 @@
 #' )
 #' }
 #'
+
+
 get_community_matrix <- function(dataset = "NorIns",
                                  id_type = NULL,
+                                 id_status = "Primary",
                                  trap_type = "MF",
                                  subset_years = NULL,
                                  subset_orders = NULL,
@@ -70,6 +74,10 @@ get_community_matrix <- function(dataset = "NorIns",
     id_type <- match.arg(id_type, choices = unique(get_id_types(include_project_years = F)$identification_type))
   }
 
+  if(!is.null(id_status)){
+    id_status <- match.arg(id_status, choices = unique(get_id_types(include_project_years = TRUE)$identification_status))
+  }
+
   ## Set up table sources
   ## Probably needs updating after new batch of data. Also need to test filtering of different identification types
 
@@ -105,8 +113,7 @@ get_community_matrix <- function(dataset = "NorIns",
       suffix = c("_obs", "_yl")
     ) %>%
     left_join(localities,
-      by = c("locality_id" = "id"),
-      suffix = c("_obs", "_loc")
+      by = c("locality_id" = "id")
     ) %>%
     left_join(traps,
       by = c(
@@ -119,6 +126,11 @@ get_community_matrix <- function(dataset = "NorIns",
   if (!is.null(id_type)) {
     joined <- joined %>%
       dplyr::filter(identification_type %in% id_type)
+  }
+
+  if (!is.null(id_status)) {
+    joined <- joined %>%
+      dplyr::filter(identification_status %in% id_status)
   }
 
   if (!is.null(subset_years)) {

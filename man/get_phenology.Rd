@@ -7,6 +7,7 @@
 get_phenology(
   dataset = "NorIns",
   id_type = NULL,
+  id_status = "Primary",
   taxonomic_level = NULL,
   subset_year = NULL,
   subset_region = NULL,
@@ -22,6 +23,8 @@ get_phenology(
 \item{dataset}{Choose the dataset to fetch data from. Default "NorIns" for national insect monitoring data}
 
 \item{id_type}{Optional filtering on identification/sampling technique, check get_id_types() for available options. Defaults to NULL with no filtering.}
+
+\item{id_status}{Optional filtering on identification status, check get_id_types() for available options. Defaults to "Primary" to only get one identification per sample. This exists because there might be multiple identifications with the same identification method on the same sample.}
 
 \item{taxonomic_level}{taxonomic level for the comparison}
 

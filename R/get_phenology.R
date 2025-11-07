@@ -3,6 +3,7 @@
 #' This provides a summary of insect catches, divided into taxa of a chosen level over the season, typically to be plotted by plot_phenology().
 #'
 #' @param id_type Optional filtering on identification/sampling technique, check get_id_types() for available options. Defaults to NULL with no filtering.
+#' @param id_status Optional filtering on identification status, check get_id_types() for available options. Defaults to "Primary" to only get one identification per sample. This exists because there might be multiple identifications with the same identification method on the same sample.
 #' @param taxonomic_level taxonomic level for the comparison
 #' @param subset_year Optional subset of year
 #' @param subset_region Optional subset of region
@@ -34,6 +35,7 @@
 
 get_phenology <- function(dataset = "NorIns",
                           id_type = NULL,
+                          id_status = "Primary",
                           taxonomic_level = NULL,
                           subset_year = NULL,
                           subset_region = NULL,
@@ -69,6 +71,10 @@ get_phenology <- function(dataset = "NorIns",
     id_type <- match.arg(id_type, choices = unique(get_id_types(include_project_years = F)$identification_type))
   }
 
+  if(!is.null(id_status)){
+    id_status <- match.arg(id_status, choices = unique(get_id_types(include_project_years = TRUE)$identification_status))
+  }
+
 
   dataset <- match.arg(dataset, choices = c("NorIns", "TidVar"))
 
@@ -93,19 +99,20 @@ get_phenology <- function(dataset = "NorIns",
               suffix = c("_obs", "_idtechn")
     ) %>%
     left_join(sampling_trap,
-              by = c(sampling_trap_id = "id"), suffix = c("_obs", "_st")
+              by = c(sampling_trap_id = "id"),
+              suffix = c("_obs", "_st")
     ) %>%
     left_join(locality_sampling,
               by = c(locality_sampling_id = "id"),
               suffix = c("_obs", "_ls")
     ) %>%
     left_join(year_locality,
-              by = c(year_locality_id = "id"), suffix = c("_obs", "_yl")
+              by = c(year_locality_id = "id"),
+              suffix = c("_obs", "_yl")
     ) %>%
-    left_join(localities, by = c(locality_id = "id"), suffix = c(
-      "_obs",
-      "_loc"
-    )) %>%
+    left_join(localities,
+              by = c(locality_id = "id")
+              ) %>%
     left_join(traps, by = c(
       "trap_id" = "id",
       "year" = "year",
@@ -136,6 +143,11 @@ get_phenology <- function(dataset = "NorIns",
   if (!is.null(id_type)) {
     joined <- joined %>%
       dplyr::filter(identification_type %in% id_type)
+  }
+
+  if (!is.null(id_status)) {
+    joined <- joined %>%
+      dplyr::filter(identification_status %in% id_status)
   }
 
   if (!is.null(subset_region)) {
