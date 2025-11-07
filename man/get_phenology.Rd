@@ -34,13 +34,15 @@ get_phenology(
 
 \item{subset_habitat}{Optional subset of habitat type ("Forest" or "Semi-nat")}
 
+\item{subset_order}{Optional subset of orders.}
+
 \item{trap_type}{Optional subset of trap type}
 
 \item{limit}{Optional limit the output to number of rows (for testing)}
 
 \item{digits}{Number of digits to round shannon diversity and mean ASV counts to. (defaults to 2)}
 
-\item{as_tibble}{Coerce output to class tibble}
+\item{return_tibble}{Coerce output to class tibble}
 }
 \value{
 A tibble of insect observations from the database

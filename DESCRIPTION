@@ -17,11 +17,6 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-    ggridges,
-    DBI,
-    ggplot2,
-    latex2exp,
-    NinaR
 Imports:
     dplyr,
     magrittr,
@@ -43,7 +38,11 @@ Imports:
     stringr,
     zoo,
     png,
-    terra
+    terra,
+    ggforce,
+    httr,
+    jsonlite,
+    scales
 Depends:
   ggplot2,
   rlang

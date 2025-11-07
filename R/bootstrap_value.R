@@ -34,12 +34,17 @@
 #' }
 #'
 bootstrap_value <- function(df,
-                            value = c(no_species, shannon_div, mean_no_asv_per_species, sum_wet_weight, avg_wet_weight),
+                            value = c(no_species,
+                                      shannon_div,
+                                      mean_no_asv_per_species,
+                                      sum_wet_weight,
+                                      avg_wet_weight),
                             groups = NULL,
                             rolling_year_window = TRUE,
                             lower_limit = 0.025,
                             upper_limit = 0.975,
                             R = 999) {
+
   if ("locality" %in% groups & rolling_year_window) stop("Can't use rolling window with stratified by localities, they only occur once per rolling window")
 
   # Expand dataset to include up to 5 year window around every year
@@ -48,8 +53,8 @@ bootstrap_value <- function(df,
 
     for (subset_year in unique(df$year)) {
       subset <- df %>%
-        filter(year >= subset_year - 2 & year <= subset_year + 2) %>%
-        mutate(year = subset_year)
+        filter(.data$year >= .data$subset_year - 2 & .data$year <= .data$subset_year + 2) %>%
+        mutate(year = .data$subset_year)
 
       out <- rbind(out, subset)
     }

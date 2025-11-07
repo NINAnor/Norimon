@@ -42,7 +42,7 @@ phen_peak_plot <- function(obj,
                   color = name)) +
     scale_x_date(date_breaks = "1 month",
                  date_labels = "%b",
-                 name = "Måned")
+                 name = "M\u00e5ned")
 
   if(mark_peaks){
     peak_x <- atan2(x$Xcoef[, 2], x$Xcoef[, 1]) / (2 * pi / max(pred_time))
