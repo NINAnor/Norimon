@@ -150,8 +150,8 @@ get_observations <- function(dataset = "NorIns",
   ## Exclude 2020 4 week samplings
 
   joined <- joined %>%
-    dplyr::mutate(weeks_sampled = ifelse(grepl("2020", year) & (grepl("1", .data$trap_short_name) | grepl("3", trap_short_name)), 2, 4)) %>%
-    dplyr::mutate(weeks_sampled = ifelse(grepl("2020", year), .data$weeks_sampled, 2))
+    dplyr::mutate(weeks_sampled = ifelse(grepl("2020", year) & (grepl("1", trap_short_name) | grepl("3", trap_short_name)), 2, 4)) %>%
+    dplyr::mutate(weeks_sampled = ifelse(grepl("2020", year), weeks_sampled, 2))
 
   joined <- joined %>%
     dplyr::filter(weeks_sampled == 2)

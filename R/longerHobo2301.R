@@ -14,7 +14,8 @@
 #' @examples
 #' \dontrun{
 #'
-#' mx2301A_data <- longerHobo2301(inputFile = "../rawData/temp_logger/NasIns_2021_all_MX2301A_2021_11_15_11_00_05_CET_1.csv")
+#' mx2301A_data <- longerHobo2301(inputFile = "../rawData/temp_logger/
+#' NasIns_2021_all_MX2301A_2021_11_15_11_00_05_CET_1.csv")
 #' }
 #'
 longerHobo2301 <- function(inputFile,
@@ -29,7 +30,7 @@ longerHobo2301 <- function(inputFile,
   suppressWarnings({
     dat <- rawDat %>%
       select(-"Line#") %>%
-      mutate(date = as.POSIXct(.data$Date, format = "%m/%d/%y %H:%M:%S")) %>%
+      mutate(date = as.POSIXct(Date, format = "%m/%d/%y %H:%M:%S")) %>%
       mutate_if(is_character, as.double) %>%
       select(-Date)
   })
@@ -45,7 +46,7 @@ longerHobo2301 <- function(inputFile,
       logger_id,
       temperature
     ) %>%
-    filter(!is.na(.data$temperature))
+    filter(!is.na(temperature))
 
   rh <- dat %>%
     pivot_longer(
@@ -58,7 +59,7 @@ longerHobo2301 <- function(inputFile,
       logger_id,
       rh
     ) %>%
-    filter(!is.na(.data$rh))
+    filter(!is.na(rh))
 
   dew_point <- dat %>%
     pivot_longer(
@@ -71,36 +72,36 @@ longerHobo2301 <- function(inputFile,
       logger_id,
       dew_point
     ) %>%
-    filter(!is.na(.data$dew_point))
+    filter(!is.na(dew_point))
 
 
   # Fix to allow for two deployments of same logger. gets duplicate column names from hobo-export
   temp <- temp %>%
     mutate(logger_id = stringr::str_extract(
-      .data$logger_id,
+      logger_id,
       "[^, ]+$"
     )) %>%
     mutate(logger_id = stringr::str_extract(
-      .data$logger_id,
+      logger_id,
       "(^[0-9]*)"
     ))
 
   rh <- rh %>%
     mutate(logger_id = stringr::str_extract(
-      .data$logger_id,
+      logger_id,
       "[^, ]+$"
     )) %>%
     mutate(logger_id = stringr::str_extract(
-      .data$logger_id,
+      logger_id,
       "(^[0-9]*)"
     ))
   dew_point <- dew_point %>%
     mutate(logger_id = stringr::str_extract(
-      .data$logger_id,
+      logger_id,
       "[^, ]+$"
     )) %>%
     mutate(logger_id = stringr::str_extract(
-      .data$logger_id,
+      logger_id,
       "(^[0-9]*)"
     ))
 

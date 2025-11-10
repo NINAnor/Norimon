@@ -53,8 +53,8 @@ bootstrap_value <- function(df,
 
     for (subset_year in unique(df$year)) {
       subset <- df %>%
-        filter(.data$year >= .data$subset_year - 2 & .data$year <= .data$subset_year + 2) %>%
-        mutate(year = .data$subset_year)
+        filter(year >= subset_year - 2 & year <= subset_year + 2) %>%
+        mutate(year = subset_year)
 
       out <- rbind(out, subset)
     }

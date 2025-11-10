@@ -12,11 +12,11 @@
 #' @examples
 #'
 #'
-#' # Connect to insect monitoring database while storing your credentials in a password file (~/.pgpass)
 #'
 #' \dontrun{
-#'
-#' connect_to_insect_db()
+#' #Connect to insect monitoring database while
+#' #storing your credentials in a password file (~/.pgpass)
+#' #connect_to_insect_db()
 #'
 #' # Connect to another database
 #'
