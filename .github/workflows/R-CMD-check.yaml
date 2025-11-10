@@ -39,15 +39,14 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
-          setup-tinytex: true # Ensures R is aware of TinyTeX
 
-      - uses: r-lib/actions/setup-tinytex
+      - uses: r-lib/actions/setup-tinytex@v2 # Installs TinyTeX
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck github::NINAnor/NinaR
           needs: check
-          setup-tinytex: true # Ensures dependencies (like tinytex) are correctly installed
+
 
       - uses: r-lib/actions/check-r-package@v2
         with:
