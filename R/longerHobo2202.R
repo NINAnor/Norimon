@@ -11,7 +11,8 @@
 #' @examples
 #' \dontrun{
 #'
-#' mx2202_data <- longerHobo2202(inputFile = "../rawData/temp_logger/NasIns_2021_all_MX2202_2021_11_15_10_58_26_CET/NasIns_2021_all_MX2202_2021_11_15_10_58_26_CET_1.csv")
+#' mx2202_data <- longerHobo2202(inputFile = "../rawData/temp_logger/
+#' NasIns_2021_all_MX2202_2021_11_15_10_58_26_CET_1.csv")
 #' }
 #'
 longerHobo2202 <- function(inputFile,

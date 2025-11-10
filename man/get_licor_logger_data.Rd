@@ -35,7 +35,7 @@ Downloads logger data from the licor.cloud platform
 logger_data <- download_licor_logger_data(loggers = 20878881,
                                           start_date = "2024-06-01",
                                           end_date = "2024-06-30",
-                                          token = "w4cUSIqspTyvIqwYS5rqFHJTfCj25YBMl8BvyjoEQ9bGlAGF")
+                                          token = "your_token")
 
 
 }

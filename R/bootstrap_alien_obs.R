@@ -37,7 +37,7 @@ bootstrap_alien_obs <- function(df,
 
     for (subset_year in unique(df$year)) {
       subset <- df %>%
-        filter(.data$year >= subset_year - 2 & .data$year <= subset_year + 2) %>%
+        filter(year >= subset_year - 2 & year <= subset_year + 2) %>%
         mutate(year = subset_year)
 
       out <- rbind(out, subset)
@@ -58,12 +58,12 @@ bootstrap_alien_obs <- function(df,
       slice_sample(prop = 1, replace = TRUE) %>%
       group_by_at(groupings_spec) %>%
       summarise(
-        freq = sum(.data$present) / n(),
+        freq = sum(present) / n(),
         .groups = "drop"
       ) %>%
       group_by_at(groupings) %>%
       summarise(
-        boot_values = sum(.data$freq),
+        boot_values = sum(freq),
         .groups = "drop"
       )
 
@@ -76,12 +76,12 @@ bootstrap_alien_obs <- function(df,
       slice_sample(prop = 1, replace = TRUE) %>%
       group_by_at(groupings_spec) %>%
       summarise(
-        freq = sum(.data$present) / n(),
+        freq = sum(present) / n(),
         .groups = "drop"
       ) %>%
       group_by_at(groupings) %>%
       summarise(
-        boot_values = sum(.data$freq > 0),
+        boot_values = sum(freq > 0),
         .groups = "drop"
       )
 
@@ -117,10 +117,10 @@ bootstrap_alien_obs <- function(df,
   bootstrap_summary <- bootstrap_values %>%
     group_by_at(groupings) %>%
     summarise(
-      boot_value = mean(.data$boot_values),
-      boot_sd = sd(.data$boot_values),
-      boot_lower2.5 = nth(.data$boot_values, floor(R * 0.025), order_by = .data$boot_values),
-      boot_upper97.5 = nth(.data$boot_values, ceiling(R * 0.975), order_by = .data$boot_values),
+      boot_value = mean(boot_values),
+      boot_sd = sd(boot_values),
+      boot_lower2.5 = nth(boot_values, floor(R * 0.025), order_by = boot_values),
+      boot_upper97.5 = nth(boot_values, ceiling(R * 0.975), order_by = boot_values),
       .groups = "drop"
     )
 

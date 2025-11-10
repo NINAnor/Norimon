@@ -100,40 +100,40 @@ clim_trend_plot <- function(region = c("Tr\u00f8ndelag",
       year = lubridate::year(date)
     ) %>%
     filter(
-      .data$month >= from_month,
-      .data$month <= to_month,
-      .data$year >= from_year,
-      .data$year <= to_year
+      month >= from_month,
+      month <= to_month,
+      year >= from_year,
+      year <= to_year
     ) %>%
-    group_by(.data$year, .data$locality) %>%
+    group_by(year, locality) %>%
     summarise(
-      sum_temp = sum(.data$daily_mean_temp),
-      sum_precip = sum(.data$daily_sum_precip)
+      sum_temp = sum(daily_mean_temp),
+      sum_precip = sum(daily_sum_precip)
     ) %>%
-    group_by(.data$year) %>%
+    group_by(year) %>%
     summarise(
-      mean_sum_temp = mean(.data$sum_temp),
-      sd_sum_temp = sd(.data$sum_temp),
-      mean_sum_precip = mean(.data$sum_precip),
-      sd_sum_precip = sd(.data$sum_precip)
+      mean_sum_temp = mean(sum_temp),
+      sd_sum_temp = sd(sum_temp),
+      mean_sum_precip = mean(sum_precip),
+      sd_sum_precip = sd(sum_precip)
     ) %>%
     ungroup()
 
   p1 <- ggplot(clim_data_agg) +
     geom_pointrange(
       aes(
-        x = .data$year,
-        y = .data$mean_sum_temp,
-        ymin = .data$mean_sum_temp - .data$sd_sum_temp,
-        ymax = .data$mean_sum_temp + .data$sd_sum_temp
+        x = year,
+        y = mean_sum_temp,
+        ymin = mean_sum_temp - sd_sum_temp,
+        ymax = mean_sum_temp + sd_sum_temp
       ),
       color = NinaR::nina_colors[2],
       lwd = 1.2
     ) +
     geom_line(
       aes(
-        x = .data$year,
-        y = .data$mean_sum_temp
+        x = year,
+        y = mean_sum_temp
       ),
       color = NinaR::nina_colors[2],
       lwd = 1.2
@@ -146,18 +146,18 @@ clim_trend_plot <- function(region = c("Tr\u00f8ndelag",
   p2 <- ggplot(clim_data_agg) +
     geom_pointrange(
       aes(
-        x = .data$year,
-        y = .data$mean_sum_precip,
-        ymin = .data$mean_sum_precip - .data$sd_sum_precip,
-        ymax = .data$mean_sum_precip + .data$sd_sum_precip
+        x = year,
+        y = mean_sum_precip,
+        ymin = mean_sum_precip - sd_sum_precip,
+        ymax = mean_sum_precip + sd_sum_precip
       ),
       color = NinaR::nina_colors[3],
       lwd = 1.2
     ) +
     geom_line(
       aes(
-        x = .data$year,
-        y = .data$mean_sum_precip
+        x = year,
+        y = mean_sum_precip
       ),
       color = NinaR::nina_colors[3],
       lwd = 1.2

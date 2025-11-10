@@ -143,42 +143,42 @@ get_biomass <- function(limit = NULL,
   if (!is.null(subset_habitat)) {
     subset_habitat <- c("", subset_habitat)
     joined <- joined %>%
-      dplyr::filter(.data$habitat_type %in% subset_habitat)
+      dplyr::filter(habitat_type %in% subset_habitat)
   }
 
   # Filter on order
   if (!is.null(subset_orders)) {
     subset_orders <- c("", subset_orders) # To allow one-length subsets
     joined <- joined %>%
-      dplyr::filter(.data$id_order %IN% subset_orders)
+      dplyr::filter(id_order %IN% subset_orders)
   }
 
   # Filter on families
   if (!is.null(subset_families)) {
     subset_families <- c("", subset_families)
     joined <- joined %>%
-      dplyr::filter(.data$id_family %in% subset_families)
+      dplyr::filter(id_family %in% subset_families)
   }
 
   # Filter on species
   if (!is.null(subset_species)) {
     subset_species <- c("", subset_species)
     joined <- joined %>%
-      dplyr::filter(.data$species_latin_fixed %in% subset_species)
+      dplyr::filter(species_latin_fixed %in% subset_species)
   }
 
   # Filter on year
   if (!is.null(subset_year)) {
     subset_year <- c("", subset_year)
     joined <- joined %>%
-      dplyr::filter(.data$year %in% subset_year)
+      dplyr::filter(year %in% subset_year)
   }
 
   # Filter on genus
   if (!is.null(subset_genus)) {
     subset_genus <- c("", subset_genus)
     joined <- joined %>%
-      dplyr::filter(.data$id_genus %in% subset_genus)
+      dplyr::filter(id_genus %in% subset_genus)
   }
 
 

@@ -126,19 +126,19 @@ get_phenology <- function(dataset = "NorIns",
     mutate(weeks_sampled = ifelse(grepl(
       "2020",
       year
-    ) & (grepl("1", .data$trap_short_name) | grepl(
+    ) & (grepl("1", trap_short_name) | grepl(
       "3",
       trap_short_name
     )), 2, 4)) %>%
     mutate(weeks_sampled = ifelse(grepl(
       "2020",
       year
-    ), .data$weeks_sampled, 2))
+    ), weeks_sampled, 2))
 
-  joined <- joined %>% filter(.data$weeks_sampled == 2)
+  joined <- joined %>% filter(weeks_sampled == 2)
 
   if (!is.null(subset_order)) {
-    joined <- joined %>% filter(.data$id_order == subset_order)
+    joined <- joined %>% filter(id_order == subset_order)
   }
 
   if (!is.null(id_type)) {
@@ -153,26 +153,26 @@ get_phenology <- function(dataset = "NorIns",
 
   if (!is.null(subset_region)) {
     subset_region <- c("", subset_region)
-    joined <- joined %>% filter(.data$region_name %in% subset_region)
+    joined <- joined %>% filter(region_name %in% subset_region)
   }
 
   if (!is.null(subset_habitat)) {
     subset_habitat <- c("", subset_habitat)
-    joined <- joined %>% filter(.data$habitat_type %in% subset_habitat)
+    joined <- joined %>% filter(habitat_type %in% subset_habitat)
   }
 
   if (!is.null(subset_year)) {
     subset_year <- c("", subset_year)
-    joined <- joined %>% filter(.data$year %in% subset_year)
+    joined <- joined %>% filter(year %in% subset_year)
   }
 
   if (!is.null(dataset)) {
-    joined <- joined %>% filter(.data$project_short_name ==
+    joined <- joined %>% filter(project_short_name ==
                                   dataset)
   }
 
   if (!is.null(trap_type) & trap_type != "All") {
-    joined <- joined %>% filter(grepl((trap_type), .data$sample_name))
+    joined <- joined %>% filter(grepl((trap_type), sample_name))
   }
 
   res <- joined
@@ -212,10 +212,10 @@ get_phenology <- function(dataset = "NorIns",
         id_order
       ) %>%
       summarise(
-        no_trap_days = mean(as.numeric(.data$end_date_obs - .data$start_date_obs)),
-        no_species = n_distinct(.data$species_latin_fixed),
-        shannon_div = round(calc_shannon(.data$species_latin_fixed), digits),
-        mean_no_asv_per_species = round(mean(.data$no_asv_per_species), digits),
+        no_trap_days = mean(as.numeric(end_date_obs - start_date_obs)),
+        no_species = n_distinct(species_latin_fixed),
+        shannon_div = round(calc_shannon(species_latin_fixed), digits),
+        mean_no_asv_per_species = round(mean(no_asv_per_species), digits),
         order_read_ab = sum(species_read_ab, na.rm = TRUE), #Get total read number per order and sample
         .groups = "keep"
       ) %>%
@@ -310,10 +310,10 @@ get_phenology <- function(dataset = "NorIns",
         id_family
       ) %>%
       summarise(
-        no_trap_days = mean(as.numeric(.data$end_date_obs - .data$start_date_obs)),
-        no_species = n_distinct(.data$species_latin_fixed),
-        shannon_div = round(calc_shannon(.data$species_latin_fixed), digits),
-        mean_no_asv_per_species = round(mean(.data$no_asv_per_species), digits),
+        no_trap_days = mean(as.numeric(end_date_obs - start_date_obs)),
+        no_species = n_distinct(species_latin_fixed),
+        shannon_div = round(calc_shannon(species_latin_fixed), digits),
+        mean_no_asv_per_species = round(mean(no_asv_per_species), digits),
         family_read_ab = sum(species_read_ab, na.rm = TRUE),
         .groups = "keep") %>%
       group_by(
