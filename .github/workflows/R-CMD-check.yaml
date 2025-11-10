@@ -40,6 +40,7 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
           setup-tinytex: true # Ensures R is aware of TinyTeX
+      - uses: r-lib/actions/setup-tinytex@master
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
