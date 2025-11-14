@@ -3,6 +3,8 @@
 #'
 #' @param inputFile export file of raw logger data from HoboLink.com.
 #' @param guess_max optional number of rows to guess the data format from. May have to increase a lot.
+#' @param delim Character string of delimiter in source data. Defaults to ";".
+#' @param date_format Character vector of date format. Be aware of the day, month, year ordering, and any trailing %z for timezone info.
 #' @param ... additional parameters passed to read_csv
 #' @return A tibble of well formatted logger data from the MX2301A type logger
 #' @export
@@ -15,21 +17,27 @@
 #' NasIns_2021_all_MX2202_2021_11_15_10_58_26_CET_1.csv")
 #' }
 #'
+#'
+
 longerHobo2202 <- function(inputFile,
                            guess_max = 10000,
+                           delim = ";",
+                           date_format = "%d/%m/%y %H:%M:%S %z",
                            ...) {
-  rawDat <- readr::read_csv(inputFile,
+
+  rawDat <- readr::read_delim(inputFile,
     guess_max = guess_max,
     col_types = readr::cols(),
+    delim = delim,
     ...
   )
 
   suppressWarnings({
     dat <- rawDat %>%
-      select(-"Line#") %>%
-      mutate(date = as.POSIXct(.data$Date, format = "%m/%d/%y %H:%M:%S")) %>%
+      select(-matches("Line#")) %>%
+      mutate(date = as.POSIXct(.data$Date, format = date_format)) %>%
       mutate_if(is_character, as.double) %>%
-      select(-Date)
+      select(-matches("Date", ignore.case = FALSE))
   })
 
   temp <- dat %>%
@@ -58,13 +66,12 @@ longerHobo2202 <- function(inputFile,
     ) %>%
     filter(!is.na(.data$light))
 
-
-
   temp <- temp %>%
     mutate(logger_id = stringr::str_extract(
       .data$logger_id,
       "[^, ]+$"
     ))
+
   light <- light %>%
     mutate(logger_id = stringr::str_extract(
       .data$logger_id,
