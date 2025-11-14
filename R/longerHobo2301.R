@@ -4,6 +4,8 @@
 #'
 #' @param inputFile export file of raw logger data from HoboLink.com
 #' @param guess_max optional number of rows to guess the data format from. May have to increase a lot
+#' @param delim Character string of delimiter in source data. Defaults to ";".
+#' @param date_format Character vector of date format. Be aware of the day, month, year ordering, and any trailing %z for timezone info.
 #' @param ... additional arguments passed to read_csv
 #'
 #' @return A tibble of well formatted logger data from the MX2301A type logger
@@ -20,19 +22,22 @@
 #'
 longerHobo2301 <- function(inputFile,
                            guess_max = 10000,
+                           delim = ";",
+                           date_format = "%d/%m/%y %H:%M:%S %z",
                            ...) {
-  rawDat <- readr::read_csv(inputFile,
+  rawDat <- readr::read_delim(inputFile,
     col_types = readr::cols(.default = "c"),
     guess_max = guess_max,
+    delim = delim,
     ...
   )
 
   suppressWarnings({
     dat <- rawDat %>%
-      select(-"Line#") %>%
-      mutate(date = as.POSIXct(Date, format = "%m/%d/%y %H:%M:%S")) %>%
+      select(-matches("Line#")) %>%
+      mutate(date = as.POSIXct(.data$Date, format = date_format)) %>%
       mutate_if(is_character, as.double) %>%
-      select(-Date)
+      select(-matches("Date", ignore.case = FALSE))
   })
 
   temp <- dat %>%

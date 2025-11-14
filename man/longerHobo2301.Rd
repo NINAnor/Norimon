@@ -4,12 +4,22 @@
 \alias{longerHobo2301}
 \title{longerHobo2301}
 \usage{
-longerHobo2301(inputFile, guess_max = 10000, ...)
+longerHobo2301(
+  inputFile,
+  guess_max = 10000,
+  delim = ";",
+  date_format = "\%d/\%m/\%y \%H:\%M:\%S \%z",
+  ...
+)
 }
 \arguments{
 \item{inputFile}{export file of raw logger data from HoboLink.com}
 
 \item{guess_max}{optional number of rows to guess the data format from. May have to increase a lot}
+
+\item{delim}{Character string of delimiter in source data. Defaults to ";".}
+
+\item{date_format}{Character vector of date format. Be aware of the day, month, year ordering, and any trailing \%z for timezone info.}
 
 \item{...}{additional arguments passed to read_csv}
 }
