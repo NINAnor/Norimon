@@ -8,7 +8,7 @@ longerHobo2301(
   inputFile,
   guess_max = 10000,
   delim = ";",
-  date_format = "\%d/\%m/\%y \%H:\%M:\%S \%z",
+  date_format = "\%y/\%m/\%d \%H:\%M:\%S \%z",
   ...
 )
 }

@@ -22,7 +22,7 @@
 longerHobo2202 <- function(inputFile,
                            guess_max = 10000,
                            delim = ";",
-                           date_format = "%d/%m/%y %H:%M:%S %z",
+                           date_format = "%y/%m/%d %H:%M:%S %z",
                            ...) {
 
   rawDat <- readr::read_delim(inputFile,
@@ -33,11 +33,11 @@ longerHobo2202 <- function(inputFile,
   )
 
   suppressWarnings({
-    dat <- rawDat %>%
-      select(-matches("Line#")) %>%
-      mutate(date = as.POSIXct(.data$Date, format = date_format)) %>%
-      mutate_if(is_character, as.double) %>%
-      select(-matches("Date", ignore.case = FALSE))
+    dat <- rawDat |>
+      dplyr::select(-dplyr::matches("Line#")) |>
+      dplyr::mutate(date = as.POSIXct(.data$Date, format = date_format)) |>
+      dplyr::mutate_if(rlang::is_character, as.double) |>
+      dplyr::select(-dplyr::matches("Date", ignore.case = FALSE))
   })
 
   temp <- dat %>%
@@ -54,7 +54,7 @@ longerHobo2202 <- function(inputFile,
     filter(!is.na(temperature))
 
   light <- dat %>%
-    pivot_longer(
+    tidyr::pivot_longer(
       cols = tidyr::starts_with("Light"),
       names_to = "logger_id",
       values_to = "light"

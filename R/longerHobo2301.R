@@ -23,7 +23,7 @@
 longerHobo2301 <- function(inputFile,
                            guess_max = 10000,
                            delim = ";",
-                           date_format = "%d/%m/%y %H:%M:%S %z",
+                           date_format = "%y/%m/%d %H:%M:%S %z",
                            ...) {
   rawDat <- readr::read_delim(inputFile,
     col_types = readr::cols(.default = "c"),
@@ -34,14 +34,14 @@ longerHobo2301 <- function(inputFile,
 
   suppressWarnings({
     dat <- rawDat %>%
-      select(-matches("Line#")) %>%
-      mutate(date = as.POSIXct(.data$Date, format = date_format)) %>%
-      mutate_if(is_character, as.double) %>%
-      select(-matches("Date", ignore.case = FALSE))
+      dplyr::select(-dplyr::matches("Line#")) %>%
+      dplyr::mutate(date = as.POSIXct(.data$Date, format = date_format)) %>%
+      dplyr::mutate_if(rlang::is_character, as.double) %>%
+      dplyr::select(-dplyr::matches("Date", ignore.case = FALSE))
   })
 
   temp <- dat %>%
-    pivot_longer(
+    tidyr::pivot_longer(
       cols = tidyr::starts_with("Temperature"),
       names_to = "logger_id",
       values_to = "temperature"
@@ -54,7 +54,7 @@ longerHobo2301 <- function(inputFile,
     filter(!is.na(temperature))
 
   rh <- dat %>%
-    pivot_longer(
+    tidyr::pivot_longer(
       cols = tidyr::starts_with("RH"),
       names_to = "logger_id",
       values_to = "rh"
@@ -67,7 +67,7 @@ longerHobo2301 <- function(inputFile,
     filter(!is.na(rh))
 
   dew_point <- dat %>%
-    pivot_longer(
+    tidyr::pivot_longer(
       cols = tidyr::starts_with("Dew"),
       names_to = "logger_id",
       values_to = "dew_point"
