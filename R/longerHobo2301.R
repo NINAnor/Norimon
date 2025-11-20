@@ -6,6 +6,7 @@
 #' @param guess_max optional number of rows to guess the data format from. May have to increase a lot
 #' @param delim Character string of delimiter in source data. Defaults to ";".
 #' @param date_format Character vector of date format. Be aware of the day, month, year ordering, and any trailing %z for timezone info.
+#' @param single_logger Are you processing data from a single logger or a bulk download (with different column structure)
 #' @param ... additional arguments passed to read_csv
 #'
 #' @return A tibble of well formatted logger data from the MX2301A type logger
@@ -24,121 +25,140 @@ longerHobo2301 <- function(inputFile,
                            guess_max = 10000,
                            delim = ";",
                            date_format = "%y/%m/%d %H:%M:%S %z",
+                           single_logger = TRUE,
                            ...) {
   rawDat <- readr::read_delim(inputFile,
-    col_types = readr::cols(.default = "c"),
-    guess_max = guess_max,
-    delim = delim,
-    ...
+                              col_types = readr::cols(.default = "c"),
+                              guess_max = guess_max,
+                              delim = delim,
+                              ...
   )
 
   suppressWarnings({
     dat <- rawDat %>%
-      dplyr::select(-dplyr::matches("Line#")) %>%
-      dplyr::mutate(date = as.POSIXct(.data$Date, format = date_format)) %>%
+      dplyr::select(-dplyr::matches(c("Line#", "#", "Button Down", "Started", "Host Connected", "End of File"))) %>%
+      dplyr::mutate(dplyr::across(
+        .cols = dplyr::matches("Date"),
+        .fns = ~ as.POSIXct(.x, format = date_format),
+        .names = "date"
+      )) %>%
       dplyr::mutate_if(rlang::is_character, as.double) %>%
       dplyr::select(-dplyr::matches("Date", ignore.case = FALSE))
   })
 
-  temp <- dat %>%
-    tidyr::pivot_longer(
-      cols = tidyr::starts_with("Temperature"),
-      names_to = "logger_id",
-      values_to = "temperature"
-    ) %>%
-    select(
-      date,
-      logger_id,
-      temperature
-    ) %>%
-    filter(!is.na(temperature))
 
-  rh <- dat %>%
-    tidyr::pivot_longer(
-      cols = tidyr::starts_with("RH"),
-      names_to = "logger_id",
-      values_to = "rh"
-    ) %>%
-    select(
-      date,
-      logger_id,
-      rh
-    ) %>%
-    filter(!is.na(rh))
+  if(single_logger){
+    dat <- dat |>
+      mutate(logger_id = sub("^(\\d+)\\s.*$", "\\1", basename(inputFile))) |>
+      mutate(logger_type = "MX2301A")
 
-  dew_point <- dat %>%
-    tidyr::pivot_longer(
-      cols = tidyr::starts_with("Dew"),
-      names_to = "logger_id",
-      values_to = "dew_point"
-    ) %>%
-    select(
-      date,
-      logger_id,
-      dew_point
-    ) %>%
-    filter(!is.na(dew_point))
+    out <- dat |>
+      select(logger_time = date,
+             logger_type,
+             logger_id,
+             temperature = matches("Temperature"),
+             rh = matches("RH"),
+             dew_point = matches("Dew"))
+
+  } else {
+
+    temp <- dat %>%
+      tidyr::pivot_longer(
+        cols = tidyr::starts_with("Temperature"),
+        names_to = "logger_id",
+        values_to = "temperature"
+      ) %>%
+      select(
+        date,
+        logger_id,
+        temperature
+      ) %>%
+      filter(!is.na(temperature))
+
+    rh <- dat %>%
+      tidyr::pivot_longer(
+        cols = tidyr::starts_with("RH"),
+        names_to = "logger_id",
+        values_to = "rh"
+      ) %>%
+      select(
+        date,
+        logger_id,
+        rh
+      ) %>%
+      filter(!is.na(rh))
+
+    dew_point <- dat %>%
+      tidyr::pivot_longer(
+        cols = tidyr::starts_with("Dew"),
+        names_to = "logger_id",
+        values_to = "dew_point"
+      ) %>%
+      select(
+        date,
+        logger_id,
+        dew_point
+      ) %>%
+      filter(!is.na(dew_point))
+
+    # Fix to allow for two deployments of same logger. gets duplicate column names from hobo-export
+    temp <- temp %>%
+      mutate(logger_id = stringr::str_extract(
+        logger_id,
+        "[^, ]+$"
+      )) %>%
+      mutate(logger_id = stringr::str_extract(
+        logger_id,
+        "(^[0-9]*)"
+      ))
+
+    rh <- rh %>%
+      mutate(logger_id = stringr::str_extract(
+        logger_id,
+        "[^, ]+$"
+      )) %>%
+      mutate(logger_id = stringr::str_extract(
+        logger_id,
+        "(^[0-9]*)"
+      ))
+    dew_point <- dew_point %>%
+      mutate(logger_id = stringr::str_extract(
+        logger_id,
+        "[^, ]+$"
+      )) %>%
+      mutate(logger_id = stringr::str_extract(
+        logger_id,
+        "(^[0-9]*)"
+      ))
 
 
-  # Fix to allow for two deployments of same logger. gets duplicate column names from hobo-export
-  temp <- temp %>%
-    mutate(logger_id = stringr::str_extract(
-      logger_id,
-      "[^, ]+$"
-    )) %>%
-    mutate(logger_id = stringr::str_extract(
-      logger_id,
-      "(^[0-9]*)"
-    ))
-
-  rh <- rh %>%
-    mutate(logger_id = stringr::str_extract(
-      logger_id,
-      "[^, ]+$"
-    )) %>%
-    mutate(logger_id = stringr::str_extract(
-      logger_id,
-      "(^[0-9]*)"
-    ))
-  dew_point <- dew_point %>%
-    mutate(logger_id = stringr::str_extract(
-      logger_id,
-      "[^, ]+$"
-    )) %>%
-    mutate(logger_id = stringr::str_extract(
-      logger_id,
-      "(^[0-9]*)"
-    ))
-
-  # if(!all(all(temp$date == rh$date),
-  #       all(rh$date == dew_point$date))) stop("Tables datetimes doesn't match")
-
-  combDat <- temp %>%
-    inner_join(rh,
-      by = c(
-        "date" = "date",
-        "logger_id" = "logger_id"
+    out <- temp %>%
+      inner_join(rh,
+                 by = c(
+                   "date" = "date",
+                   "logger_id" = "logger_id"
+                 )
+      ) %>%
+      inner_join(dew_point,
+                 by = c(
+                   "date" = "date",
+                   "logger_id" = "logger_id"
+                 )
+      ) %>%
+      arrange(
+        logger_id,
+        date
+      ) %>%
+      mutate(logger_type = "MX2301A") %>%
+      select(logger_time = date,
+             logger_type,
+             logger_id,
+             temperature,
+             rh,
+             dew_point
       )
-    ) %>%
-    inner_join(dew_point,
-      by = c(
-        "date" = "date",
-        "logger_id" = "logger_id"
-      )
-    ) %>%
-    arrange(
-      logger_id,
-      date
-    ) %>%
-    mutate(logger_type = "MX2301A") %>%
-    select(
-      date,
-      logger_type,
-      logger_id,
-      temperature,
-      rh,
-      dew_point
-    )
 
-  return(combDat)
+  }
+
+  return(out)
 }

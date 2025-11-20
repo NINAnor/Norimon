@@ -10,6 +10,7 @@ longerHobo2202(
   guess_max = 10000,
   delim = ";",
   date_format = "\%y/\%m/\%d \%H:\%M:\%S \%z",
+  single_logger = TRUE,
   ...
 )
 }
@@ -21,6 +22,8 @@ longerHobo2202(
 \item{delim}{Character string of delimiter in source data. Defaults to ";".}
 
 \item{date_format}{Character vector of date format. Be aware of the day, month, year ordering, and any trailing \%z for timezone info.}
+
+\item{single_logger}{Are you processing data from a single logger or a bulk download (with different column structure)}
 
 \item{...}{additional parameters passed to read_csv}
 }
