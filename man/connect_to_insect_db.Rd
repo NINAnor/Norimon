@@ -5,7 +5,7 @@
 \title{connect_to_insect_db}
 \usage{
 connect_to_insect_db(
-  host = "t2lippgsql02.nina.no",
+  host = "t2lippgsql03.nina.no",
   dbname = "insect_monitoring",
   ...
 )
