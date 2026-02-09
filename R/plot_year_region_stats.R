@@ -28,7 +28,7 @@ plot_year_region_stats <- function(year_region_stats) {
     "Ikke besøkt" = "white"
   )
 
-  reg_cols <- tibble(
+  reg_cols <- dplyr::tibble(
     region_name = c(
       "Sørlandet",
       "Østlandet",
@@ -46,26 +46,27 @@ plot_year_region_stats <- function(year_region_stats) {
   )
 
   plot_data <- raw_data %>%
+    dplyr::arrange(region_name, year) |>
     dplyr::group_by(region_name) %>%
-    dplyr::mutate(year = as.integer(as.character(year))) %>%
-    dplyr::mutate(group_id = cur_group_id()) |>
-    dplyr::mutate(custom_y = (year %% 5 + 1) + ((group_id *5)-5)) %>%
+    dplyr::mutate(year_num = as.integer(as.character(year))) %>%
+    dplyr::mutate(group_id = dplyr::cur_group_id()) |>
+    dplyr::mutate(custom_y = 5 - (year_num %% 5) + ((group_id *5)-5)) %>%
     dplyr::mutate(
       custom_x = ifelse(habitat_type == "Semi-nat",
-                        as.integer(as.character(year)) - 0.2,
-                        as.integer(as.character(year)) + 0.2
+                        year_num - 0.2,
+                        year_num + 0.2
       ),
       visited = ifelse(visits > 0, "Ja", "Nei")
     )
 
 
-  yline_pos <- tibble(hline = seq(0,
+  yline_pos <- dplyr::tibble(hline = seq(0,
                                   25,
                                   by = 5
                                   ) + 0.5)
 
 
-  ytext_pos <- tibble(ytext = seq(0,
+  ytext_pos <- dplyr::tibble(ytext = seq(0,
                                   20,
                                   by = 5
                                   ) + (6) / 2)
@@ -102,7 +103,7 @@ plot_year_region_stats <- function(year_region_stats) {
     ggplot2::ylab("") +
     ggplot2::scale_x_continuous(
       name = "År",
-      breaks = unique(plot_data$year)
+      breaks = unique(plot_data$year_num)
     ) +
     ggplot2::scale_y_continuous(
       breaks = ytext_pos$ytext,
