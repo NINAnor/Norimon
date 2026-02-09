@@ -114,7 +114,15 @@ utils::globalVariables(
     "sd_sum_precip",
     "sd_sum_temp",
     "sum_precip",
-    "sum_temp"
+    "sum_temp",
+    "id",
+    "group_id",
+    "visits",
+    "custom_y",
+    "custom_x",
+    "visited",
+    "hline",
+    "year_num"
   )
 
 )

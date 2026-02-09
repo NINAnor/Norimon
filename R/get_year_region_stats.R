@@ -41,10 +41,10 @@ get_year_region_stats <- function(project_short_name = "NorIns",
     dplyr::collect() %>%
     dplyr::mutate(region_name = factor(region_name,
                                 levels = c(
-                                  "Sørlandet",
-                                  "Østlandet",
+                                  "S\u00f8rlandet",
+                                  "\u00d8stlandet",
                                   "Vestlandet",
-                                  "Trøndelag",
+                                  "Tr\u00f8ndelag",
                                   "Nord-Norge"
                                 )
     )) %>%
