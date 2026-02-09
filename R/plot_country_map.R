@@ -6,6 +6,7 @@
 #' @return A ggplot2 object
 #' @export
 #'
+#' @importFrom ggthemes theme_map
 #' @examples
 #' \dontrun{
 #'

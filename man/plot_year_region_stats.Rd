@@ -6,6 +6,9 @@
 \usage{
 plot_year_region_stats(year_region_stats)
 }
+\arguments{
+\item{year_region_stats}{A tabular record to plot, typically from get_region_stats()}
+}
 \value{
 A ggplot2 object
 }

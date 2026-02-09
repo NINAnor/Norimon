@@ -2,8 +2,11 @@
 #'
 #' Conveniance function for plotting the status of the project in the staggered experimental design
 #'
+#' @param year_region_stats A tabular record to plot, typically from get_region_stats()
 #' @return A ggplot2 object
 #' @export
+#'
+#' @importFrom ggtext element_markdown
 #'
 #' @examples
 #'
@@ -25,15 +28,15 @@ plot_year_region_stats <- function(year_region_stats) {
   fill_cols <- c(
     "Semi-nat" = "#E57200",
     "Skog" = "#7A9A01",
-    "Ikke besøkt" = "white"
+    "Ikke bes\u00f8kt" = "white"
   )
 
   reg_cols <- dplyr::tibble(
     region_name = c(
-      "Sørlandet",
-      "Østlandet",
+      "S\u00f8rlandet",
+      "\u00d8stlandet",
       "Vestlandet",
-      "Trøndelag",
+      "Tr\u00f8ndelag",
       "Nord-Norge"
     ),
     color = c(
@@ -102,16 +105,16 @@ plot_year_region_stats <- function(year_region_stats) {
     ) +
     ggplot2::ylab("") +
     ggplot2::scale_x_continuous(
-      name = "År",
+      name = "\u00d8r",
       breaks = unique(plot_data$year_num)
     ) +
     ggplot2::scale_y_continuous(
       breaks = ytext_pos$ytext,
       labels = c(
-        "<b style='color:#E57200'>Sørlandet</b>",
-        "<b style='color:#008C95'>Østlandet</b>",
+        "<b style='color:#E57200'>S\u00f8rlandet</b>",
+        "<b style='color:#008C95'>\u00d8stlandet</b>",
         "<b style='color:#7A9A01'>Vestlandet</b>",
-        "<b style='color:#93328E'>Trøndelag</b>",
+        "<b style='color:#93328E'>Tr\u00f8ndelag</b>",
         "<b style='color:#004F71'>Nord-Norge</b>"
       )
     ) +
