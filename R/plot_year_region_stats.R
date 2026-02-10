@@ -105,7 +105,7 @@ plot_year_region_stats <- function(year_region_stats) {
     ) +
     ggplot2::ylab("") +
     ggplot2::scale_x_continuous(
-      name = "\u00d8r",
+      name = "\u00C5r",
       breaks = unique(plot_data$year_num)
     ) +
     ggplot2::scale_y_continuous(
@@ -122,7 +122,9 @@ plot_year_region_stats <- function(year_region_stats) {
       panel.background = element_blank(),
       axis.text.y = ggtext::element_markdown(),
       plot.margin = margin(0, 0, 0, 0, "cm")
-    )
+    ) +
+    guides(fill = guide_legend(override.aes = list(colour = "black")),
+           color = guide_legend(override.aes = list(fill = "white")))
 
   p
 }
