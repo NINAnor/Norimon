@@ -59,10 +59,9 @@ get_localities <- function(dataset = c(
 
   localities <- sf::read_sf(
     con,
-    DBI::Id(
-      schema = "locations",
-      table = "localities"
-    )
+    DBI::Id(schema = "locations",
+            table = "localities"),
+    geometry_column = "geom"
   )
 
   year_locality <- dplyr::tbl(
