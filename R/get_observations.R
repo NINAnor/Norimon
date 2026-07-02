@@ -77,13 +77,9 @@ get_observations <- function(dataset = "NorIns",
   }
 
 
-  dataset <- match.arg(dataset, choices = c(
-    "NorIns",
-    "OkoTrond",
-    "TidVar",
-    "Nerlands\u00f8ya",
-    "HulEik"
-  ))
+  dataset <- match.arg(dataset,
+                       get_projects()$project_short_name
+  )
 
   agg_level <- match.arg(agg_level, choices = c(
     "year_locality",
@@ -233,19 +229,27 @@ get_observations <- function(dataset = "NorIns",
   ## Aggregate data to chosen level
   ## Add more choices?
 
-  res <- joined
+  res <- join
 
   ## This is slow because we have to collect the data before we calculate Shannon index.
   ## Best would be to do the Shannon calc on the database side. Seems harder than I first thought.
   if (agg_level == "year_locality") {
     res <- res %>%
       dplyr::collect() %>%
-      dplyr::group_by(year_locality_id, locality_id, species_latin_fixed) %>% ## Error here, it collapses to species level, doesn't keep duplicate species
+      dplyr::group_by(year_locality_id,
+                      locality_id,
+                      species_latin_fixed) %>% ## Error here, it collapses to species level, doesn't keep duplicate species
       dplyr::summarise(
         no_asv_per_species = dplyr::n_distinct(sequence_id),
         .groups = "keep"
       ) %>%
-      dplyr::group_by(year_locality_id, locality_id) %>%
+      dplyr::group_by(start_date_ls,
+                      end_date_ls,
+                      start_date_julian,
+                      end_date_julian,
+                      no_trap_days,
+                      year_locality_id,
+                      locality_id) %>%
       dplyr::summarise(
         no_species = dplyr::n_distinct(species_latin_fixed),
         shannon_div = round(calc_shannon(species_latin_fixed, no_asv_per_species, Hill = Hill), digits),
@@ -294,6 +298,10 @@ get_observations <- function(dataset = "NorIns",
       ) %>%
       dplyr::group_by(sampling_name, year_locality_id, locality_id) %>%
       dplyr::summarise(
+        start_date_ls = as.Date(min(start_date_obs, na.rm = TRUE)),
+        end_date_ls = as.Date(max(end_date_obs, na.rm = TRUE)),
+        start_date_julian = lubridate::yday(min(start_date_obs, na.rm = TRUE)),
+        end_date_julian = lubridate::yday(max(end_date_obs, na.rm = TRUE)),
         no_trap_days = mean(as.numeric(end_date_obs - start_date_obs)), ## to get the mean trap days from all traps within the sampling event (should be the same for all traps)
         no_species = dplyr::n_distinct(species_latin_fixed),
         shannon_div = round(calc_shannon(species_latin_fixed, no_asv_per_species, Hill = Hill), digits),
@@ -316,6 +324,10 @@ get_observations <- function(dataset = "NorIns",
         sampling_name,
         habitat_type,
         region_name,
+        start_date = start_date_ls,
+        end_date = end_date_ls,
+        start_date_julian,
+        end_date_julian,
         no_trap_days,
         no_species,
         shannon_div,
