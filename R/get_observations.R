@@ -227,9 +227,8 @@ get_observations <- function(dataset = "NorIns",
 
 
   ## Aggregate data to chosen level
-  ## Add more choices?
 
-  res <- join
+  res <- joined
 
   ## This is slow because we have to collect the data before we calculate Shannon index.
   ## Best would be to do the Shannon calc on the database side. Seems harder than I first thought.
@@ -291,7 +290,12 @@ get_observations <- function(dataset = "NorIns",
   if (agg_level == "locality_sampling") {
     res <- res %>%
       dplyr::collect() %>%
-      dplyr::group_by(start_date_obs, end_date_obs, sampling_name, year_locality_id, locality_id, species_latin_fixed) %>%
+      dplyr::group_by(start_date_obs,
+                      end_date_obs,
+                      sampling_name,
+                      year_locality_id,
+                      locality_id,
+                      species_latin_fixed) %>%
       dplyr::summarise(
         no_asv_per_species = dplyr::n_distinct(sequence_id),
         .groups = "keep"
