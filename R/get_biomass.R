@@ -189,11 +189,10 @@ get_biomass <- function(limit = NULL,
       dplyr::collect() %>%
       dplyr::group_by(year_locality_id, locality_id) %>%
       dplyr::summarise(
-        start_date_ls = as.Date(min(start_date_obs, na.rm = TRUE)),
-        end_date_ls = as.Date(max(end_date_obs, na.rm = TRUE)),
+        start_date_yl = as.Date(min(start_date_obs, na.rm = TRUE)),
+        end_date_yl = as.Date(max(end_date_obs, na.rm = TRUE)),
         start_date_julian = lubridate::yday(min(start_date_obs, na.rm = TRUE)),
         end_date_julian = lubridate::yday(max(end_date_obs, na.rm = TRUE)),
-        no_trap_days = sum(as.numeric(end_date_obs - start_date_obs), na.rm = TRUE),
         sum_wet_weight = sum(wet_weight_bottle - weight_empty_bottle, na.rm = T),
         avg_wet_weight = mean(wet_weight_bottle - weight_empty_bottle, na.rm = T),
         .groups = "keep"
@@ -215,11 +214,10 @@ get_biomass <- function(limit = NULL,
         locality,
         habitat_type,
         region_name,
-        start_date = start_date_ls,
-        end_date = end_date_ls,
+        start_date = start_date_yl,
+        end_date = end_date_yl,
         start_date_julian,
         end_date_julian,
-        no_trap_days,
         sum_wet_weight,
         avg_wet_weight
       ) %>%

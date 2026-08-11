@@ -34,8 +34,6 @@
 #' }
 #'
 
-
-
 get_observations <- function(dataset = "NorIns",
                              id_type = NULL,
                              id_status = "Primary",
@@ -233,6 +231,18 @@ get_observations <- function(dataset = "NorIns",
   ## This is slow because we have to collect the data before we calculate Shannon index.
   ## Best would be to do the Shannon calc on the database side. Seems harder than I first thought.
   if (agg_level == "year_locality") {
+
+    sub_calculation <-  res |>
+      dplyr::group_by(year_locality_id,
+                      locality_id) |>
+      dplyr::summarise(
+        start_date_yl = as.Date(min(start_date_obs, na.rm = TRUE)),
+        end_date_yl = as.Date(max(end_date_obs, na.rm = TRUE)),
+        start_date_julian = lubridate::yday(min(start_date_obs, na.rm = TRUE)),
+        end_date_julian = lubridate::yday(max(end_date_obs, na.rm = TRUE)),
+        .groups = "keep"
+      )
+
     res <- res %>%
       dplyr::collect() %>%
       dplyr::group_by(year_locality_id,
@@ -242,12 +252,7 @@ get_observations <- function(dataset = "NorIns",
         no_asv_per_species = dplyr::n_distinct(sequence_id),
         .groups = "keep"
       ) %>%
-      dplyr::group_by(start_date_ls,
-                      end_date_ls,
-                      start_date_julian,
-                      end_date_julian,
-                      no_trap_days,
-                      year_locality_id,
+      dplyr::group_by(year_locality_id,
                       locality_id) %>%
       dplyr::summarise(
         no_species = dplyr::n_distinct(species_latin_fixed),
@@ -256,6 +261,10 @@ get_observations <- function(dataset = "NorIns",
         GDE_by_asv = round(calc_GDE(no_asv_per_species, Hill = Hill, richn_corr = richn_corr), digits),
         .groups = "keep"
       ) %>%
+      dplyr::left_join(sub_calculation,
+                       by = c("year_locality_id",
+                              "locality_id"),
+                       copy = T) |>
       dplyr::left_join(localities,
         by = c("locality_id" = "id"),
         copy = T
@@ -273,6 +282,10 @@ get_observations <- function(dataset = "NorIns",
         locality,
         habitat_type,
         region_name,
+        start_date = start_date_yl,
+        end_date = end_date_yl,
+        start_date_julian,
+        end_date_julian,
         no_species,
         shannon_div,
         mean_no_asv_per_species,
